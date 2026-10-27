@@ -194,7 +194,7 @@ todo: T18-1 벽 모서리 이음새를 P2로 하향
 
 1. 지금 끝낸 세부 Todo 번호 확인 (`docs/TODO.md`에 없으면 먼저 `todo:` 커밋으로 추가)
 2. `git status`로 바뀐 파일 확인
-3. `npm run build` 통과 확인 (실패하면 커밋하지 않고 먼저 고친다)
+3. `npm run check`와 `npm run test:e2e` 통과 확인 (실패하면 커밋하지 않고 먼저 고친다, `yogitta-test` 1장)
 4. 관련 파일만 `git add <파일>`
 5. `Tn-n: 작업 내용` 형식으로 `git commit`
 6. `docs/TODO.md`에서 해당 세부 Todo 체크 (`- [x] T3-3 사각형 도구`) — 같은 커밋에 포함

@@ -11,6 +11,7 @@ description: 요깃따 코드 작성 규칙. 폴더 구조, 의존 방향, 로�
 함께 쓰는 스킬
 - 색·컴포넌트 모양 → `yogitta-design`
 - 커밋 메시지·타이밍 → `commit-convention`
+- 테스트 항목·완료 기준 → `yogitta-test`
 
 ---
 
@@ -248,7 +249,8 @@ export function segmentToWall(a: Point, b: Point): WallTransform { … }
 |---|---|
 | ESLint | typescript-eslint 권장, react-hooks, `no-explicit-any: error`, `import/no-cycle`, feature 내부 직접 import 금지(`no-restricted-imports`로 `@/features/*/*` 막기) |
 | Prettier | 세미콜론, 큰따옴표, 폭 100, trailing comma |
-| Vitest | 순수 함수만 |
+| Vitest | 순수 함수만 (코드 테스트) |
+| Playwright | 브라우저 실제 테스트 `npm run test:e2e`, 규칙은 `yogitta-test` |
 
 ### 반드시 테스트할 순수 함수
 
@@ -266,7 +268,7 @@ export function segmentToWall(a: Point, b: Point): WallTransform { … }
 ## 11. 작업 흐름 (매번 이 순서)
 
 ```
-① 계획 → ② 작성 → ③ 자가 점검 → ④ npm run check → ⑤ 커밋
+① 계획(+테스트 항목) → ② 작성 → ③ 자가 점검 → ④ npm run check + npm run test:e2e → ⑤ 커밋
 ```
 
 ### ① 계획 — 코드 쓰기 전에 사용자에게 짧게 보여준다
@@ -276,6 +278,7 @@ T10-2 계획
 - 새 파일: features/search/logic/josa.ts, josa.test.ts
 - 수정: features/search/logic/buildLocationSentence.ts (josa 사용)
 - 영향: ResultCard 문구만 바뀜, 다른 feature 영향 없음
+- 테스트: 코드 — 받침 있음·없음·영어·숫자 / 실제 — 결과 카드에 "여권은" 표시 (yogitta-test 3장)
 ```
 
 ### ② 작성
@@ -291,13 +294,13 @@ T10-2 계획
 - [ ] 파일 200줄, 함수 40줄 이하다
 - [ ] `any`, 매직넘버, 주석 처리된 옛 코드가 없다
 - [ ] 빈 상태·오류 상태를 처리했다
-- [ ] 새 순수 함수에 테스트를 붙였다
+- [ ] 새 순수 함수에 코드 테스트를, 화면 변화에 실제 테스트를 붙였다 (엣지 케이스 포함, `yogitta-test` 4장)
 - [ ] 화면 요소는 `yogitta-design` 규칙대로다
 - [ ] 주석·문구의 용어가 `glossary.md`와 같다 ("쓰지 않는 말"이 없다)
 
 ### ④ 자동 검사
 
-`npm run check` 통과. 실패하면 고치고 다시. 통과 전에는 커밋하지 않는다.
+`npm run check`와 `npm run test:e2e` 통과. 실패하면 고치고 다시. 통과 전에는 커밋하지 않고, 다음 세부 Todo로 넘어가지 않는다 (`yogitta-test` 1·2장).
 
 ### ⑤ 커밋
 
@@ -305,7 +308,7 @@ T10-2 계획
 
 ### 보고
 
-작업이 끝나면 사용자에게 3줄 이내로: 한 일 / 바뀐 파일 / 다음 세부 Todo.
+작업이 끝나면 사용자에게 3줄 이내로: 한 일 / 테스트 결과(`yogitta-test` 8장) / 다음 세부 Todo.
 
 ---
 
