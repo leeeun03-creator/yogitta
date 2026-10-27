@@ -12,12 +12,12 @@
 
 ### 1순위
 
-- [ ] T1. 프로젝트 세팅 (Vite + React + TS) + GitHub Pages 배포
+- [x] T1. 프로젝트 세팅 (Vite + React + TS) + GitHub Pages 배포
   - [x] T1-1 git 저장소·.gitignore·GitHub 원격 연결
   - [x] T1-2 Vite React TypeScript 프로젝트 세팅 (strict, `@/` 별칭)
   - [x] T1-3 ESLint·Prettier·Vitest 설정 + check 스크립트
   - [x] T1-4 디자인 토큰·글꼴 연결 + 빈 App 화면
-  - [ ] T1-5 GitHub Actions로 GitHub Pages 배포 (base `/yogitta/`, 배포 주소에서 화면 확인)
+  - [x] T1-5 GitHub Actions로 GitHub Pages 배포 (base `/yogitta/`, 배포 주소에서 화면 확인)
 - [ ] T2. 새 공간 만들기 (바닥 크기 입력) + 2D 평면도 격자 (줌/이동)
   - [ ] T2-1 데이터 모델 타입(PRD 부록 B) + 단위 상수
   - [ ] T2-2 zustand store 기본 틀 (data·ui 분리, 공간 추가 액션)
