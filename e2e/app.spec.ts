@@ -96,4 +96,12 @@ test.describe("엣지 케이스", () => {
     await page.goto("./");
     await expect(page.getByRole("heading", { name: "요깃따" })).toBeVisible();
   });
+
+  // GitHub Pages는 /yogitta → /yogitta/ 로 넘겨주지만 로컬 vite preview는 넘겨주지 않아서 배포 주소에서만 검사한다.
+  test("주소 끝의 / 가 없어도 열린다 (배포 주소)", async ({ page, baseURL }) => {
+    test.skip(!process.env.E2E_BASE_URL, "배포 주소(E2E_BASE_URL)를 검사할 때만 돈다");
+    const withoutSlash = (baseURL ?? "").replace(/\/$/, "");
+    await page.goto(withoutSlash);
+    await expect(page.getByRole("heading", { name: "요깃따" })).toBeVisible();
+  });
 });
