@@ -9,7 +9,7 @@ description: 요깃따 저장소에 커밋·푸시할 때 쓰는 규칙. 세부 
 - 다 만들고 한 번에 push하지 말고, **Todo로 작업하는 중간중간 push**
 - 커밋 내역에 **무엇을 했는지가 반드시 보이게**
 
-그래서 커밋 단위는 **세부 Todo(Tn-n) 하나**다. 커밋 로그만 봐도 어떤 Todo의 몇 번째 작업을 했는지 보이고, `docs/TODO.md`의 "Todo 변경 내역"을 로그에서 바로 정리할 수 있어야 한다.
+그래서 커밋 단위는 **세부 Todo(Tn-n) 하나**다. 커밋 로그만 봐도 어떤 Todo의 몇 번째 작업을 했는지 보이고, `docs/todo/log/`의 Todo 변경 로그를 커밋 로그에서 바로 정리할 수 있어야 한다.
 
 ## 1. Todo 번호 체계
 
@@ -97,7 +97,7 @@ T10-2: 받침에 따라 은/는 자동 선택
 
 작업 중이든 테스트 중이든, **고친 것 하나마다 커밋 하나**. 다른 작업과 섞지 않는다. 첫 줄만 봐도 **어느 부분에서 무엇을** 고쳤는지 보여야 한다.
 
-고친 내용은 같은 커밋에서 문제가 생긴 세부 Todo의 `docs/todo/Tn.md` "변경·수정 기록"에도 한 줄 남긴다 (`yogitta-todo` 6장).
+고친 내용은 같은 커밋에서 문제가 생긴 세부 Todo가 속한 `docs/todo/log/Tn.md`에도 한 줄 남긴다 (`yogitta-todo` 6장).
 
 ### 구분
 
@@ -173,7 +173,7 @@ T9-1 버그수정[3D]: 화면 회전 후 손을 떼면 가구 패널이 열림
 
 > 버그를 고치면서 Todo 자체가 바뀌면(새 세부 Todo가 필요해지는 등) 수정 커밋과 별개로 `todo:` 커밋도 남긴다 (6장).
 
-## 6. Todo가 바뀔 때 (`docs/TODO.md` 변경 내역용)
+## 6. Todo가 바뀔 때 (`docs/todo/log/` 로그용)
 
 세부 Todo를 추가·삭제·수정하거나 우선순위를 바꾸면 **코드와 따로** `todo:` 커밋을 만든다. 본문에 이유와 변경 전후를 반드시 쓴다.
 
@@ -192,7 +192,7 @@ todo: T18-1 벽 모서리 이음새를 P2로 하향
 ```
 
 - 변경 종류는 `추가` · `삭제` · `수정` · `상향` · `하향` · `분할` · `병합` 중 하나
-- 같은 커밋에서 기록도 함께 고친다. 세부 Todo 변경은 `docs/todo/Tn.md` "변경·수정 기록", 큰 Todo 변경만 `docs/TODO.md` "Todo 변경 내역" (`yogitta-todo` 6장)
+- 같은 커밋에서 로그도 함께 남긴다: `docs/todo/log/Tn.md`, 여러 큰 Todo에 걸치면 `log/전체.md` (`yogitta-todo` 6장)
 
 ## 7. 순서 (Claude가 커밋할 때)
 
@@ -211,7 +211,7 @@ todo: T18-1 벽 모서리 이음새를 P2로 하향
 
 ```bash
 git log --pretty=format:"%ad | %s" --date=short                    # 전체 흐름
-git log --pretty=format:"%ad | %s" --date=short --grep="^todo:"    # Todo 변경 내역만
+git log --pretty=format:"%ad | %s" --date=short --grep="^todo:"    # Todo 변경만 (내용은 docs/todo/log/)
 git log --pretty=format:"%s" --grep="^T3-"                         # T3의 세부 작업만
 git log --pretty=format:"%ad | %s" --date=short --grep="버그수정\|오류수정"   # 고친 것 전체
 git log --pretty=format:"%s" --grep="\[3D\]"                        # 3D 영역에서 고친 것만
