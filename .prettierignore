@@ -2,5 +2,6 @@ dist
 node_modules
 coverage
 package-lock.json
-docs
+docs/*
+!docs/TODO.md
 .claude
