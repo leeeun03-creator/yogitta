@@ -14,7 +14,7 @@
 
 - [ ] T1. 프로젝트 세팅 (Vite + React + TS) + GitHub Pages 배포
   - [x] T1-1 git 저장소·.gitignore·GitHub 원격 연결
-  - [ ] T1-2 Vite React TypeScript 프로젝트 세팅 (strict, `@/` 별칭)
+  - [x] T1-2 Vite React TypeScript 프로젝트 세팅 (strict, `@/` 별칭)
   - [ ] T1-3 ESLint·Prettier·Vitest 설정 + check 스크립트
   - [ ] T1-4 디자인 토큰·글꼴 연결 + 빈 App 화면
   - [ ] T1-5 GitHub Actions로 GitHub Pages 배포 (base `/yogitta/`, 배포 주소에서 화면 확인)
