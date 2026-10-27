@@ -4,6 +4,7 @@ coverage
 package-lock.json
 docs/*
 !docs/TODO.md
+!docs/todo
 .claude
 test-results
 playwright-report
