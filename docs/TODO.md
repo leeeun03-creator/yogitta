@@ -14,12 +14,13 @@ rule: .claude/skills/commit-convention/SKILL.md
 
 ### 1순위
 
-- [x] T1. 프로젝트 세팅 (Vite + React + TS) + GitHub Pages 배포
+- [ ] T1. 프로젝트 세팅 (Vite + React + TS) + GitHub Pages 배포
   - [x] T1-1 git 저장소·.gitignore·GitHub 원격 연결
   - [x] T1-2 Vite React TypeScript 프로젝트 세팅 (strict, `@/` 별칭)
   - [x] T1-3 ESLint·Prettier·Vitest 설정 + check 스크립트
   - [x] T1-4 디자인 토큰·글꼴 연결 + 빈 App 화면
   - [x] T1-5 GitHub Actions로 GitHub Pages 배포 (base `/yogitta/`, 배포 주소에서 화면 확인)
+  - [ ] T1-7 Playwright 실제 테스트 세팅 (브라우저 자동 테스트 + 스크린샷, 배포 전 검사)
 - [ ] T2. 새 공간 만들기 (바닥 크기 입력) + 2D 평면도 격자 (줌/이동)
   - [x] T2-1 데이터 모델 타입(PRD 부록 B) + 단위 상수
   - [ ] T2-2 zustand store 기본 틀 (data·ui 분리, 공간 추가 액션)
@@ -72,3 +73,4 @@ rule: .claude/skills/commit-convention/SKILL.md
 | 2026-10-27 | 추가 | T1-6 저장소 Public 전환 + 배포 주소 확인       | 저장소를 비공개로 시작하고 제출 직전에 Public으로 바꾸기로 함. 무료 계정은 비공개 저장소에서 GitHub Pages를 쓸 수 없어서 배포 확인을 T1-5에서 T1-6으로 옮김 |
 | 2026-10-27 | 삭제 | T1-6 삭제, 배포 주소 확인을 T1-5로 되돌림      | 배포 화면을 작업 중에 바로 확인하려고 저장소를 바로 Public으로 바꾸고 Pages를 켬                                                                            |
 | 2026-10-27 | 수정 | Todo 리스트를 README에서 `docs/TODO.md`로 옮김 | README는 소개만 두고, Todo 리스트와 변경 내역을 한 문서에서 관리하려고                                                                                      |
+| 2026-10-27 | 추가 | T1-7 Playwright 실제 테스트 세팅               | 코드 테스트(Vitest)만으로는 화면이 실제로 뜨고 눌리는지 알 수 없어서, 세부 Todo마다 브라우저 자동 테스트를 돌리고 큰 Todo마다 직접 확인하기로 함            |
