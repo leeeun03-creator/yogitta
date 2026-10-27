@@ -17,7 +17,7 @@ test.describe("첫 화면", () => {
     await page.goto("./");
 
     await expect(page).toHaveTitle("요깃따");
-    await expect(page.getByRole("heading", { name: "요깃따" })).toBeVisible();
+    await expect(page.getByText("요깃따", { exact: true })).toBeVisible();
     expect(errors).toEqual([]);
   });
 
@@ -25,8 +25,8 @@ test.describe("첫 화면", () => {
     await page.goto("./");
     await page.evaluate(() => document.fonts.ready);
 
-    const heading = page.getByRole("heading", { name: "요깃따" });
-    await expect(heading).toHaveCSS("font-family", /Jua/);
+    await expect(page.getByText("요깃따", { exact: true })).toHaveCSS("font-family", /Jua/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("font-family", /Jua/);
     await expect(page.locator("body")).toHaveCSS("font-family", /Gowun Dodum/);
     expect(await page.evaluate(() => document.fonts.check('16px "Jua"', "요깃따"))).toBe(true);
   });
@@ -94,7 +94,7 @@ test.describe("엣지 케이스", () => {
   test("글꼴 서버가 막혀도 화면은 뜬다", async ({ page }) => {
     await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) => route.abort());
     await page.goto("./");
-    await expect(page.getByRole("heading", { name: "요깃따" })).toBeVisible();
+    await expect(page.getByText("요깃따", { exact: true })).toBeVisible();
   });
 
   // GitHub Pages는 /yogitta → /yogitta/ 로 넘겨주지만 로컬 vite preview는 넘겨주지 않아서 배포 주소에서만 검사한다.
@@ -102,6 +102,6 @@ test.describe("엣지 케이스", () => {
     test.skip(!process.env.E2E_BASE_URL, "배포 주소(E2E_BASE_URL)를 검사할 때만 돈다");
     const withoutSlash = (baseURL ?? "").replace(/\/$/, "");
     await page.goto(withoutSlash);
-    await expect(page.getByRole("heading", { name: "요깃따" })).toBeVisible();
+    await expect(page.getByText("요깃따", { exact: true })).toBeVisible();
   });
 });

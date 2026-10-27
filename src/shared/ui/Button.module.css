@@ -1,0 +1,110 @@
+/* 버튼 4종 × 상태. 값은 yogitta-design 4장 + 컴포넌트 시안 06 */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--yg-radius-pill);
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+/* 주 버튼 */
+.primary {
+  min-height: 48px;
+  padding: 0 22px;
+  font-size: 16px;
+  background: var(--yg-accent);
+  color: var(--yg-on-accent);
+  border: none;
+}
+.primary:hover:not(:disabled) {
+  background: var(--yg-accent-hover);
+}
+.primary:active:not(:disabled) {
+  background: var(--yg-accent-press);
+}
+.primary:disabled {
+  background: var(--yg-border);
+  color: var(--yg-disabled-text);
+}
+
+/* 보조 버튼 */
+.secondary {
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  border: 1px solid var(--yg-border);
+}
+.secondary:hover:not(:disabled) {
+  background: var(--yg-surface-2);
+  border-color: var(--yg-dashed);
+}
+.secondary:active:not(:disabled) {
+  background: var(--yg-chip);
+  border-color: var(--yg-dashed);
+}
+.secondary:disabled {
+  background: var(--yg-surface-2);
+  color: var(--yg-disabled-text);
+  border-color: var(--yg-border-soft);
+}
+
+/* 추가 버튼 */
+.add {
+  gap: 6px;
+  padding: 0 18px;
+  background: transparent;
+  color: var(--yg-accent);
+  border: 2px dashed var(--yg-dashed);
+}
+.add:hover:not(:disabled) {
+  background: var(--yg-add-hover);
+  color: var(--yg-accent-hover);
+  border-color: var(--yg-accent);
+}
+.add:active:not(:disabled) {
+  background: var(--yg-found-bg);
+  color: var(--yg-accent-press);
+  border-color: var(--yg-accent);
+}
+.add:disabled {
+  color: var(--yg-disabled-text);
+  border-color: var(--yg-border);
+}
+
+/* 삭제 버튼 */
+.danger {
+  gap: 6px;
+  padding: 0 18px;
+  background: transparent;
+  color: var(--yg-danger);
+  border: 1px solid var(--yg-danger-border);
+}
+.danger:hover:not(:disabled) {
+  background: var(--yg-danger-hover);
+  border-color: var(--yg-danger-hover-border);
+}
+.danger:active:not(:disabled) {
+  background: var(--yg-danger);
+  color: var(--yg-on-accent);
+  border-color: var(--yg-danger);
+}
+.danger:disabled {
+  color: var(--yg-disabled-text);
+  border-color: var(--yg-border-soft);
+}
