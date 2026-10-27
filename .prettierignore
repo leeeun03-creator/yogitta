@@ -6,3 +6,5 @@ docs/*
 !docs/TODO.md
 !docs/todo
 .claude
+test-results
+playwright-report
