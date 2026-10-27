@@ -21,7 +21,7 @@ rule: .claude/skills/commit-convention/SKILL.md
   - [x] T1-4 디자인 토큰·글꼴 연결 + 빈 App 화면
   - [x] T1-5 GitHub Actions로 GitHub Pages 배포 (base `/yogitta/`, 배포 주소에서 화면 확인)
 - [ ] T2. 새 공간 만들기 (바닥 크기 입력) + 2D 평면도 격자 (줌/이동)
-  - [ ] T2-1 데이터 모델 타입(PRD 부록 B) + 단위 상수
+  - [x] T2-1 데이터 모델 타입(PRD 부록 B) + 단위 상수
   - [ ] T2-2 zustand store 기본 틀 (data·ui 분리, 공간 추가 액션)
   - [ ] T2-3 첫 실행 화면 (시안 03) + 공통 Button
   - [ ] T2-4 바닥 크기 입력 카드 (빠른 선택, 범위 검사 + 테스트)
