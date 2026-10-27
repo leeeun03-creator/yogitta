@@ -67,6 +67,14 @@ description: 요깃따 앱의 B안 "미니어처 하우스" 디자인 규칙과 
   --yg-danger: #9B2C1F;      /* 삭제 글자 */
   --yg-danger-border: #E3B9AE;
 
+  /* 버튼 상태 (컴포넌트 시안 06) — 올림·누름·비활성에서만 쓴다 */
+  --yg-accent-press: #6B2F0C;      /* 주 버튼 누름 */
+  --yg-add-hover: #FBF1E6;         /* 추가 버튼 올림 바탕 */
+  --yg-danger-hover: #FBEAE5;      /* 삭제 버튼 올림 바탕 */
+  --yg-danger-hover-border: #C97A6A;
+  --yg-disabled-text: #8F7A66;     /* 비활성 버튼 글자 */
+  --yg-disabled-icon: #B8A38C;     /* 비활성 아이콘 버튼 */
+
   /* 모양 */
   --yg-radius-pill: 999px;
   --yg-radius-card: 20px;

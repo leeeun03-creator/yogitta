@@ -27,6 +27,14 @@
   --yg-danger: #9b2c1f; /* 삭제 글자 */
   --yg-danger-border: #e3b9ae;
 
+  /* 버튼 상태 (컴포넌트 시안 06) — 올림·누름·비활성에서만 쓴다 */
+  --yg-accent-press: #6b2f0c; /* 주 버튼 누름 */
+  --yg-add-hover: #fbf1e6; /* 추가 버튼 올림 바탕 */
+  --yg-danger-hover: #fbeae5; /* 삭제 버튼 올림 바탕 */
+  --yg-danger-hover-border: #c97a6a;
+  --yg-disabled-text: #8f7a66; /* 비활성 버튼 글자 */
+  --yg-disabled-icon: #b8a38c; /* 비활성 아이콘 버튼 */
+
   /* 모양 */
   --yg-radius-pill: 999px;
   --yg-radius-card: 20px;
