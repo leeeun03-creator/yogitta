@@ -2,7 +2,7 @@
 
 내 방을 2D 평면도로 그려 3D로 세우고, 물건을 검색하면 그 칸이 열리며 "요깃따!" 하고 위치를 보여주는 브라우저 앱이다.
 
-- 배포 주소: https://leeeun03-creator.github.io/yogitta/ (T1-6에서 Public 전환 후 열림)
+- 배포 주소: https://leeeun03-creator.github.io/yogitta/
 - 기획서: [docs/기획서.md](docs/기획서.md) · PRD: [docs/PRD.md](docs/PRD.md) · 디자인 레퍼런스: [docs/design/README.md](docs/design/README.md)
 - 스킬: [.claude/skills/](.claude/skills/) (`yogitta-code`, `yogitta-design`, `commit-convention`)
 
@@ -17,8 +17,7 @@
   - [ ] T1-2 Vite React TypeScript 프로젝트 세팅 (strict, `@/` 별칭)
   - [ ] T1-3 ESLint·Prettier·Vitest 설정 + check 스크립트
   - [ ] T1-4 디자인 토큰·글꼴 연결 + 빈 App 화면
-  - [ ] T1-5 GitHub Actions로 GitHub Pages 배포 설정 (base `/yogitta/`, 로컬 빌드 확인)
-  - [ ] T1-6 저장소 Public 전환 + 배포 주소에서 화면 확인 (제출 전 마지막)
+  - [ ] T1-5 GitHub Actions로 GitHub Pages 배포 (base `/yogitta/`, 배포 주소에서 화면 확인)
 - [ ] T2. 새 공간 만들기 (바닥 크기 입력) + 2D 평면도 격자 (줌/이동)
   - [ ] T2-1 데이터 모델 타입(PRD 부록 B) + 단위 상수
   - [ ] T2-2 zustand store 기본 틀 (data·ui 분리, 공간 추가 액션)
@@ -69,3 +68,4 @@
 | --- | --- | --- | --- |
 | 2026-10-27 | 분할 | T1 → T1-1 ~ T1-5, T2 → T2-1 ~ T2-6 | 1일차 작업을 세부 Todo(30분~2시간) 단위로 나눔 |
 | 2026-10-27 | 추가 | T1-6 저장소 Public 전환 + 배포 주소 확인 | 저장소를 비공개로 시작하고 제출 직전에 Public으로 바꾸기로 함. 무료 계정은 비공개 저장소에서 GitHub Pages를 쓸 수 없어서 배포 확인을 T1-5에서 T1-6으로 옮김 |
+| 2026-10-27 | 삭제 | T1-6 삭제, 배포 주소 확인을 T1-5로 되돌림 | 배포 화면을 작업 중에 바로 확인하려고 저장소를 바로 Public으로 바꾸고 Pages를 켬 |
