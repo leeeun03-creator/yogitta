@@ -5,4 +5,4 @@
 - 배포 주소: https://leeeun03-creator.github.io/yogitta/
 - 기획서: [docs/기획서.md](docs/기획서.md) · PRD: [docs/PRD.md](docs/PRD.md) · 디자인 레퍼런스: [.claude/skills/yogitta-design/references/](.claude/skills/yogitta-design/references/README.md)
 - Todo 리스트: [docs/TODO.md](docs/TODO.md)
-- 스킬: [.claude/skills/](.claude/skills/) (`yogitta-code`, `yogitta-design`, `yogitta-test`, `commit-convention`)
+- 스킬: [.claude/skills/](.claude/skills/) (`yogitta-code`, `yogitta-design`, `yogitta-test`, `yogitta-todo`, `commit-convention`)
