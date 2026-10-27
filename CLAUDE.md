@@ -1,7 +1,7 @@
 # 요깃따 (Yogitta)
 
 내 방을 2D로 그려 3D로 세우고, 물건을 검색하면 그 칸이 열리며 "요깃따!" 하고 위치를 보여주는 브라우저 앱.
-기획: `docs/기획서.md`, PRD: `docs/PRD.md`, 디자인 레퍼런스: `docs/design/README.md`, Todo 리스트: `docs/TODO.md`
+기획: `docs/기획서.md`, PRD: `docs/PRD.md`, 디자인 레퍼런스: `yogitta-design` 스킬의 `references/`, Todo 리스트: `docs/TODO.md`
 
 ## 항상 지킬 것
 

@@ -75,7 +75,7 @@ T2-4 테스트 항목
 - 요소 찾기는 사용자가 보는 이름으로: `getByRole`, `getByLabel`, `getByText` 순. `data-testid`는 3D처럼 이름이 없을 때만
   - 역할·이름으로 못 찾으면 접근성(`yogitta-design` 9장)이 빠진 것이니 화면을 고친다
 - 모든 실제 테스트는 콘솔 에러가 없는지 함께 본다
-- 화면이 바뀌는 세부 Todo는 스크린샷을 찍어(`testInfo.outputPath`) 시안(`docs/design/`)과 눈으로 비교하고 보고에 적는다
+- 화면이 바뀌는 세부 Todo는 스크린샷을 찍어(`testInfo.outputPath`) 시안(`yogitta-design` 스킬의 `references/`)과 눈으로 비교하고 보고에 적는다
 - 3D 캔버스는 픽셀로 판정하지 않는다. 화면 상태(패널 열림, 검색 결과 카드 문구)나 store 상태로 확인하고, 모양은 스크린샷으로 본다
 - 데이터가 필요한 테스트는 `localStorage`에 값을 넣고 시작한다 (`page.addInitScript`). 테스트끼리 데이터를 공유하지 않는다
 

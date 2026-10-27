@@ -4,7 +4,7 @@ version: 1.0
 status: 확정 (B안 미니어처 하우스)
 updated: 2026-10-27
 source: https://claude.ai/artifact/NQ1GZsjb9MQAPdQKPutDpn
-skill: .claude/skills/yogitta-design/SKILL.md
+skill: .claude/skills/yogitta-design/SKILL.md (이 폴더는 스킬의 references/)
 ---
 
 # 요깃따 디자인 레퍼런스

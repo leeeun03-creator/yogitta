@@ -20,7 +20,7 @@ usage: 아래 "프롬프트" 블록 전체를 VS Code의 Claude Code 첫 메시�
 3. .claude/skills/commit-convention/SKILL.md (커밋 규칙)
 4. .claude/skills/yogitta-design/SKILL.md (디자인 규칙)
 5. docs/PRD.md, docs/기획서.md (무엇을 만드는지, Todo T1~T30)
-6. docs/design/README.md 와 이미지 01~05 (화면 레퍼런스)
+6. .claude/skills/yogitta-design/references/README.md 와 이미지 01~05 (화면 레퍼런스)
 
 다 읽었으면 코드 쓰기 전에 3줄로 요약해서 보여줘: 앱 한 줄 설명 / 오늘 할 일 / 지킬 규칙 핵심.
 
