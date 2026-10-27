@@ -1,6 +1,6 @@
 ---
 title: 요깃따 (Yogitta) PRD
-version: 0.2
+version: 0.3
 status: 초안
 updated: 2026-10-27
 author: 이은
@@ -16,7 +16,7 @@ related:
 
 | 항목 | 내용 |
 | --- | --- |
-| 문서 | PRD v0.2 (초안) |
+| 문서 | PRD v0.3 (초안) |
 | 프로젝트 | 바이브 코딩 수업 중간고사 과제 |
 | 실행 환경 | 브라우저 (GitHub Pages, 서버 없음) |
 | 제작 기간 | 1주 |
@@ -221,9 +221,32 @@ P0 = 이것만 돼도 제출 가능, P1 = 완성도, P2 = 여유 있으면.
 | 전체 수정 + 되돌리기/다시하기 | 실시간 공동 편집 |
 | localStorage + 샘플 공간 | 기기 간 자동 동기화 (백업 파일로 대체) |
 
-## 10. 의존성, 리스크, 가정
+## 10. 기술 스택
 
-**의존성**: React + TypeScript, Vite, React Three Fiber + drei(3D), zustand, Vitest, Google Fonts(Jua, Gowun Dodum), GitHub Pages. 외부 API와 서버는 없다.
+서버 없는 정적 웹앱이라 빌드 결과물(HTML·JS·CSS)만 GitHub Pages에 올린다. 외부 API와 서버는 없다.
+
+| 영역 | 기술 | 버전 | 고른 이유 | 적용 |
+| --- | --- | --- | --- | --- |
+| 빌드 | Vite | 8.3 | 설정이 적고 개발 서버가 빠름, 정적 파일로 바로 빌드 | T1-2 |
+| UI | React + TypeScript | React 19.3 / TS 6.0 | 화면을 컴포넌트로 나누기 쉽고, 타입으로 데이터 모델(부록 B)을 고정 | T1-2 |
+| 코드 검사 | ESLint 9 + typescript-eslint, Prettier 3 | | 순환 import·feature 내부 import·`any`를 자동으로 막음 (`yogitta-code` 10장) | T1-3 |
+| 테스트 | Vitest | 5.0 | Vite 설정을 그대로 써서 순수 함수(은/는, 검색 매칭, 선분 → 벽)를 빠르게 검사 | T1-3 |
+| 스타일 | CSS 변수(`tokens.css`) + CSS Modules, Google Fonts(Jua·Gowun Dodum) | | 디자인 토큰을 한 곳에서 관리, 컴포넌트마다 스타일이 섞이지 않음 | T1-4 |
+| 상태 | zustand | | 전체 데이터를 store 하나에 두고, 되돌리기 / 다시하기 스냅샷을 만들기 쉬움 | T2-2 |
+| 아이콘 | lucide-react | | 선 아이콘 (`yogitta-design` 3장) | T2-3 |
+| 2D 평면도 | SVG (라이브러리 없음) | | 선분·가구 사각형 클릭·드래그 처리가 쉽고, 줌·이동은 viewBox로 처리 | T2-5 |
+| 3D | React Three Fiber + drei | | Three.js를 React 컴포넌트로 다루고, OrbitControls·글자 라벨을 drei로 바로 사용 | T4 |
+| 저장 | localStorage + 백업 파일(JSON) | | 서버 없이 브라우저에 저장, 키 `yogitta:v1` | T11, T17 |
+| 배포 | GitHub Pages + GitHub Actions | | `main`에 push하면 자동으로 빌드·배포 | T1-5 |
+
+**버전을 고정한 이유**
+
+- TypeScript는 7.0이 최신이지만 typescript-eslint가 6.1 미만만 지원해서 6.0으로 고정했다.
+- ESLint는 10이 최신이지만 순환 import 검사에 쓰는 import resolver가 9까지만 지원해서 9로 고정했다.
+
+## 11. 의존성, 리스크, 가정
+
+**의존성**: 10장 기술 스택의 라이브러리와 Google Fonts, GitHub Pages. 외부 API와 서버는 없다.
 
 | 리스크 | 영향 | 대응 |
 | --- | --- | --- |
@@ -241,7 +264,7 @@ P0 = 이것만 돼도 제출 가능, P1 = 완성도, P2 = 여유 있으면.
 - 공간 하나에 가구 50개, 전체 물건 500개 이하 (localStorage 5MB로 충분)
 - 평가는 노트북 크롬에서 이뤄진다
 
-## 11. 일정과 마일스톤
+## 12. 일정과 마일스톤
 
 6일차에 P0를 모두 끝내는 것이 마일스톤이고, 7일차는 수정·P1·README에 쓴다. 시작일은 10/28(수)로 가정했다.
 
@@ -257,7 +280,7 @@ P0 = 이것만 돼도 제출 가능, P1 = 완성도, P2 = 여유 있으면.
 
 매일 최소 1회 push하고, 커밋 메시지는 세부 Todo 번호(`T3-3: 드래그로 사각형 벽 그리기 구현`)로 시작한다. 하루가 밀리면 P2 → P1 순으로 빼고, 뺀 내역은 Todo 변경 내역에 기록한다.
 
-## 12. 열린 질문
+## 13. 열린 질문
 
 - [ ] 검색 범위: 기본을 현재 공간만으로 할지, 전체 공간으로 할지
 - [ ] 칸 지정 없는 물건을 3D에서 어떻게 보여줄지 (가구 전체 강조 vs 가구 위 핀)
