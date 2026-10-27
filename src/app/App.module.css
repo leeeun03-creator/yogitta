@@ -1,0 +1,23 @@
+.app {
+  min-height: 100vh;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.logo {
+  font-size: 32px;
+}
+
+.notice {
+  margin: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding: 16px;
+  }
+}
