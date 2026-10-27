@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>B안 첫 실행</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&amp;family=Jua&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#a8501b}a:hover{color:#7c3a12}
+</style>
+</helmet>
+<div style="min-height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #f4ecdf; color: #3b2f25; font-family: 'Gowun Dodum', sans-serif;">
+<header style="display: flex; align-items: center; gap: 10px; padding: 22px 32px 8px;">
+<span style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; background: #a8501b; color: #fff8ef; border-radius: 14px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path d="M10 21v-6h4v6"></path></svg></span>
+<span style="font-family: 'Jua', sans-serif; font-size: 26px;">요깃따</span>
+</header>
+<main style="flex-grow: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 32px; padding: 32px;">
+<section style="flex: 1 1 420px; max-width: 520px; display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 48px 32px; box-sizing: border-box; background: #fbf6ee; border-radius: 32px; box-shadow: inset 0 0 0 2px #eadcc7; text-align: center;">
+<button type="button" aria-label="새 집 만들기" style="width: 120px; height: 120px; display: inline-flex; align-items: center; justify-content: center; background: #fffaf3; color: #a8501b; border: 3px dashed #d9b48f; border-radius: 36px; cursor: pointer;"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+<h1 style="margin: 0; font-family: 'Jua', sans-serif; font-size: 32px; font-weight: 400;">아직 집이 없어요</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.7; color: #7a6450;">우리 집 바닥 크기부터 정하고,<br>벽을 그려서 나만의 집을 만들어 보세요.</p>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+<button type="button" style="min-height: 48px; padding: 0 24px; background: #a8501b; color: #fff8ef; border: none; border-radius: 999px; font: inherit; font-size: 16px; cursor: pointer;">새 집 만들기</button>
+<button type="button" style="min-height: 48px; padding: 0 24px; background: #fffaf3; color: #3b2f25; border: 1px solid #e6d6bf; border-radius: 999px; font: inherit; font-size: 16px; cursor: pointer;">샘플 집 둘러보기</button>
+</div>
+</section>
+<section style="flex: 1 1 360px; max-width: 420px; display: flex; flex-direction: column; gap: 18px; padding: 28px; box-sizing: border-box; background: #fffaf3; border-radius: 24px; box-shadow: 0 16px 40px rgba(120, 80, 40, 0.16);">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 13px; color: #a8501b;">1단계 / 새 집</span>
+<h2 style="margin: 0; font-family: 'Jua', sans-serif; font-size: 24px; font-weight: 400;">바닥 크기를 정해요</h2>
+<p style="margin: 0; font-size: 14px; color: #7a6450;">이 크기가 그대로 3D 바닥이 돼요. 나중에 바꿀 수 있어요.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<label for="hn" style="font-size: 14px;">집 이름</label>
+<input id="hn" value="우리집" style="min-height: 48px; padding: 0 16px; background: #f8efe3; border: 1px solid #e6d6bf; border-radius: 14px; font: inherit; font-size: 16px; color: #3b2f25;">
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<label for="fw" style="font-size: 14px;">가로 (m)</label>
+<input id="fw" value="6.0" style="min-height: 48px; padding: 0 16px; background: #f8efe3; border: 1px solid #e6d6bf; border-radius: 14px; font: inherit; font-size: 16px; color: #3b2f25;">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<label for="fd" style="font-size: 14px;">세로 (m)</label>
+<input id="fd" value="4.5" style="min-height: 48px; padding: 0 16px; background: #f8efe3; border: 1px solid #e6d6bf; border-radius: 14px; font: inherit; font-size: 16px; color: #3b2f25;">
+</div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;">
+<span style="font-size: 13px; color: #7a6450; align-self: center;">빠른 선택</span>
+<button type="button" style="min-height: 36px; padding: 0 14px; background: #f6d9bf; color: #6b2f0c; border: none; border-radius: 999px; font: inherit; font-size: 14px;">원룸 6×4.5</button>
+<button type="button" style="min-height: 36px; padding: 0 14px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 999px; font: inherit; font-size: 14px;">투룸 9×6</button>
+<button type="button" style="min-height: 36px; padding: 0 14px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 999px; font: inherit; font-size: 14px;">아파트 12×9</button>
+</div>
+<button type="button" style="min-height: 52px; background: #a8501b; color: #fff8ef; border: none; border-radius: 999px; font: inherit; font-size: 17px; cursor: pointer;">벽 그리러 가기</button>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

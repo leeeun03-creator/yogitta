@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>B안 편집 모드</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&amp;family=Jua&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#a8501b}a:hover{color:#7c3a12}
+</style>
+</helmet>
+<div style="min-height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #f4ecdf; color: #3b2f25; font-family: 'Gowun Dodum', sans-serif;">
+<header style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 16px 24px; background: #fffaf3; border-bottom: 1px solid #eadcc7;">
+<button type="button" style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 18px; background: #a8501b; color: #fff8ef; border: none; border-radius: 999px; font: inherit; font-size: 15px; cursor: pointer;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+완료
+</button>
+<h1 style="margin: 0; font-family: 'Jua', sans-serif; font-size: 22px; font-weight: 400;">집 편집하기</h1>
+<span style="font-size: 13px; color: #7a6450;">자동 저장됨</span>
+<div style="flex-grow: 1;"></div>
+<div role="group" aria-label="보기 전환" style="display: inline-flex; padding: 4px; background: #f3e6d4; border-radius: 999px;">
+<button type="button" aria-pressed="true" style="min-height: 40px; padding: 0 18px; background: #fffaf3; color: #3b2f25; border: none; border-radius: 999px; font: inherit; font-size: 14px; box-shadow: 0 2px 6px rgba(120, 80, 40, 0.15);">2D 평면도</button>
+<button type="button" aria-pressed="false" style="min-height: 40px; padding: 0 18px; background: transparent; color: #7a6450; border: none; border-radius: 999px; font: inherit; font-size: 14px;">3D 미리보기</button>
+</div>
+<div style="display: flex; gap: 4px;">
+<button type="button" aria-label="되돌리기" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: transparent; color: #3b2f25; border: none; border-radius: 999px; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h11a5 5 0 0 1 0 10h-3"></path></svg></button>
+<button type="button" aria-label="다시하기" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: transparent; color: #b8a38c; border: none; border-radius: 999px; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"></path><path d="M20 9H9a5 5 0 0 0 0 10h3"></path></svg></button>
+</div>
+</header>
+<main style="flex-grow: 1; display: flex; flex-wrap: wrap; gap: 16px; padding: 16px 24px;">
+<nav aria-label="그리기 도구" style="flex: 0 0 auto; display: flex; flex-direction: column; gap: 6px; padding: 8px; background: #fffaf3; border-radius: 22px; box-shadow: 0 6px 18px rgba(120, 80, 40, 0.1); align-self: flex-start;">
+<button type="button" aria-pressed="true" style="width: 64px; min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #a8501b; color: #fff8ef; border: none; border-radius: 16px; font: inherit; font-size: 12px; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l14 8-6 2-2 6Z"></path></svg>선택</button>
+<button type="button" aria-pressed="false" style="width: 64px; min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: transparent; color: #3b2f25; border: none; border-radius: 16px; font: inherit; font-size: 12px; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 19 19 5"></path></svg>직선</button>
+<button type="button" aria-pressed="false" style="width: 64px; min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: transparent; color: #3b2f25; border: none; border-radius: 16px; font: inherit; font-size: 12px; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9h8V4h8"></path></svg>연속선</button>
+<button type="button" aria-pressed="false" style="width: 64px; min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: transparent; color: #3b2f25; border: none; border-radius: 16px; font: inherit; font-size: 12px; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="5" width="16" height="14"></rect></svg>사각형</button>
+<button type="button" aria-pressed="false" style="width: 64px; min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: transparent; color: #3b2f25; border: none; border-radius: 16px; font: inherit; font-size: 12px; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5v9L12 21l9-4.5v-9Z"></path><path d="m3 7.5 9 4.5 9-4.5M12 12v9"></path></svg>가구 상자</button>
+<button type="button" aria-pressed="false" style="width: 64px; min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: transparent; color: #3b2f25; border: none; border-radius: 16px; font: inherit; font-size: 12px; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 21h10"></path><path d="m5 15 9-9 5 5-9 9H6Z"></path></svg>지우개</button>
+</nav>
+<section aria-label="평면도 캔버스" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 20px; box-sizing: border-box; background: #fbf6ee; border-radius: 28px; box-shadow: inset 0 0 0 1px #eadcc7;">
+<svg viewBox="-40 -40 680 530" style="width: 100%; max-width: 820px; height: auto; display: block; margin: 0 auto; font-family: inherit;" role="img" aria-label="위에서 본 평면도: 거실에 책상·책장·상자, 안방에 옷장·침대·화장대 서랍장(선택됨)">
+<rect x="0" y="0" width="600" height="450" fill="#fffaf3" stroke="#d9c3a5" stroke-width="1"></rect>
+<g stroke="#f0e3d0" stroke-width="1">
+<line x1="50" y1="0" x2="50" y2="450"></line><line x1="100" y1="0" x2="100" y2="450"></line><line x1="150" y1="0" x2="150" y2="450"></line><line x1="200" y1="0" x2="200" y2="450"></line><line x1="250" y1="0" x2="250" y2="450"></line><line x1="300" y1="0" x2="300" y2="450"></line><line x1="350" y1="0" x2="350" y2="450"></line><line x1="400" y1="0" x2="400" y2="450"></line><line x1="450" y1="0" x2="450" y2="450"></line><line x1="500" y1="0" x2="500" y2="450"></line><line x1="550" y1="0" x2="550" y2="450"></line>
+<line x1="0" y1="50" x2="600" y2="50"></line><line x1="0" y1="100" x2="600" y2="100"></line><line x1="0" y1="150" x2="600" y2="150"></line><line x1="0" y1="200" x2="600" y2="200"></line><line x1="0" y1="250" x2="600" y2="250"></line><line x1="0" y1="300" x2="600" y2="300"></line><line x1="0" y1="350" x2="600" y2="350"></line><line x1="0" y1="400" x2="600" y2="400"></line>
+</g>
+<text x="300" y="-16" text-anchor="middle" font-size="14" fill="#7a6450">6.0 m</text>
+<text x="-16" y="225" text-anchor="middle" font-size="14" fill="#7a6450" transform="rotate(-90 -16 225)">4.5 m</text>
+<g stroke="#6e5236" stroke-width="12" stroke-linecap="square">
+<line x1="0" y1="0" x2="600" y2="0"></line>
+<line x1="0" y1="0" x2="0" y2="450"></line>
+<line x1="330" y1="0" x2="330" y2="250"></line>
+</g>
+<circle cx="330" cy="250" r="6" fill="#fffaf3" stroke="#6e5236" stroke-width="2.5"></circle>
+<g font-size="14" fill="#3b2f25" text-anchor="middle">
+<rect x="20" y="14" width="120" height="60" rx="6" fill="#ead6bd" stroke="#b98a5e" stroke-width="1.5"></rect>
+<text x="80" y="49">책상</text>
+<path d="M74 74h12l-6 7Z" fill="#b98a5e"></path>
+<rect x="14" y="120" width="36" height="120" rx="6" fill="#dcc0a0" stroke="#a6754d" stroke-width="1.5"></rect>
+<text x="32" y="185" transform="rotate(-90 32 180)">책장</text>
+<path d="M50 174v12l7-6Z" fill="#a6754d"></path>
+<rect x="150" y="300" width="80" height="60" rx="6" fill="#efe4d5" stroke="#b6a28a" stroke-width="1.5" stroke-dasharray="5 4"></rect>
+<text x="190" y="335">상자 1</text>
+<rect x="470" y="14" width="120" height="60" rx="6" fill="#dcc0a0" stroke="#a6754d" stroke-width="1.5"></rect>
+<text x="530" y="49">옷장</text>
+<path d="M524 74h12l-6 7Z" fill="#a6754d"></path>
+<rect x="392" y="180" width="180" height="200" rx="8" fill="#ead6bd" stroke="#b98a5e" stroke-width="1.5"></rect>
+<rect x="392" y="180" width="180" height="16" rx="6" fill="#c99a6c"></rect>
+<text x="482" y="290">침대</text>
+<rect x="340" y="190" width="48" height="50" rx="5" fill="#f6d9bf" stroke="#a8501b" stroke-width="2.5"></rect>
+<path d="M358 240h12l-6 7Z" fill="#a8501b"></path>
+</g>
+<g fill="#fffaf3" stroke="#a8501b" stroke-width="2">
+<rect x="335" y="185" width="10" height="10" rx="2"></rect><rect x="383" y="185" width="10" height="10" rx="2"></rect><rect x="335" y="235" width="10" height="10" rx="2"></rect><rect x="383" y="235" width="10" height="10" rx="2"></rect>
+<line x1="364" y1="185" x2="364" y2="160"></line>
+<circle cx="364" cy="154" r="7"></circle>
+</g>
+<rect x="290" y="110" width="148" height="30" rx="15" fill="#a8501b"></rect>
+<text x="364" y="130" text-anchor="middle" font-size="14" fill="#fff8ef">화장대 서랍장</text>
+<text x="480" y="428" text-anchor="middle" font-size="16" fill="#a08465">안방</text>
+<text x="165" y="428" text-anchor="middle" font-size="16" fill="#a08465">거실</text>
+</svg>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px;">
+<span style="color: #7a6450;">방</span>
+<button type="button" style="min-height: 40px; padding: 0 16px; background: #a8501b; color: #fff8ef; border: none; border-radius: 999px; font: inherit; font-size: 14px;">안방</button>
+<button type="button" style="min-height: 40px; padding: 0 16px; background: #fffaf3; color: #3b2f25; border: 1px solid #e6d6bf; border-radius: 999px; font: inherit; font-size: 14px;">거실</button>
+<button type="button" style="min-height: 40px; padding: 0 14px; background: transparent; color: #a8501b; border: 1px dashed #d9b48f; border-radius: 999px; font: inherit; font-size: 14px;">+ 방 추가</button>
+<div style="flex-grow: 1;"></div>
+<span style="display: inline-flex; align-items: center; gap: 8px; color: #7a6450;">격자 스냅
+<span style="width: 40px; height: 24px; display: inline-flex; align-items: center; justify-content: flex-end; padding: 3px; box-sizing: border-box; background: #a8501b; border-radius: 999px;"><span style="width: 18px; height: 18px; background: #fffaf3; border-radius: 999px;"></span></span>
+</span>
+<button type="button" style="min-height: 40px; padding: 0 14px; background: #fffaf3; color: #3b2f25; border: 1px solid #e6d6bf; border-radius: 999px; font: inherit; font-size: 14px;">바닥 6.0 × 4.5 m</button>
+</div>
+</section>
+<aside aria-label="선택한 가구 속성" style="flex: 1 1 300px; max-width: 360px; display: flex; flex-direction: column; gap: 16px; padding: 22px; box-sizing: border-box; background: #fffaf3; border-radius: 24px; box-shadow: 0 10px 30px rgba(120, 80, 40, 0.12); align-self: flex-start;">
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<label for="bn" style="font-size: 13px; color: #7a6450;">가구 이름</label>
+<input id="bn" value="화장대 서랍장" style="min-height: 46px; padding: 0 14px; background: #f8efe3; border: 1px solid #e6d6bf; border-radius: 14px; font: inherit; font-size: 16px; color: #3b2f25;">
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 13px; color: #7a6450;">종류</span>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px;">
+<button type="button" style="min-height: 40px; padding: 0 2px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 12px; font: inherit; font-size: 13px;">양문장</button>
+<button type="button" aria-pressed="true" style="min-height: 40px; padding: 0 2px; background: #a8501b; color: #fff8ef; border: none; border-radius: 12px; font: inherit; font-size: 13px;">서랍장</button>
+<button type="button" style="min-height: 40px; padding: 0 2px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 12px; font: inherit; font-size: 13px;">선반</button>
+<button type="button" style="min-height: 40px; padding: 0 2px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 12px; font: inherit; font-size: 13px;">벽걸이</button>
+<button type="button" style="min-height: 40px; padding: 0 2px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 12px; font: inherit; font-size: 13px;">책상</button>
+<button type="button" style="min-height: 40px; padding: 0 2px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 12px; font: inherit; font-size: 13px;">테이블</button>
+<button type="button" style="min-height: 40px; padding: 0 2px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 12px; font: inherit; font-size: 13px;">침대</button>
+<button type="button" style="min-height: 40px; padding: 0 2px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 12px; font: inherit; font-size: 13px;">보관함</button>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 13px; color: #7a6450;">놓인 곳</span>
+<div role="group" aria-label="놓인 곳" style="display: flex; padding: 4px; background: #f3e6d4; border-radius: 999px;">
+<button type="button" aria-pressed="true" style="flex-grow: 1; min-height: 38px; background: #fffaf3; color: #3b2f25; border: none; border-radius: 999px; font: inherit; font-size: 14px; box-shadow: 0 2px 6px rgba(120, 80, 40, 0.15);">바닥</button>
+<button type="button" aria-pressed="false" style="flex-grow: 1; min-height: 38px; background: transparent; color: #7a6450; border: none; border-radius: 999px; font: inherit; font-size: 14px;">가구 위</button>
+<button type="button" aria-pressed="false" style="flex-grow: 1; min-height: 38px; background: transparent; color: #7a6450; border: none; border-radius: 999px; font: inherit; font-size: 14px;">벽에 걸기</button>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 13px; color: #7a6450;">크기 (cm)</span>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+<label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #7a6450;">가로<input value="48" style="min-height: 42px; padding: 0 10px; background: #f8efe3; border: 1px solid #e6d6bf; border-radius: 12px; font: inherit; font-size: 15px; color: #3b2f25; width: 100%; box-sizing: border-box;"></label>
+<label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #7a6450;">깊이<input value="50" style="min-height: 42px; padding: 0 10px; background: #f8efe3; border: 1px solid #e6d6bf; border-radius: 12px; font: inherit; font-size: 15px; color: #3b2f25; width: 100%; box-sizing: border-box;"></label>
+<label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #7a6450;">높이<input value="90" style="min-height: 42px; padding: 0 10px; background: #f8efe3; border: 1px solid #e6d6bf; border-radius: 12px; font: inherit; font-size: 15px; color: #3b2f25; width: 100%; box-sizing: border-box;"></label>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="font-size: 13px; color: #7a6450; flex-grow: 1;">서랍 칸 · 높이 (cm)</span>
+<button type="button" aria-label="칸 줄이기" style="width: 36px; height: 36px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 12px; font: inherit; font-size: 18px;">−</button>
+<span style="min-width: 32px; text-align: center; font-size: 15px;">3단</span>
+<button type="button" aria-label="칸 늘리기" style="width: 36px; height: 36px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 12px; font: inherit; font-size: 18px;">+</button>
+</div>
+<div style="display: flex; gap: 10px; align-items: stretch;">
+<div aria-hidden="true" style="width: 34px; display: flex; flex-direction: column; gap: 3px; padding: 3px; background: #c47531; border-radius: 6px;">
+<span style="flex: 25; background: #f6d9bf; border-radius: 3px;"></span>
+<span style="flex: 30; background: #e5893a; border-radius: 3px;"></span>
+<span style="flex: 35; background: #f6d9bf; border-radius: 3px;"></span>
+</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
+<label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #7a6450;"><span style="width: 32px;">1단</span><input value="25" style="flex-grow: 1; min-width: 0; min-height: 36px; padding: 0 10px; background: #f8efe3; border: 1px solid #e6d6bf; border-radius: 10px; font: inherit; font-size: 14px; color: #3b2f25;"></label>
+<label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6b2f0c;"><span style="width: 32px;">2단</span><input value="30" style="flex-grow: 1; min-width: 0; min-height: 36px; padding: 0 10px; background: #fffaf3; border: 2px solid #a8501b; border-radius: 10px; font: inherit; font-size: 14px; color: #3b2f25;"></label>
+<label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #7a6450;"><span style="width: 32px;">3단</span><input value="35" style="flex-grow: 1; min-width: 0; min-height: 36px; padding: 0 10px; background: #f8efe3; border: 1px solid #e6d6bf; border-radius: 10px; font: inherit; font-size: 14px; color: #3b2f25;"></label>
+</div>
+</div>
+<span style="font-size: 12px; color: #7a6450;">합계 90 / 전체 높이 90</span>
+</div>
+<div style="display: flex; gap: 8px;">
+<button type="button" style="flex-grow: 1; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #f8efe3; color: #3b2f25; border: none; border-radius: 999px; font: inherit; font-size: 14px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 4v5h-5"></path></svg>90° 회전</button>
+<button type="button" style="flex-grow: 1; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: transparent; color: #9b2c1f; border: 1px solid #e3b9ae; border-radius: 999px; font: inherit; font-size: 14px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg>삭제</button>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 1.6; color: #7a6450;">이 가구에 물건 5개가 들어 있어요. 삭제하면 옮길지 같이 지울지 물어볼게요.</p>
+</aside>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":960}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
