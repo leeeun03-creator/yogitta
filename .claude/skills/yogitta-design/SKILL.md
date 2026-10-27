@@ -17,6 +17,9 @@ description: 요깃따 앱의 B안 "미니어처 하우스" 디자인 규칙과 
 | 첫 실행 화면 (점선 `+` 카드, 바닥 크기 카드, 빠른 선택) | `references/03-empty.png` | `references/boards/03-empty.dc.html` |
 | 편집 모드 (그리기 도구, 2D 평면도, 속성 패널, 구역 목록) | `references/04-edit.png` | `references/boards/04-edit.dc.html` |
 | 색·글꼴·버튼·칩 (스타일 타일) | `references/05-style.png` | `references/boards/05-style.dc.html` |
+| 컴포넌트 · 버튼 · 입력 (상태별) | `references/06-components-actions.png` | `references/boards/06-components-actions.dc.html` |
+| 컴포넌트 · 검색창 · 칩 · 검색 결과 카드 · 위치 문장 규칙 | `references/07-components-search.png` | `references/boards/07-components-search.dc.html` |
+| 컴포넌트 · 칸 행 · 가구 상세 패널 · 공간 전환 목록 · 그리기 도구 · 가구 종류 선택 | `references/08-components-panels.png` | `references/boards/08-components-panels.dc.html` |
 
 - 시안 문구 중 용어집과 다른 것(집 → 공간, 상자 → 보관함, 방 → 구역, 1단 → 1번째 칸 등)은 `references/README.md`의 "시안과 용어집이 다른 부분" 표대로 바꿔서 쓴다
 - 이미지의 글꼴은 대체 글꼴로 캡처됐다. 실제 앱은 Jua·Gowun Dodum
@@ -99,6 +102,14 @@ description: 요깃따 앱의 B안 "미니어처 하우스" 디자인 규칙과 
 - 아이콘만 있는 버튼은 반드시 `aria-label`
 
 ## 4. 컴포넌트
+
+컴포넌트를 만들 때는 아래 규격과 함께 **컴포넌트 시안(06~08)** 을 연다. 상태(기본·올림·누름·비활성·포커스·오류)는 시안에 있는 것을 모두 구현한다. 화면 시안(01~05)과 다르면 컴포넌트 시안이 우선이다.
+
+| 컴포넌트 | 시안 |
+|---|---|
+| Button (primary · secondary · add · danger), IconButton, Segmented, Toggle, TextField, Stepper | `06-components-actions` |
+| SearchBar, ItemChip, ResultCard (1곳 · 여러 곳 · 결과 없음), 위치 문장 | `07-components-search` |
+| SlotRow, FurniturePanel 머리, SpaceSwitcher, ToolButton, FurnitureTypePicker | `08-components-panels` |
 
 ### 버튼
 | 종류 | 모양 |

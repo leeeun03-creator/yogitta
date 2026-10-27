@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>컴포넌트 검색 칩 결과 카드</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&amp;family=Jua&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#a8501b}a:hover{color:#7c3a12}
+</style>
+</helmet>
+<div style="width: 1280px; min-height: 1100px; box-sizing: border-box; padding: 48px; display: flex; flex-direction: column; gap: 32px; background: #f4ecdf; color: #3b2f25; font-family: 'Gowun Dodum', sans-serif;">
+<div style="display: flex; align-items: baseline; gap: 16px;">
+<h1 style="margin: 0; font-family: 'Jua', sans-serif; font-size: 34px; font-weight: 400;">검색 · 칩 · 검색 결과 카드</h1>
+<span style="font-size: 14px; color: #7a6450;">"요깃따!"는 찾았을 때만 쓴다</span>
+</div>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px;">
+<section style="display: flex; flex-direction: column; gap: 14px; padding: 24px; background: #fffaf3; border-radius: 24px;">
+<div style="display: flex; flex-direction: column; gap: 2px;"><h2 style="margin: 0; font-size: 18px; font-weight: 700;">검색창</h2><span style="font-size: 13px; color: #7a6450;">SearchBar · 높이 56 · 최대 폭 640 · 2px #A8501B · 숨은 label "물건 검색"</span></div>
+<span style="font-size: 13px; color: #7a6450;">비어 있음</span>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 20px; background: #fffaf3; border: 2px solid #a8501b; border-radius: 999px; box-shadow: 0 6px 18px rgba(120, 80, 40, 0.12);">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a8501b" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<span style="font-size: 17px; color: #7a6450;">무엇을 찾고 있나요?</span>
+</div>
+<span style="font-size: 13px; color: #7a6450;">입력 중 · 포커스 (바깥 링 4px)</span>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 20px; background: #fffaf3; border: 2px solid #a8501b; border-radius: 999px; box-shadow: 0 0 0 4px #f6d9bf;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a8501b" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<span style="flex-grow: 1; font-size: 17px;">여권</span>
+<button type="button" aria-label="검색어 지우기" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; background: #f3e6d4; color: #7a6450; border: none; border-radius: 999px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+</div>
+
+<div style="height: 1px; background: #eadcc7; margin: 6px 0;"></div>
+<div style="display: flex; flex-direction: column; gap: 2px;"><h2 style="margin: 0; font-size: 18px; font-weight: 700;">물건 칩</h2><span style="font-size: 13px; color: #7a6450;">ItemChip · 알약형 · 15px · 누르면 그 물건 검색</span></div>
+<div style="display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 10px 16px; align-items: center;">
+<span style="font-size: 13px; color: #7a6450;">기본 (칸 행 안)</span>
+<div style="display: flex; gap: 8px; padding: 10px 12px; background: #f8efe3; border-radius: 16px;"><span style="font-size: 15px; padding: 5px 12px; background: #fffaf3; border-radius: 999px;">보조배터리</span><span style="font-size: 15px; padding: 5px 12px; background: #fffaf3; border-radius: 999px;">충전기</span></div>
+<span style="font-size: 13px; color: #7a6450;">카드 안</span>
+<div style="display: flex; gap: 8px;"><a href="#" style="font-size: 14px; padding: 5px 12px; background: #f3e6d4; border-radius: 999px; color: #3b2f25; text-decoration: none;">보조배터리</a><a href="#" style="font-size: 14px; padding: 5px 12px; background: #f3e6d4; border-radius: 999px; color: #3b2f25; text-decoration: none;">충전기</a></div>
+<span style="font-size: 13px; color: #7a6450;">찾은 물건</span>
+<div style="display: flex; gap: 8px; padding: 10px 12px; background: #f6d9bf; border-radius: 16px;"><span style="font-size: 15px; padding: 5px 12px; background: #a8501b; color: #fff8ef; border-radius: 999px;">여권</span><span style="font-size: 15px; padding: 5px 12px; background: #fffaf3; border-radius: 999px;">보조배터리</span></div>
+<span style="font-size: 13px; color: #7a6450;">더 있음</span>
+<div style="display: flex; gap: 8px;"><span style="font-size: 14px; padding: 5px 12px; background: #f3e6d4; border-radius: 999px;">양말</span><span style="font-size: 14px; padding: 5px 12px; background: #f3e6d4; border-radius: 999px;">장갑</span><span style="font-size: 14px; padding: 5px 12px; background: #f3e6d4; border-radius: 999px;">목도리</span><span style="font-size: 14px; padding: 5px 12px; background: #f3e6d4; border-radius: 999px;">모자</span><a href="#" style="font-size: 14px; padding: 5px 12px; border: 1px solid #e6d6bf; border-radius: 999px; color: #a8501b; text-decoration: none;">외 3개</a></div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px; padding: 24px; background: #fffaf3; border-radius: 24px;">
+<div style="display: flex; flex-direction: column; gap: 2px;"><h2 style="margin: 0; font-size: 18px; font-weight: 700;">위치 문장 규칙</h2><span style="font-size: 13px; color: #7a6450;">buildLocationSentence</span></div>
+<div style="display: flex; flex-direction: column; gap: 10px; font-size: 15px; line-height: 1.6;">
+<p style="margin: 0; padding: 12px 14px; background: #f8efe3; border-radius: 14px;">[물건]<strong>은/는</strong> [공간]의 [가구 이름] [칸 표현]에 보관 중이에요.</p>
+<div style="display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 6px 12px; font-size: 14px;">
+<span style="color: #7a6450;">서랍장</span><span>위에서 2번째 서랍</span>
+<span style="color: #7a6450;">선반 · 벽걸이</span><span>위에서 3번째 선반 · 칸</span>
+<span style="color: #7a6450;">양문 수납장</span><span>왼쪽 문 위에서 1번째 칸</span>
+<span style="color: #7a6450;">책상 · 테이블</span><span>책상 위 · 테이블 위</span>
+<span style="color: #7a6450;">침대</span><span>침대 위 · 침대 밑</span>
+<span style="color: #7a6450;">보관함</span><span>보관함 안</span>
+<span style="color: #7a6450;">가구 위 가구</span><span>책상 위 보관함 안</span>
+<span style="color: #7a6450;">칸 없음</span><span>[가구 이름] 안</span>
+</div>
+<p style="margin: 0; font-size: 13px; color: #7a6450;">물건 이름은 굵게, 가구 이름은 굵게 + #A8501B. 은/는은 마지막 글자 받침으로 고른다.</p>
+</div>
+</section>
+</div>
+
+<section style="display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; align-items: baseline; gap: 12px;"><h2 style="margin: 0; font-size: 18px; font-weight: 700;">검색 결과 카드</h2><span style="font-size: 13px; color: #7a6450;">ResultCard · 최대 폭 460 · 20px 모서리 · 순서: 요깃따! → 위치 문장 → 메모 → 같은 칸 물건 → 다른 공간</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start;">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 13px; color: #7a6450;">찾음 (1곳)</span>
+<div style="padding: 18px 20px; background: #fffaf3; border-radius: 20px; box-shadow: 0 8px 24px rgba(120, 80, 40, 0.14); display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 10px;"><span style="font-family: 'Jua', sans-serif; font-size: 30px; line-height: 1; color: #a8501b;">요깃따!</span><span style="font-size: 13px; color: #7a6450;">'여권' 1곳 찾음</span></div>
+<p style="margin: 0; font-size: 16px; line-height: 1.6;"><strong>여권</strong>은 <strong>내 방</strong>의 <strong style="color: #a8501b;">화장대 서랍장</strong> 위에서 2번째 서랍에 보관 중이에요.</p>
+<div style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #7a6450;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v12l-4 4H4Z"></path><path d="M16 20v-4h4"></path></svg>파란 파우치 안</div>
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><span style="font-size: 13px; color: #7a6450;">같은 칸에 있는 물건</span><a href="#" style="font-size: 14px; padding: 5px 12px; background: #f3e6d4; border-radius: 999px; color: #3b2f25; text-decoration: none;">보조배터리</a><a href="#" style="font-size: 14px; padding: 5px 12px; background: #f3e6d4; border-radius: 999px; color: #3b2f25; text-decoration: none;">충전기</a></div>
+<a href="#" style="font-size: 14px; text-decoration: none;">다른 공간에도 있어요: 형 방 1곳 ›</a>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 13px; color: #7a6450;">찾음 (여러 곳)</span>
+<div style="padding: 18px 20px; background: #fffaf3; border-radius: 20px; box-shadow: 0 8px 24px rgba(120, 80, 40, 0.14); display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; align-items: center; gap: 10px;"><span style="font-family: 'Jua', sans-serif; font-size: 30px; line-height: 1; color: #a8501b;">요깃따!</span><span style="font-size: 13px; color: #7a6450;">'충전기' 2곳 찾음</span></div>
+<a href="#" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; background: #f6d9bf; border-radius: 16px; color: #3b2f25; text-decoration: none; font-size: 15px; line-height: 1.5;"><span style="font-family: 'Jua', sans-serif; color: #a8501b;">1</span><span><strong>충전기</strong>는 <strong>내 방</strong>의 <strong style="color: #a8501b;">화장대 서랍장</strong> 위에서 2번째 서랍</span></a>
+<a href="#" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; background: #f8efe3; border-radius: 16px; color: #3b2f25; text-decoration: none; font-size: 15px; line-height: 1.5;"><span style="font-family: 'Jua', sans-serif; color: #7a6450;">2</span><span><strong>충전기</strong>는 <strong>내 방</strong>의 <strong>책상 위 보관함</strong> 안</span></a>
+<span style="font-size: 12px; color: #7a6450;">선택한 항목만 3D에서 칸이 열린다</span>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<span style="font-size: 13px; color: #7a6450;">결과 없음</span>
+<div style="padding: 18px 20px; background: #fffaf3; border-radius: 20px; box-shadow: 0 8px 24px rgba(120, 80, 40, 0.14); display: flex; flex-direction: column; gap: 12px;">
+<span style="font-family: 'Jua', sans-serif; font-size: 22px; line-height: 1.2; color: #7a6450;">아직 어딨는지 몰라요</span>
+<p style="margin: 0; font-size: 15px; line-height: 1.6;">'<strong>선크림</strong>'은 등록된 위치가 없어요. 지금 등록할까요?</p>
+<button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 18px; background: #a8501b; color: #fff8ef; border: none; border-radius: 999px; font: inherit; font-size: 15px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>물건 넣기</button>
+<span style="font-size: 12px; color: #7a6450;">"요깃따!"는 쓰지 않는다</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1100}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
