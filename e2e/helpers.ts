@@ -53,3 +53,31 @@ export async function chooseTool(page: Page, name: string) {
     .getByRole("button", { name, exact: true })
     .click();
 }
+
+type Cm = { x: number; y: number };
+
+/** 화면 좌표(px)를 누른다. 모바일은 탭, 데스크톱은 클릭. */
+export async function pressScreen(page: Page, point: Cm, isMobile: boolean) {
+  if (isMobile) await page.touchscreen.tap(point.x, point.y);
+  else await page.mouse.click(point.x, point.y);
+}
+
+/** 바닥 좌표(cm)들을 차례로 누른다. */
+export async function pressCm(
+  page: Page,
+  floor: { w: number; h: number },
+  points: Cm[],
+  isMobile: boolean,
+) {
+  for (const point of points)
+    await pressScreen(page, await cmToScreen(page, floor, point), isMobile);
+}
+
+/** 읽은 벽 점 목록이 기대한 점들과 1cm 안으로 같은지 본다 (화면 px → cm 반올림 오차). */
+export function expectNear(actual: number[][] | undefined, expected: Cm[]) {
+  expect(actual).toHaveLength(expected.length);
+  expected.forEach(({ x, y }, index) => {
+    expect(Math.abs((actual?.[index]?.[0] ?? NaN) - x)).toBeLessThanOrEqual(1);
+    expect(Math.abs((actual?.[index]?.[1] ?? NaN) - y)).toBeLessThanOrEqual(1);
+  });
+}

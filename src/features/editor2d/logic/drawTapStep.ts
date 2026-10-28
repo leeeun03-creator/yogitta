@@ -3,7 +3,7 @@ import type { DrawingTool } from "@/store/useAppStore";
 import { nextLineDraft } from "./nextLineDraft";
 import { nextPolylineDraft } from "./nextPolylineDraft";
 
-export type NewWall = Omit<Wall, "id">;
+type NewWall = Omit<Wall, "id">;
 export type DrawStep = { draft: Point[]; wall?: NewWall };
 
 /** 그리기 도구로 한 번 눌렀을 때 그리던 점과 새 벽. 누르기로 그리지 않는 도구는 그대로 둔다. */

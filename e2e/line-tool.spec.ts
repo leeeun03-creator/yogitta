@@ -1,24 +1,19 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, cmToScreen, createSpace, floorBox, wallPoints } from "./helpers";
+import {
+  chooseTool,
+  cmToScreen,
+  createSpace,
+  expectNear,
+  floorBox,
+  pressCm,
+  wallPoints,
+} from "./helpers";
 
 const FLOOR = { w: 600, h: 450 };
 const WALL_COLOR = "rgb(110, 82, 54)"; // #6E5236 (yogitta-design 6장)
 
-/** 바닥 좌표(cm)를 누른다. 모바일은 탭, 데스크톱은 클릭. */
-async function pressAt(page: Page, cm: { x: number; y: number }, isMobile: boolean) {
-  const { x, y } = await cmToScreen(page, FLOOR, cm);
-  if (isMobile) await page.touchscreen.tap(x, y);
-  else await page.mouse.click(x, y);
-}
-
-/** 점 좌표가 1cm 안으로 같은지 본다 (화면 px → cm 반올림 오차). */
-function expectNear(actual: number[][] | undefined, expected: number[][]) {
-  expect(actual).toHaveLength(expected.length);
-  expected.forEach(([x, y], index) => {
-    expect(Math.abs((actual?.[index]?.[0] ?? NaN) - (x ?? 0))).toBeLessThanOrEqual(1);
-    expect(Math.abs((actual?.[index]?.[1] ?? NaN) - (y ?? 0))).toBeLessThanOrEqual(1);
-  });
-}
+const pressAt = (page: Page, cm: { x: number; y: number }, isMobile: boolean) =>
+  pressCm(page, FLOOR, [cm], isMobile);
 
 test.describe("직선 도구", () => {
   test.beforeEach(async ({ page }) => {
@@ -32,8 +27,8 @@ test.describe("직선 도구", () => {
     const walls = await wallPoints(page);
     expect(walls).toHaveLength(1);
     expectNear(walls[0], [
-      [100, 100],
-      [400, 100],
+      { x: 100, y: 100 },
+      { x: 400, y: 100 },
     ]);
     await expect(page.getByRole("img", { name: /벽 1개$/ })).toBeVisible();
     await expect(page.getByTestId("joint")).toHaveCount(2);
@@ -100,8 +95,8 @@ test.describe("직선 도구", () => {
     await pressAt(page, { x: 250, y: 200 }, false);
     await pressAt(page, { x: 350, y: 260 }, false);
     expectNear((await wallPoints(page))[0], [
-      [250, 200],
-      [350, 260],
+      { x: 250, y: 200 },
+      { x: 350, y: 260 },
     ]);
   });
 

@@ -1,33 +1,21 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, cmToScreen, createSpace, wallPoints } from "./helpers";
+import { chooseTool, createSpace, expectNear, pressCm, wallPoints } from "./helpers";
 
 const FLOOR = { w: 600, h: 450 };
 const A = { x: 100, y: 100 };
 const B = { x: 400, y: 100 };
 const C = { x: 400, y: 300 };
 
-async function pressAt(page: Page, cm: { x: number; y: number }, isMobile: boolean) {
-  const { x, y } = await cmToScreen(page, FLOOR, cm);
-  if (isMobile) await page.touchscreen.tap(x, y);
-  else await page.mouse.click(x, y);
-}
-async function pressAll(page: Page, points: { x: number; y: number }[], isMobile: boolean) {
-  for (const point of points) await pressAt(page, point, isMobile);
-}
+const pressAt = (page: Page, cm: { x: number; y: number }, isMobile: boolean) =>
+  pressCm(page, FLOOR, [cm], isMobile);
+const pressAll = (page: Page, points: { x: number; y: number }[], isMobile: boolean) =>
+  pressCm(page, FLOOR, points, isMobile);
 async function wallShapes(page: Page) {
   return page
     .getByTestId("wall")
     .locator("polyline, polygon")
     .evaluateAll((shapes) => shapes.map((shape) => shape.tagName));
 }
-function expectNear(actual: number[][] | undefined, expected: { x: number; y: number }[]) {
-  expect(actual).toHaveLength(expected.length);
-  expected.forEach(({ x, y }, index) => {
-    expect(Math.abs((actual?.[index]?.[0] ?? NaN) - x)).toBeLessThanOrEqual(1);
-    expect(Math.abs((actual?.[index]?.[1] ?? NaN) - y)).toBeLessThanOrEqual(1);
-  });
-}
-
 test.describe("연속선 도구", () => {
   test.beforeEach(async ({ page }) => {
     await createSpace(page, { width: "6.0", depth: "4.5" });

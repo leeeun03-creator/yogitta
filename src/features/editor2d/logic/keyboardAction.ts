@@ -1,7 +1,7 @@
 import { KEYBOARD_PAN_PX, ZOOM_STEP } from "@/shared/constants/floorPlan";
 import type { Point } from "@/shared/types";
 
-export type KeyboardAction =
+type KeyboardAction =
   | { type: "zoom"; factor: number }
   | { type: "pan"; delta: Point } // 바닥이 움직이는 방향 (px)
   | { type: "reset" };

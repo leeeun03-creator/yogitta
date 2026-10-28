@@ -2,6 +2,7 @@ import { useRef, type PointerEvent } from "react";
 import { TAP_MOVE_PX } from "@/shared/constants/floorPlan";
 import type { Point } from "@/shared/types";
 import { eventPoint } from "./eventPoint";
+import { distance } from "@/shared/lib/distance";
 
 type Press = { pointerId: number; start: Point; multiTouch: boolean };
 
@@ -16,8 +17,7 @@ export function useTap(onTap: (point: Point) => void) {
     if (active.current.size === 0) press.current = null;
     if (isCancel || !current || current.pointerId !== event.pointerId || current.multiTouch) return;
     const point = eventPoint(event);
-    const moved = Math.hypot(point.x - current.start.x, point.y - current.start.y);
-    if (moved <= TAP_MOVE_PX) onTap(point);
+    if (distance(point, current.start) <= TAP_MOVE_PX) onTap(point);
   };
 
   return {

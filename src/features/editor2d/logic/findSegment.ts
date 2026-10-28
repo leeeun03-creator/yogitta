@@ -1,4 +1,5 @@
 import type { Point, Wall } from "@/shared/types";
+import { distance } from "@/shared/lib/distance";
 
 export type SegmentHit = { wallId: string; segment: number; from: Point; to: Point };
 
@@ -11,7 +12,7 @@ function distanceToSegment(point: Point, a: Point, b: Point): number {
     lengthSquared === 0
       ? 0
       : Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / lengthSquared));
-  return Math.hypot(point.x - (a.x + t * dx), point.y - (a.y + t * dy));
+  return distance(point, { x: a.x + t * dx, y: a.y + t * dy });
 }
 
 /** 점(cm)에서 hitRadius(cm) 안에 있는 가장 가까운 벽 선분. 닫힌 벽은 마지막 → 첫 점 선분도 본다. 없으면 null. */

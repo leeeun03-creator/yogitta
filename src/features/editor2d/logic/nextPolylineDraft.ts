@@ -1,12 +1,12 @@
 import type { Point } from "@/shared/types";
+import { distance } from "@/shared/lib/distance";
 
-export type PolylineStep = { draft: Point[]; wall?: { points: Point[]; closed: boolean } };
+type PolylineStep = { draft: Point[]; wall?: { points: Point[]; closed: boolean } };
 
 const MIN_OPEN_POINTS = 2;
 const MIN_CLOSED_POINTS = 3;
 
 const isSame = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
-const distance = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y);
 
 /** 연속선을 Enter로 끝낸다. 점이 2개보다 적으면 벽을 만들지 않는다. */
 export function finishPolyline(draft: readonly Point[]): PolylineStep {

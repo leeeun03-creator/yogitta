@@ -1,17 +1,20 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, cmToScreen, createSpace, floorBox, wallPoints } from "./helpers";
+import {
+  chooseTool,
+  cmToScreen,
+  createSpace,
+  floorBox,
+  pressCm,
+  pressScreen,
+  wallPoints,
+} from "./helpers";
 
 const FLOOR = { w: 600, h: 450 };
 const WALL_HALF_CM = 6; // 벽 두께 12cm의 절반
 type Cm = { x: number; y: number };
 
-async function pressScreen(page: Page, point: Cm, isMobile: boolean) {
-  if (isMobile) await page.touchscreen.tap(point.x, point.y);
-  else await page.mouse.click(point.x, point.y);
-}
-async function pressAll(page: Page, points: Cm[], isMobile: boolean) {
-  for (const cm of points) await pressScreen(page, await cmToScreen(page, FLOOR, cm), isMobile);
-}
+const pressAll = (page: Page, points: Cm[], isMobile: boolean) =>
+  pressCm(page, FLOOR, points, isMobile);
 /** 연속선으로 벽을 그린다. closed면 첫 점을 다시 눌러 닫고, 아니면 마지막 점을 다시 눌러 끝낸다. */
 async function drawPolyline(page: Page, points: Cm[], closed: boolean, isMobile: boolean) {
   await chooseTool(page, "연속선");
