@@ -1,8 +1,50 @@
+/* 편집 모드 틀. 값은 시안 04 + yogitta-design 4·7장 */
 .screen {
-  min-height: 100vh;
-  padding: 32px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  padding: 20px 32px;
+  background: var(--yg-surface);
+  border-bottom: 1px solid var(--yg-border-soft);
 }
 
 .title {
   font-size: 22px;
+}
+
+.spaceInfo {
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  padding: 24px 32px 32px;
+}
+
+.canvas {
+  flex: 1;
+  min-width: 0;
+  background: var(--yg-canvas);
+  border-radius: var(--yg-radius-canvas);
+  box-shadow: inset 0 0 0 1px var(--yg-border-soft);
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .topBar {
+    padding: 16px;
+  }
+  .body {
+    padding: 16px;
+  }
 }
