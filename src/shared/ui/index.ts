@@ -1,3 +1,3 @@
 export { Button } from "./Button";
-export type { ButtonVariant } from "./Button";
+export { Logo } from "./Logo";
 export { TextField } from "./TextField";

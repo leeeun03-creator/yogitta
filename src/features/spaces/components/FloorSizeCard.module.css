@@ -41,41 +41,6 @@
   gap: 12px;
 }
 
-.presets {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.presetsLabel {
-  font-size: 13px;
-  color: var(--yg-text-sub);
-}
-
-/* 시안은 높이 36px이지만 터치 영역 44px(yogitta-design 9장)을 지킨다 */
-.preset {
-  min-height: 44px;
-  padding: 0 14px;
-  background: var(--yg-surface-2);
-  color: var(--yg-text);
-  border: none;
-  border-radius: var(--yg-radius-pill);
-  font-size: 14px;
-  cursor: pointer;
-}
-.preset:hover {
-  background: var(--yg-chip);
-}
-.preset[aria-pressed="true"] {
-  background: var(--yg-found-bg);
-  color: var(--yg-found-text);
-}
-.preset:focus-visible {
-  outline: 2px solid var(--yg-accent);
-  outline-offset: 2px;
-}
-
 .submit {
   width: 100%;
 }

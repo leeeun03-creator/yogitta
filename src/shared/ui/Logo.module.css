@@ -1,0 +1,21 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tile {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--yg-accent);
+  color: var(--yg-on-accent);
+  border-radius: var(--yg-radius-field);
+}
+
+.text {
+  font-family: var(--yg-font-title);
+  font-size: 26px;
+}
