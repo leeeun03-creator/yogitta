@@ -34,10 +34,12 @@ test.describe("돋보기 (터치)", () => {
     await chooseTool(page, "직선");
     const finger = await cmToScreen(page, FLOOR, { x: 400, y: 300 });
     await drag(page, { x: 100, y: 300 }, { x: 400, y: 300 }, true, async () => {
-      await expect(loupe(page)).toBeVisible();
-      const box = await boxOf(loupe(page));
-      expect(box.y + box.height).toBeLessThan(finger.y); // 손가락에 가리지 않게 위에
-      expect(Math.abs(box.x + box.width / 2 - finger.x)).toBeLessThanOrEqual(1);
+      // 마지막 손가락 움직임이 그려질 때까지 다시 확인한다 (느린 CI)
+      await expect(async () => {
+        const box = await boxOf(loupe(page));
+        expect(box.y + box.height).toBeLessThan(finger.y); // 손가락에 가리지 않게 위에
+        expect(Math.abs(box.x + box.width / 2 - finger.x)).toBeLessThanOrEqual(1);
+      }).toPass();
     });
     await expect(loupe(page)).toHaveCount(0);
     expect(await wallPoints(page)).toEqual([
@@ -53,17 +55,18 @@ test.describe("돋보기 (터치)", () => {
   }) => {
     await chooseTool(page, "직선");
     await drag(page, { x: 100, y: 300 }, { x: 402, y: 298 }, true, async () => {
-      const [x, y, width, height] = (
-        (await loupe(page).locator("svg").getAttribute("viewBox")) ?? ""
-      )
-        .split(" ")
-        .map(Number);
-      // 붙을 점(400, 300)이 가운데
-      expect((x ?? NaN) + (width ?? NaN) / 2).toBeCloseTo(400);
-      expect((y ?? NaN) + (height ?? NaN) / 2).toBeCloseTo(300);
+      const viewBox = async () =>
+        ((await loupe(page).locator("svg").getAttribute("viewBox")) ?? "").split(" ").map(Number);
+      // 붙을 점(400, 300)이 가운데. 마지막 손가락 움직임이 그려질 때까지 다시 읽는다 (느린 CI)
+      await expect
+        .poll(async () => {
+          const [x = NaN, y = NaN, width = NaN, height = NaN] = await viewBox();
+          return [Math.round(x + width / 2), Math.round(y + height / 2)];
+        })
+        .toEqual([400, 300]);
       // 2D 평면도보다 2배 크게: 돋보기 120px에 보이는 cm = 평면도 60px에 보이는 cm
       const floor = await floorBox(page);
-      expect(width).toBeCloseTo((60 * FLOOR.w) / floor.width, 0);
+      expect((await viewBox())[2]).toBeCloseTo((60 * FLOOR.w) / floor.width, 0);
       await expect(loupe(page).getByTestId("draft")).toHaveCount(1);
       await expect(loupe(page).getByTestId("snap-grid")).toHaveCount(1);
     });
@@ -90,12 +93,14 @@ test.describe("돋보기 (터치)", () => {
     const near = { x: area.x + 40, y: area.y + 20 }; // 위로 띄울 자리가 없는 곳
     const start = { x: area.x + 200, y: area.y + 20 };
     await dragScreen(page, start, near, true, async () => {
-      const box = await boxOf(loupe(page));
-      expect(box.y).toBeGreaterThanOrEqual(area.y);
-      expect(box.x).toBeGreaterThanOrEqual(area.x);
-      expect(box.x + box.width).toBeLessThanOrEqual(area.x + area.width);
-      // 손가락 옆으로 비켜서 손가락을 덮지 않는다
-      expect(box.x).toBeGreaterThan(near.x);
+      await expect(async () => {
+        const box = await boxOf(loupe(page));
+        expect(box.y).toBeGreaterThanOrEqual(area.y);
+        expect(box.x).toBeGreaterThanOrEqual(area.x);
+        expect(box.x + box.width).toBeLessThanOrEqual(area.x + area.width);
+        // 손가락 옆으로 비켜서 손가락을 덮지 않는다
+        expect(box.x).toBeGreaterThan(near.x);
+      }).toPass();
     });
   });
 
