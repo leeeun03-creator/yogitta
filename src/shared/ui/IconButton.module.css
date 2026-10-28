@@ -1,0 +1,28 @@
+/* 아이콘 버튼 투명형. 값은 yogitta-design 4장 + 컴포넌트 시안 06 (비활성 #B8A38C) */
+.button {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--yg-text);
+  border: none;
+  border-radius: var(--yg-radius-pill);
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+.button:hover:not(:disabled) {
+  background: var(--yg-surface-2);
+}
+.button:active:not(:disabled) {
+  background: var(--yg-chip);
+}
+.button:disabled {
+  color: var(--yg-disabled-icon);
+  cursor: not-allowed;
+}

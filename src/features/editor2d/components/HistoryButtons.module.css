@@ -1,0 +1,6 @@
+/* 시안 04: 상단 바 오른쪽 끝, 버튼 사이 4px */
+.group {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}

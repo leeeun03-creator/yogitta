@@ -7,7 +7,7 @@
 
 .topBar {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
   gap: 4px 14px;
   padding: 20px 32px;

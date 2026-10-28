@@ -1,4 +1,10 @@
-import { FloorPlan, SnapToggle, ToolBar, useHistoryKeys } from "@/features/editor2d";
+import {
+  FloorPlan,
+  HistoryButtons,
+  SnapToggle,
+  ToolBar,
+  useHistoryKeys,
+} from "@/features/editor2d";
 import { formatMeters } from "@/shared/lib/formatMeters";
 import { useAppStore } from "@/store/useAppStore";
 import styles from "./EditScreen.module.css";
@@ -19,6 +25,8 @@ export function EditScreen() {
         <span className={styles.spaceInfo}>
           {space.name} · {formatMeters(space.floor.w)} × {formatMeters(space.floor.h)} m
         </span>
+        {/* TODO(T4): 2D 평면도 / 3D 미리보기 전환 */}
+        <HistoryButtons />
       </header>
       <main className={styles.body}>
         <ToolBar />
