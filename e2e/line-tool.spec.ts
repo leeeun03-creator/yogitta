@@ -100,11 +100,11 @@ test.describe("직선 도구", () => {
     ]);
   });
 
-  test("엣지: 그리기 도구에서는 끌어도 화면이 움직이지 않고 점도 찍히지 않는다", async ({
+  test("엣지: 그리기 도구에서는 끌어도 화면이 움직이지 않는다 (끌면 벽을 그린다)", async ({
     page,
     isMobile,
   }) => {
-    test.skip(isMobile, "마우스 끌기는 데스크톱에서만");
+    test.skip(isMobile, "마우스 끌기는 데스크톱에서만 (모바일 끌기는 drag-draw 테스트에서)");
     const before = await floorBox(page);
     const start = await cmToScreen(page, FLOOR, { x: 200, y: 200 });
     await page.mouse.move(start.x, start.y);
@@ -112,7 +112,7 @@ test.describe("직선 도구", () => {
     await page.mouse.move(start.x + 150, start.y + 80, { steps: 5 });
     await page.mouse.up();
     expect(await floorBox(page)).toEqual(before);
-    await expect(page.getByTestId("draft")).toHaveCount(0);
+    expect(await wallPoints(page)).toHaveLength(1);
   });
 
   test("엣지: 도구를 바꾸면 그리던 선이 취소된다", async ({ page, isMobile }) => {

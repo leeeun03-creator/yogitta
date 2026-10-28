@@ -9,7 +9,7 @@ import { useRectTool } from "./useRectTool";
 import { useSnapper } from "./useSnapper";
 import { useTap } from "./useTap";
 
-/** 2D 평면도가 받는 입력(줌·이동, 누르기, 직선·연속선, 사각형 끌기, 지우개)을 엮어 처리기 하나씩으로 묶는다. */
+/** 2D 평면도가 받는 입력(줌·이동, 누르기, 직선·연속선 누르기·끌기, 사각형 끌기, 지우개)을 엮어 처리기 하나씩으로 묶는다. */
 export function useFloorPlanInput(
   ref: RefObject<HTMLElement | null>,
   floor: Floor,
@@ -33,15 +33,31 @@ export function useFloorPlanInput(
     previewCursor: tool === "rect" ? null : (draw.cursor?.point ?? null),
     erasing: eraser.hover,
     handlers: {
-      onPointerDown: callAll(pan.onPointerDown, tap.onPointerDown, shape.onPointerDown),
+      onPointerDown: callAll(
+        pan.onPointerDown,
+        tap.onPointerDown,
+        draw.handlers.onPointerDown,
+        shape.onPointerDown,
+      ),
       onPointerMove: callAll(
         pan.onPointerMove,
+        tap.onPointerMove,
         draw.handlers.onPointerMove,
         shape.onPointerMove,
         eraser.handlers.onPointerMove,
       ),
-      onPointerUp: callAll(pan.onPointerUp, tap.onPointerUp, shape.onPointerUp),
-      onPointerCancel: callAll(pan.onPointerCancel, tap.onPointerCancel, shape.onPointerCancel),
+      onPointerUp: callAll(
+        pan.onPointerUp,
+        tap.onPointerUp,
+        draw.handlers.onPointerUp,
+        shape.onPointerUp,
+      ),
+      onPointerCancel: callAll(
+        pan.onPointerCancel,
+        tap.onPointerCancel,
+        draw.handlers.onPointerCancel,
+        shape.onPointerCancel,
+      ),
       onPointerLeave: callAll(draw.handlers.onPointerLeave, eraser.handlers.onPointerLeave),
       onKeyDown: callAll(pan.onKeyDown, draw.handlers.onKeyDown, shape.onKeyDown),
     },

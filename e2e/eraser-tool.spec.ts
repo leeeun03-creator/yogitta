@@ -3,6 +3,7 @@ import {
   chooseTool,
   cmToScreen,
   createSpace,
+  dragPath,
   floorBox,
   pressCm,
   pressScreen,
@@ -171,5 +172,26 @@ test.describe("지우개 도구", () => {
     const walls = await wallPoints(page);
     expect(walls).toHaveLength(1);
     expect(walls[0]?.[0]?.[1]).toBeCloseTo(200, -1);
+  });
+
+  test("엣지: 선분 위에서 끌었다가 제자리로 돌아와 떼면 누르기가 아니라 지우지 않는다", async ({
+    page,
+    isMobile,
+    browserName,
+  }) => {
+    test.skip(isMobile && browserName !== "chromium", "모바일 끌기는 크롬 CDP로");
+    await drawPolyline(
+      page,
+      [
+        { x: 100, y: 200 },
+        { x: 500, y: 200 },
+      ],
+      false,
+      isMobile,
+    );
+    await chooseTool(page, "지우개");
+    const on = await cmToScreen(page, FLOOR, { x: 300, y: 200 });
+    await dragPath(page, [on, { x: on.x, y: on.y + 60 }, on], isMobile);
+    expect(await wallPoints(page)).toHaveLength(1);
   });
 });

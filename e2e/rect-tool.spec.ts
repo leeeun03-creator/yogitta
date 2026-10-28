@@ -1,46 +1,20 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, cmToScreen, createSpace, floorBox, wallPoints } from "./helpers";
+import {
+  chooseTool,
+  cmToScreen,
+  createSpace,
+  dragFloorCm,
+  dragScreen,
+  floorBox,
+  wallPoints,
+} from "./helpers";
 
 const FLOOR = { w: 600, h: 450 };
 type Cm = { x: number; y: number };
 
-/** 바닥 좌표(cm) from → to로 끈다. 모바일은 CDP 터치(Playwright 터치스크린은 탭만 된다). */
-async function dragCm(
-  page: Page,
-  from: Cm,
-  to: Cm,
-  isMobile: boolean,
-  beforeUp?: () => Promise<void>,
-) {
-  const a = await cmToScreen(page, FLOOR, from);
-  const b = await cmToScreen(page, FLOOR, to);
-  await dragScreen(page, a, b, isMobile, beforeUp);
-}
-async function dragScreen(
-  page: Page,
-  a: Cm,
-  b: Cm,
-  isMobile: boolean,
-  beforeUp?: () => Promise<void>,
-) {
-  if (isMobile) {
-    const cdp = await page.context().newCDPSession(page);
-    const touch = (p: Cm) => [{ x: p.x, y: p.y, id: 1 }];
-    await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: touch(a) });
-    for (let i = 1; i <= 5; i++) {
-      const p = { x: a.x + ((b.x - a.x) * i) / 5, y: a.y + ((b.y - a.y) * i) / 5 };
-      await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: touch(p) });
-    }
-    await beforeUp?.();
-    await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
-    return;
-  }
-  await page.mouse.move(a.x, a.y);
-  await page.mouse.down();
-  await page.mouse.move(b.x, b.y, { steps: 5 });
-  await beforeUp?.();
-  await page.mouse.up();
-}
+const dragCm = (page: Page, from: Cm, to: Cm, isMobile: boolean, beforeUp?: () => Promise<void>) =>
+  dragFloorCm(page, FLOOR, from, to, isMobile, beforeUp);
+
 function expectRect(
   actual: number[][] | undefined,
   left: number,

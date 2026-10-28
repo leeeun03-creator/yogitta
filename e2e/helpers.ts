@@ -81,3 +81,61 @@ export function expectNear(actual: number[][] | undefined, expected: Cm[]) {
     expect(Math.abs((actual?.[index]?.[1] ?? NaN) - y)).toBeLessThanOrEqual(1);
   });
 }
+
+type TouchType = "touchStart" | "touchMove";
+const DRAG_STEPS = 5; // 지나는 점 사이를 몇 번에 나눠 움직이나
+
+/** 화면 좌표(px) path를 차례로 지나며 끈다. 모바일은 CDP 터치(Playwright 터치스크린은 탭만 된다). beforeUp은 떼기 직전에 돈다. */
+export async function dragPath(
+  page: Page,
+  path: Cm[],
+  isMobile: boolean,
+  beforeUp?: () => Promise<void>,
+) {
+  const [first, ...rest] = path;
+  if (!first) return;
+  const cdp = isMobile ? await page.context().newCDPSession(page) : null;
+  const move = async (type: TouchType, p: Cm) => {
+    if (cdp) await cdp.send("Input.dispatchTouchEvent", { type, touchPoints: [{ ...p, id: 1 }] });
+    else await page.mouse.move(p.x, p.y);
+  };
+  await move("touchStart", first);
+  if (!cdp) await page.mouse.down();
+  let from = first;
+  for (const to of rest) {
+    for (let i = 1; i <= DRAG_STEPS; i++) {
+      const ratio = i / DRAG_STEPS;
+      await move("touchMove", {
+        x: from.x + (to.x - from.x) * ratio,
+        y: from.y + (to.y - from.y) * ratio,
+      });
+    }
+    from = to;
+  }
+  await beforeUp?.();
+  if (cdp) await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  else await page.mouse.up();
+}
+
+/** 화면 좌표(px) a → b로 끈다. */
+export const dragScreen = (
+  page: Page,
+  a: Cm,
+  b: Cm,
+  isMobile: boolean,
+  beforeUp?: () => Promise<void>,
+) => dragPath(page, [a, b], isMobile, beforeUp);
+
+/** 바닥 좌표(cm) from → to로 끈다. */
+export async function dragFloorCm(
+  page: Page,
+  floor: { w: number; h: number },
+  from: Cm,
+  to: Cm,
+  isMobile: boolean,
+  beforeUp?: () => Promise<void>,
+) {
+  const a = await cmToScreen(page, floor, from);
+  const b = await cmToScreen(page, floor, to);
+  await dragScreen(page, a, b, isMobile, beforeUp);
+}
