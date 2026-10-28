@@ -1,0 +1,46 @@
+/* 입력칸. 값은 yogitta-design 4장 + 컴포넌트 시안 06 */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+.labelError {
+  font-size: 13px;
+  color: var(--yg-danger);
+}
+
+.input {
+  min-height: 44px;
+  width: 100%;
+  padding: 0 14px;
+  background: var(--yg-surface-2);
+  border: 1px solid var(--yg-border);
+  border-radius: var(--yg-radius-field);
+  font-size: 15px;
+  color: var(--yg-text);
+}
+
+.input:focus {
+  outline: none;
+  padding: 0 13px; /* 테두리가 2px로 두꺼워진 만큼 글자가 밀리지 않게 */
+  background: var(--yg-surface);
+  border: 2px solid var(--yg-accent);
+}
+
+.input[aria-invalid="true"] {
+  padding: 0 13px;
+  background: var(--yg-danger-hover); /* 시안 06 오류 바탕과 같은 색 */
+  border: 2px solid var(--yg-danger);
+}
+
+.error {
+  font-size: 12px;
+  color: var(--yg-danger);
+}

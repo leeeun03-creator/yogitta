@@ -1,0 +1,87 @@
+/* 바닥 크기 카드. 값은 시안 03 오른쪽 + yogitta-design 토큰 */
+.card {
+  flex: 1 1 360px;
+  max-width: 420px;
+  padding: 28px;
+  background: var(--yg-surface);
+  border-radius: var(--yg-radius-panel);
+  box-shadow: var(--yg-shadow-card);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.step {
+  font-size: 13px;
+  color: var(--yg-accent);
+}
+
+.title {
+  font-size: 24px;
+}
+
+.description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--yg-text-sub);
+}
+
+.sizeRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.presetsLabel {
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+/* 시안은 높이 36px이지만 터치 영역 44px(yogitta-design 9장)을 지킨다 */
+.preset {
+  min-height: 44px;
+  padding: 0 14px;
+  background: var(--yg-surface-2);
+  color: var(--yg-text);
+  border: none;
+  border-radius: var(--yg-radius-pill);
+  font-size: 14px;
+  cursor: pointer;
+}
+.preset:hover {
+  background: var(--yg-chip);
+}
+.preset[aria-pressed="true"] {
+  background: var(--yg-found-bg);
+  color: var(--yg-found-text);
+}
+.preset:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 2px;
+}
+
+.submit {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 20px;
+  }
+}
