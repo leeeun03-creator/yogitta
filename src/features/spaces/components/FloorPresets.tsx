@@ -1,7 +1,7 @@
 import { FLOOR_PRESETS } from "@/shared/constants/floor";
 import { CM_PER_M } from "@/shared/constants/units";
 import type { Floor } from "@/shared/types";
-import { formatMeters } from "../logic/formatMeters";
+import { formatMeters } from "@/shared/lib/formatMeters";
 import styles from "./FloorPresets.module.css";
 
 type FloorPresetsProps = { width: string; depth: string; onSelect: (floor: Floor) => void };

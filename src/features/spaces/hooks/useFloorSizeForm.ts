@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { DEFAULT_FLOOR } from "@/shared/constants/floor";
 import type { Floor } from "@/shared/types";
-import { formatMeters } from "../logic/formatMeters";
+import { formatMeters } from "@/shared/lib/formatMeters";
 import { validateNewSpace } from "../logic/validateNewSpace";
 import { useCreateSpace } from "./useCreateSpace";
 

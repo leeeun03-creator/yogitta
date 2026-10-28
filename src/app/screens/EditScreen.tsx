@@ -1,5 +1,5 @@
 import { FloorPlan, SnapToggle, ToolBar } from "@/features/editor2d";
-import { formatMeters } from "@/features/spaces";
+import { formatMeters } from "@/shared/lib/formatMeters";
 import { useAppStore } from "@/store/useAppStore";
 import styles from "./EditScreen.module.css";
 
