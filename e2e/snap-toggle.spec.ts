@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, cmToScreen, createSpace, pressCm, wallPoints } from "./helpers";
+import { chooseTool, cmToScreen, createSpace, plan, pressCm, wallPoints } from "./helpers";
 
 const FLOOR = { w: 600, h: 450 };
 const ACCENT = "rgb(168, 80, 27)"; // --yg-accent
@@ -59,11 +59,11 @@ test.describe("격자 스냅 토글", () => {
     await chooseTool(page, "직선");
     const at = await cmToScreen(page, FLOOR, { x: 200, y: 200 });
     await page.mouse.move(at.x, at.y);
-    await expect(page.getByTestId("snap-grid")).toHaveCount(1);
+    await expect(plan(page).getByTestId("snap-grid")).toHaveCount(1);
     await snapSwitch(page).click();
     await page.mouse.move(at.x + 3, at.y);
-    await expect(page.getByTestId("snap-grid")).toHaveCount(0);
-    await expect(page.getByTestId("snap-endpoint")).toHaveCount(0);
+    await expect(plan(page).getByTestId("snap-grid")).toHaveCount(0);
+    await expect(plan(page).getByTestId("snap-endpoint")).toHaveCount(0);
   });
 
   test("키보드 Space로도 바꿀 수 있다", async ({ page, isMobile }) => {
@@ -87,7 +87,7 @@ test.describe("격자 스냅 토글", () => {
       isMobile,
     );
     await snapSwitch(page).click();
-    await expect(page.getByTestId("draft")).toHaveCount(1);
+    await expect(plan(page).getByTestId("draft")).toHaveCount(1);
     await pressCm(
       page,
       FLOOR,

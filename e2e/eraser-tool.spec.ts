@@ -5,6 +5,7 @@ import {
   createSpace,
   dragPath,
   floorBox,
+  plan,
   pressCm,
   pressScreen,
   wallPoints,
@@ -51,7 +52,7 @@ test.describe("지우개 도구", () => {
       [10, 30],
       [10, 10],
     ]); // b → c → d → a (지운 자리가 양 끝)
-    await expect(page.getByTestId("wall").locator("polygon")).toHaveCount(0);
+    await expect(plan(page).getByTestId("wall").locator("polygon")).toHaveCount(0);
   });
 
   test("열린 연속선 가운데 선분을 지우면 벽 2개로 나뉜다", async ({ page, isMobile }) => {
@@ -101,11 +102,11 @@ test.describe("지우개 도구", () => {
     const on = await cmToScreen(page, FLOOR, { x: 300, y: 200 });
     await page.mouse.move(on.x, on.y);
     // SVG 가로선은 높이 0 상자라 Playwright가 "보임"으로 치지 않아서 개수로 확인한다
-    await expect(page.getByTestId("erasing")).toHaveCount(1);
-    await expect(page.getByTestId("erasing")).toHaveCSS("stroke", "rgb(155, 44, 31)"); // --yg-danger
+    await expect(plan(page).getByTestId("erasing")).toHaveCount(1);
+    await expect(plan(page).getByTestId("erasing")).toHaveCSS("stroke", "rgb(155, 44, 31)"); // --yg-danger
     const off = await cmToScreen(page, FLOOR, { x: 300, y: 350 });
     await page.mouse.move(off.x, off.y);
-    await expect(page.getByTestId("erasing")).toHaveCount(0);
+    await expect(plan(page).getByTestId("erasing")).toHaveCount(0);
   });
 
   test("엣지: 빈 곳을 누르면 아무 일도 없다", async ({ page, isMobile }) => {

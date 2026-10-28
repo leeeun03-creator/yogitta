@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { createSpace } from "./helpers";
+import { createSpace, plan } from "./helpers";
 
 function floorPlan(page: Page) {
   return page.getByRole("img", { name: /^2D 평면도/ });
@@ -8,7 +8,7 @@ function floorPlan(page: Page) {
 /** 바닥 사각형이 2D 평면도 영역 안에 다 들어오는지 확인한다. */
 async function expectFloorInside(page: Page) {
   const area = await page.getByRole("region", { name: "2D 평면도 영역" }).boundingBox();
-  const floor = await page.getByTestId("floor").boundingBox();
+  const floor = await plan(page).getByTestId("floor").boundingBox();
   expect(area && floor).toBeTruthy();
   if (!area || !floor) return;
   expect(floor.x).toBeGreaterThanOrEqual(area.x);
@@ -26,7 +26,7 @@ test.describe("편집 모드 2D 평면도", () => {
     await expect(floorPlan(page).getByText("6.0 m", { exact: true })).toBeVisible();
     await expect(floorPlan(page).getByText("4.5 m", { exact: true })).toBeVisible();
     // 가로 11개 + 세로 8개 (양 끝은 바닥 테두리)
-    await expect(page.getByTestId("grid").locator("line")).toHaveCount(19);
+    await expect(plan(page).getByTestId("grid").locator("line")).toHaveCount(19);
     await expectFloorInside(page);
   });
 
@@ -60,7 +60,7 @@ test.describe("편집 모드 2D 평면도", () => {
   for (const { width, depth, lines } of EDGE_FLOORS) {
     test(`엣지: ${width} × ${depth} m 바닥도 영역 안에 다 보인다`, async ({ page }) => {
       await createSpace(page, { width, depth });
-      await expect(page.getByTestId("grid").locator("line")).toHaveCount(lines);
+      await expect(plan(page).getByTestId("grid").locator("line")).toHaveCount(lines);
       await expectFloorInside(page);
     });
   }

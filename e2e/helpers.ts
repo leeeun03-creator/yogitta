@@ -9,11 +9,14 @@ export async function createSpace(page: Page, size: { width: string; depth: stri
   await expect(page.getByRole("heading", { level: 1, name: "편집 모드" })).toBeVisible();
 }
 
+/** 2D 평면도 그림(svg). 돋보기 안에도 같은 그림이 있어서, 벽·미리보기 등은 이 안에서 찾는다. */
+export const plan = (page: Page) => page.getByRole("img", { name: /^2D 평면도,/ });
+
 const FLOOR_STROKE_PX = 1; // 바닥 테두리는 줌과 상관없이 1px
 
 /** 바닥 사각형의 화면 위치·크기(px). 테두리 선 두께는 빼서 바닥만 잰다. */
 export async function floorBox(page: Page) {
-  const box = await page.getByTestId("floor").boundingBox();
+  const box = await plan(page).getByTestId("floor").boundingBox();
   if (!box) throw new Error("바닥이 보이지 않는다");
   const half = FLOOR_STROKE_PX / 2;
   return {
@@ -36,7 +39,7 @@ export async function cmToScreen(
 
 /** 그린 벽들의 점 목록(cm)을 읽는다. */
 export async function wallPoints(page: Page) {
-  const walls = await page.getByTestId("wall").all();
+  const walls = await plan(page).getByTestId("wall").all();
   return Promise.all(
     walls.map(async (wall) =>
       ((await wall.getAttribute("data-points")) ?? "")

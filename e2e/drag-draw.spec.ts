@@ -7,6 +7,7 @@ import {
   dragPath,
   dragScreen,
   floorBox,
+  plan,
   pressCm,
   wallPoints,
 } from "./helpers";
@@ -36,13 +37,13 @@ test.describe("끌어서 그리기", () => {
         [400, 100],
       ],
     ]);
-    await expect(page.getByTestId("draft")).toHaveCount(0);
+    await expect(plan(page).getByTestId("draft")).toHaveCount(0);
   });
 
   test("직선: 끄는 동안 누른 점부터 미리보기 선이 보인다", async ({ page, isMobile }) => {
     await chooseTool(page, "직선");
     await drag(page, { x: 100, y: 100 }, { x: 400, y: 300 }, isMobile, async () => {
-      await expect(page.getByTestId("draft")).toHaveAttribute("points", "100,100 400,300");
+      await expect(plan(page).getByTestId("draft")).toHaveAttribute("points", "100,100 400,300");
     });
   });
 
@@ -90,7 +91,7 @@ test.describe("끌어서 그리기", () => {
     await drag(page, { x: 100, y: 100 }, { x: 400, y: 100 }, isMobile);
     await drag(page, { x: 400, y: 100 }, { x: 400, y: 300 }, isMobile);
     await drag(page, { x: 400, y: 300 }, { x: 100, y: 100 }, isMobile);
-    await expect(page.getByTestId("wall").locator("polygon")).toHaveCount(1);
+    await expect(plan(page).getByTestId("wall").locator("polygon")).toHaveCount(1);
     expect(await wallPoints(page)).toHaveLength(1);
   });
 
@@ -117,7 +118,7 @@ test.describe("끌어서 그리기", () => {
       const b = await cmToScreen(page, FLOOR, { x: 400, y: 300 });
       await dragPath(page, [a, b, a], isMobile);
       expect(await wallPoints(page)).toHaveLength(0);
-      await expect(page.getByTestId("draft")).toHaveCount(0);
+      await expect(plan(page).getByTestId("draft")).toHaveCount(0);
       // 다음 누르기가 첫 점이 되어야 한다 (남은 점이 없다)
       await pressCm(page, FLOOR, [{ x: 500, y: 100 }], isMobile);
       expect(await wallPoints(page)).toHaveLength(0);
@@ -130,7 +131,7 @@ test.describe("끌어서 그리기", () => {
     await chooseTool(page, "직선");
     await drag(page, { x: 100, y: 100 }, { x: 400, y: 300 }, false, async () => {
       await page.keyboard.press("Escape");
-      await expect(page.getByTestId("draft")).toHaveCount(0);
+      await expect(plan(page).getByTestId("draft")).toHaveCount(0);
     });
     expect(await wallPoints(page)).toHaveLength(0);
   });
@@ -168,7 +169,7 @@ test.describe("끌어서 그리기", () => {
     ]);
     await send("touchEnd", []);
     expect(await wallPoints(page)).toHaveLength(0);
-    await expect(page.getByTestId("draft")).toHaveCount(0);
+    await expect(plan(page).getByTestId("draft")).toHaveCount(0);
     expect((await floorBox(page)).width).toBeGreaterThan(before.width);
   });
 

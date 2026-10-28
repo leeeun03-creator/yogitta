@@ -6,6 +6,7 @@ import {
   dragFloorCm,
   dragScreen,
   floorBox,
+  plan,
   pressCm,
 } from "./helpers";
 
@@ -14,7 +15,7 @@ type Cm = { x: number; y: number };
 
 const drag = (page: Page, from: Cm, to: Cm, isMobile: boolean, beforeUp?: () => Promise<void>) =>
   dragFloorCm(page, FLOOR, from, to, isMobile, beforeUp);
-const label = (page: Page) => page.getByTestId("length-label");
+const label = (page: Page) => plan(page).getByTestId("length-label");
 
 async function labelBox(page: Page) {
   const box = await label(page).boundingBox();

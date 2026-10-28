@@ -5,6 +5,7 @@ import {
   createSpace,
   expectNear,
   floorBox,
+  plan,
   pressCm,
   wallPoints,
 } from "./helpers";
@@ -31,13 +32,13 @@ test.describe("직선 도구", () => {
       { x: 400, y: 100 },
     ]);
     await expect(page.getByRole("img", { name: /벽 1개$/ })).toBeVisible();
-    await expect(page.getByTestId("joint")).toHaveCount(2);
+    await expect(plan(page).getByTestId("joint")).toHaveCount(2);
   });
 
   test("벽은 #6E5236 색, 두께 12cm다", async ({ page, isMobile }) => {
     await pressAt(page, { x: 100, y: 200 }, isMobile);
     await pressAt(page, { x: 500, y: 200 }, isMobile);
-    const shape = page.getByTestId("wall").locator("polyline");
+    const shape = plan(page).getByTestId("wall").locator("polyline");
     await expect(shape).toHaveAttribute("stroke", "#6E5236");
     await expect(shape).toHaveAttribute("stroke-width", "12");
     await expect(shape).toHaveCSS("stroke", WALL_COLOR);
@@ -48,7 +49,7 @@ test.describe("직선 도구", () => {
     await pressAt(page, { x: 100, y: 100 }, false);
     const cursor = await cmToScreen(page, FLOOR, { x: 300, y: 300 });
     await page.mouse.move(cursor.x, cursor.y);
-    const draft = page.getByTestId("draft");
+    const draft = plan(page).getByTestId("draft");
     await expect(draft).toBeVisible();
     const points = ((await draft.getAttribute("points")) ?? "").split(" ");
     expect(points).toHaveLength(2);
@@ -64,7 +65,7 @@ test.describe("직선 도구", () => {
     test.skip(isMobile, "키보드는 데스크톱에서만");
     await pressAt(page, { x: 100, y: 100 }, false);
     await page.keyboard.press("Escape");
-    await expect(page.getByTestId("draft")).toHaveCount(0);
+    await expect(plan(page).getByTestId("draft")).toHaveCount(0);
     await pressAt(page, { x: 300, y: 100 }, false);
     expect(await wallPoints(page)).toHaveLength(0); // 새로 시작한 첫 점일 뿐이다
   });

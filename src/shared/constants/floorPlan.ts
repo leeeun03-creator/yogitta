@@ -26,3 +26,9 @@ export const SNAP_ENDPOINT_PX = 12;
 export const LENGTH_LABEL_GAP_PX = 6; // 벽 가장자리에서 글자 상자까지
 export const LENGTH_LABEL_HALO_PX = 4; // 벽·격자 위에서도 읽히게 두르는 바탕색 테두리
 export const LENGTH_LABEL_CHAR_EM = 0.6; // 글자 하나의 폭 어림 (글자 크기 배수)
+
+/** 터치로 끄는 동안 손가락 위에 뜨는 돋보기 (px). */
+export const LOUPE_SIZE_PX = 120; // 지름
+export const LOUPE_ZOOM = 2; // 지금 2D 평면도보다 몇 배 크게
+export const LOUPE_LIFT_PX = 100; // 손가락에서 돋보기 가운데까지 (손가락에 가리지 않게)
+export const LOUPE_MARGIN_PX = 8; // 2D 평면도 가장자리와 돋보기 사이

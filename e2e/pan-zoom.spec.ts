@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { createSpace } from "./helpers";
+import { createSpace, plan } from "./helpers";
 
 const ZOOM_STEP = 1.2; // shared/constants/floorPlan.ts
 const ZOOM_MAX = 8;
@@ -10,7 +10,7 @@ const FLOOR_STROKE_PX = 1; // 바닥 테두리는 줌과 상관없이 1px
 
 /** 바닥 사각형 위치·크기(px). 테두리 선 두께는 빼서 바닥만 잰다. */
 async function floorBox(page: Page) {
-  const box = await page.getByTestId("floor").boundingBox();
+  const box = await plan(page).getByTestId("floor").boundingBox();
   if (!box) throw new Error("바닥이 보이지 않는다");
   const half = FLOOR_STROKE_PX / 2;
   return {

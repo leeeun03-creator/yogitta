@@ -6,6 +6,7 @@ import {
   dragFloorCm,
   dragScreen,
   floorBox,
+  plan,
   wallPoints,
 } from "./helpers";
 
@@ -51,17 +52,19 @@ test.describe("사각형 도구", () => {
     const walls = await wallPoints(page);
     expect(walls).toHaveLength(1);
     expectRect(walls[0], 100, 50, 400, 300);
-    await expect(page.getByTestId("wall").locator("polygon")).toHaveCount(1);
-    await expect(page.getByTestId("joint")).toHaveCount(4);
+    await expect(plan(page).getByTestId("wall").locator("polygon")).toHaveCount(1);
+    await expect(plan(page).getByTestId("joint")).toHaveCount(4);
   });
 
   test("끄는 동안 미리보기 사각형이 보이고, 놓으면 사라진다", async ({ page, isMobile }) => {
     await dragCm(page, { x: 100, y: 50 }, { x: 400, y: 300 }, isMobile, async () => {
-      await expect(page.getByTestId("draft")).toBeVisible();
-      const points = ((await page.getByTestId("draft").getAttribute("points")) ?? "").split(" ");
+      await expect(plan(page).getByTestId("draft")).toBeVisible();
+      const points = ((await plan(page).getByTestId("draft").getAttribute("points")) ?? "").split(
+        " ",
+      );
       expect(points).toHaveLength(5); // 닫는 점 포함
     });
-    await expect(page.getByTestId("draft")).toHaveCount(0);
+    await expect(plan(page).getByTestId("draft")).toHaveCount(0);
   });
 
   test("엣지: 거꾸로(오른쪽 아래 → 왼쪽 위) 끌어도 같은 사각형", async ({ page, isMobile }) => {
@@ -89,7 +92,7 @@ test.describe("사각형 도구", () => {
       await page.keyboard.press("Escape");
     });
     expect(await wallPoints(page)).toHaveLength(0);
-    await expect(page.getByTestId("draft")).toHaveCount(0);
+    await expect(plan(page).getByTestId("draft")).toHaveCount(0);
   });
 
   test("스크린샷을 남긴다", async ({ page, isMobile }, testInfo) => {

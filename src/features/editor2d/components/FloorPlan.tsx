@@ -3,19 +3,17 @@ import { formatMeters } from "@/shared/lib/formatMeters";
 import type { Floor, Wall } from "@/shared/types";
 import { useFloorPlanInput } from "../hooks/useFloorPlanInput";
 import { FloorDimensions } from "./FloorDimensions";
-import { FloorGrid } from "./FloorGrid";
-import { LengthLabel } from "./LengthLabel";
-import { SnapIndicator } from "./SnapIndicator";
-import { WallLayer } from "./WallLayer";
+import { FloorScene } from "./FloorScene";
+import { Loupe } from "./Loupe";
 import styles from "./FloorPlan.module.css";
 
 type FloorPlanProps = { floor: Floor; walls: readonly Wall[] };
 
-/** 편집 모드의 2D 평면도. 바닥·격자·치수·벽과 그리는 동안의 길이 표시를 그리고, 줌·이동과 그리기 도구를 받는다. */
+/** 편집 모드의 2D 평면도. 바닥·격자·치수·벽과 그리는 동안의 길이 표시·돋보기를 그리고, 줌·이동과 그리기 도구를 받는다. */
 export function FloorPlan({ floor, walls }: FloorPlanProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const input = useFloorPlanInput(wrapperRef, floor, walls);
-  const { tool, box } = input;
+  const { tool, box, scene } = input;
   const labels = { width: `${formatMeters(floor.w)} m`, depth: `${formatMeters(floor.h)} m` };
 
   return (
@@ -33,18 +31,10 @@ export function FloorPlan({ floor, walls }: FloorPlanProps) {
         aria-label={`2D 평면도, 바닥 ${labels.width} × ${labels.depth}, 벽 ${walls.length}개`}
       >
         {/* 선·글자는 cm 좌표 안에 있어서, 화면에서 같은 px로 보이게 1px = cmPerPx로 그린다 */}
-        <FloorGrid floor={floor} lineWidth={box.cmPerPx} />
-        <WallLayer
-          walls={walls}
-          draft={input.draft}
-          cursor={input.previewCursor}
-          erasing={input.erasing}
-          cmPerPx={box.cmPerPx}
-        />
-        <SnapIndicator cursor={input.cursor} cmPerPx={box.cmPerPx} />
-        <LengthLabel measure={input.measure} cmPerPx={box.cmPerPx} />
+        <FloorScene floor={floor} walls={walls} scene={scene} cmPerPx={box.cmPerPx} />
         <FloorDimensions floor={floor} labels={labels} cmPerPx={box.cmPerPx} />
       </svg>
+      <Loupe finger={input.finger} box={box} floor={floor} walls={walls} scene={scene} />
     </div>
   );
 }

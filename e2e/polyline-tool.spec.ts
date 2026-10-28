@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, createSpace, expectNear, pressCm, wallPoints } from "./helpers";
+import { chooseTool, createSpace, expectNear, plan, pressCm, wallPoints } from "./helpers";
 
 const FLOOR = { w: 600, h: 450 };
 const A = { x: 100, y: 100 };
@@ -33,7 +33,7 @@ test.describe("연속선 도구", () => {
     expect(walls).toHaveLength(1);
     expectNear(walls[0], [A, B, C]);
     expect(await wallShapes(page)).toEqual(["polyline"]);
-    await expect(page.getByTestId("draft")).toHaveCount(0);
+    await expect(plan(page).getByTestId("draft")).toHaveCount(0);
   });
 
   test("첫 점을 다시 누르면 닫힌 벽이 된다", async ({ page, isMobile }) => {
@@ -54,7 +54,7 @@ test.describe("연속선 도구", () => {
     test.skip(isMobile, "키보드는 데스크톱에서만");
     await pressAll(page, [A, B], false);
     await page.keyboard.press("Escape");
-    await expect(page.getByTestId("draft")).toHaveCount(0);
+    await expect(plan(page).getByTestId("draft")).toHaveCount(0);
     await page.keyboard.press("Enter");
     expect(await wallPoints(page)).toHaveLength(0);
   });
@@ -66,7 +66,7 @@ test.describe("연속선 도구", () => {
     await pressAll(page, [A, A], isMobile);
     if (!isMobile) await page.keyboard.press("Enter");
     expect(await wallPoints(page)).toHaveLength(0);
-    await expect(page.getByTestId("draft")).toHaveCount(1); // 첫 점은 남아 있다
+    await expect(plan(page).getByTestId("draft")).toHaveCount(1); // 첫 점은 남아 있다
   });
 
   test("엣지: 점이 2개일 때 첫 점을 누르면 닫지 않는다", async ({ page, isMobile }) => {

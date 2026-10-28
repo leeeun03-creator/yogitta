@@ -4,6 +4,7 @@ import {
   cmToScreen,
   createSpace,
   floorBox,
+  plan,
   pressCm,
   pressScreen,
   wallPoints,
@@ -132,7 +133,7 @@ test.describe("격자·끝점 스냅", () => {
       isMobile,
     );
     await pressBeside(page, { x: 100, y: 100 }, 5, isMobile);
-    await expect(page.getByTestId("wall").locator("polygon")).toHaveCount(1);
+    await expect(plan(page).getByTestId("wall").locator("polygon")).toHaveCount(1);
     expect((await wallPoints(page))[0]).toEqual([
       [100, 100],
       [400, 100],
@@ -145,11 +146,11 @@ test.describe("격자·끝점 스냅", () => {
     await drawLine(page, { x: 100, y: 100 }, { x: 300, y: 100 }, false);
     const near = await cmToScreen(page, FLOOR, { x: 300, y: 100 });
     await page.mouse.move(near.x + 5, near.y);
-    await expect(page.getByTestId("snap-endpoint")).toHaveCount(1);
-    await expect(page.getByTestId("snap-endpoint")).toHaveAttribute("cx", "300");
+    await expect(plan(page).getByTestId("snap-endpoint")).toHaveCount(1);
+    await expect(plan(page).getByTestId("snap-endpoint")).toHaveAttribute("cx", "300");
     const far = await cmToScreen(page, FLOOR, { x: 200, y: 300 });
     await page.mouse.move(far.x, far.y);
-    await expect(page.getByTestId("snap-endpoint")).toHaveCount(0);
-    await expect(page.getByTestId("snap-grid")).toHaveCount(1);
+    await expect(plan(page).getByTestId("snap-endpoint")).toHaveCount(0);
+    await expect(plan(page).getByTestId("snap-grid")).toHaveCount(1);
   });
 });
