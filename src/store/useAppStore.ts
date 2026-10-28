@@ -18,6 +18,7 @@ type AppState = {
   addSpace: (input: NewSpaceInput) => AddSpaceResult;
   setMode: (mode: AppMode) => void;
   setTool: (tool: DrawingTool) => void;
+  setSnap: (snap: boolean) => void;
   addWall: (wall: Omit<Wall, "id">) => void; // 현재 공간에 더한다
   eraseSegment: (wallId: string, segment: number) => void;
 };
@@ -35,6 +36,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
   },
   setMode: (mode) => set((state) => ({ ui: { ...state.ui, mode } })),
   setTool: (tool) => set((state) => ({ ui: { ...state.ui, tool } })),
+  setSnap: (snap) => set((state) => ({ ui: { ...state.ui, snap } })),
   addWall: (wall) =>
     set((state) => ({ data: addWall(state.data, { ...wall, id: createId("wall") }) })),
   eraseSegment: (wallId, segment) =>

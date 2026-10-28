@@ -1,4 +1,4 @@
-import { FloorPlan, ToolBar } from "@/features/editor2d";
+import { FloorPlan, SnapToggle, ToolBar } from "@/features/editor2d";
 import { formatMeters } from "@/features/spaces";
 import { useAppStore } from "@/store/useAppStore";
 import styles from "./EditScreen.module.css";
@@ -22,7 +22,13 @@ export function EditScreen() {
       <main className={styles.body}>
         <ToolBar />
         <section className={styles.canvas} aria-label="2D 평면도 영역">
-          <FloorPlan floor={space.floor} walls={space.walls} />
+          <div className={styles.plan}>
+            <FloorPlan floor={space.floor} walls={space.walls} />
+          </div>
+          {/* TODO(T5): 왼쪽 구역 목록, TODO(T26): 바닥 크기 버튼 */}
+          <footer className={styles.canvasBar}>
+            <SnapToggle />
+          </footer>
         </section>
       </main>
     </div>

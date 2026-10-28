@@ -1,0 +1,40 @@
+/* 토글. 값은 컴포넌트 시안 06 (트랙 40×24, 손잡이 18px) */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 4px;
+  background: transparent;
+  border: none;
+  border-radius: var(--yg-radius-pill);
+  cursor: pointer;
+}
+
+.label {
+  font-size: 14px;
+  color: var(--yg-text-sub);
+}
+
+.track {
+  width: 40px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 3px;
+  background: var(--yg-border);
+  border-radius: var(--yg-radius-pill);
+  transition: background-color 0.15s;
+}
+.toggle[aria-checked="true"] .track {
+  justify-content: flex-end;
+  background: var(--yg-accent);
+}
+
+.knob {
+  width: 18px;
+  height: 18px;
+  background: var(--yg-surface);
+  border-radius: var(--yg-radius-pill);
+}
