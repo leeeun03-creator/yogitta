@@ -44,3 +44,8 @@
 .drawing:active {
   cursor: crosshair;
 }
+
+/* 지우개로 지울 선분 (yogitta-design 1장 삭제 색) */
+.erasing {
+  stroke: var(--yg-danger);
+}

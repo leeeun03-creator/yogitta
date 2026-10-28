@@ -8,13 +8,14 @@ type WallLayerProps = {
   walls: readonly Wall[];
   draft: readonly Point[]; // 그리는 중인 점 (마지막에 커서를 이어 미리보기)
   cursor: Point | null;
+  erasing: { from: Point; to: Point } | null; // 지우개로 지울 선분
   cmPerPx: number;
 };
 
 const toPath = (points: readonly Point[]) => points.map(({ x, y }) => `${x},${y}`).join(" ");
 
 /** 벽(두께 12cm, 끝 각지게)과 연결점, 그리는 중인 미리보기 선 (yogitta-design 6장). */
-export function WallLayer({ walls, draft, cursor, cmPerPx }: WallLayerProps) {
+export function WallLayer({ walls, draft, cursor, erasing, cmPerPx }: WallLayerProps) {
   const preview = cursor && draft.length > 0 ? [...draft, cursor] : draft;
   const jointRadius = JOINT_RADIUS_PX * cmPerPx;
   return (
@@ -22,6 +23,17 @@ export function WallLayer({ walls, draft, cursor, cmPerPx }: WallLayerProps) {
       {walls.map((wall) => (
         <WallShape key={wall.id} wall={wall} jointRadius={jointRadius} cmPerPx={cmPerPx} />
       ))}
+      {erasing && (
+        <line
+          data-testid="erasing"
+          x1={erasing.from.x}
+          y1={erasing.from.y}
+          x2={erasing.to.x}
+          y2={erasing.to.y}
+          className={styles.erasing}
+          strokeWidth={WALL_THICKNESS_CM}
+        />
+      )}
       {preview.length > 0 && (
         <polyline
           data-testid="draft"
