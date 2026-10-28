@@ -6,6 +6,7 @@ import {
   dragFloorCm,
   dragScreen,
   floorBox,
+  touchSender,
   plan,
   wallPoints,
 } from "./helpers";
@@ -108,12 +109,7 @@ test.describe("돋보기 (터치)", () => {
     await chooseTool(page, "직선");
     const a = await cmToScreen(page, FLOOR, { x: 200, y: 300 });
     const b = await cmToScreen(page, FLOOR, { x: 400, y: 300 });
-    const cdp = await page.context().newCDPSession(page);
-    const send = (type: "touchStart" | "touchMove" | "touchEnd", points: Cm[]) =>
-      cdp.send("Input.dispatchTouchEvent", {
-        type,
-        touchPoints: points.map((p, id) => ({ ...p, id })),
-      });
+    const send = await touchSender(page);
     await send("touchStart", [a]);
     await send("touchMove", [{ x: a.x + 20, y: a.y }]);
     await expect(loupe(page)).toBeVisible();

@@ -1,3 +1,4 @@
+import { clamp } from "@/shared/lib/clamp";
 import { distance } from "@/shared/lib/distance";
 import type { Floor, Point } from "@/shared/types";
 
@@ -9,7 +10,6 @@ export type SnapOptions = {
   floor: Floor;
 }; // cm
 
-const clamp = (value: number, max: number) => Math.min(Math.max(value, 0), max);
 const roundTo = (value: number, step: number) => Math.round(value / step) * step;
 
 /**
@@ -22,7 +22,10 @@ export function snapPoint(
   { enabled, endpointRadius, gridStep, floor }: SnapOptions,
 ): { point: Point; kind: SnapKind } {
   const step = enabled ? gridStep : 1;
-  const free = { x: clamp(roundTo(raw.x, step), floor.w), y: clamp(roundTo(raw.y, step), floor.h) };
+  const free = {
+    x: clamp(roundTo(raw.x, step), 0, floor.w),
+    y: clamp(roundTo(raw.y, step), 0, floor.h),
+  };
   if (!enabled) return { point: free, kind: "none" };
 
   let nearest: Point | null = null;

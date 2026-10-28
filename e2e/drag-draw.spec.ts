@@ -7,6 +7,7 @@ import {
   dragPath,
   dragScreen,
   floorBox,
+  touchSender,
   plan,
   pressCm,
   wallPoints,
@@ -154,12 +155,7 @@ test.describe("끌어서 그리기", () => {
     const before = await floorBox(page);
     const a = await cmToScreen(page, FLOOR, { x: 200, y: 200 });
     const b = await cmToScreen(page, FLOOR, { x: 400, y: 200 });
-    const cdp = await page.context().newCDPSession(page);
-    const send = (type: "touchStart" | "touchMove" | "touchEnd", points: Cm[]) =>
-      cdp.send("Input.dispatchTouchEvent", {
-        type,
-        touchPoints: points.map((p, id) => ({ ...p, id })),
-      });
+    const send = await touchSender(page);
     await send("touchStart", [a]);
     await send("touchMove", [{ x: a.x + 20, y: a.y }]);
     await send("touchStart", [{ x: a.x + 20, y: a.y }, b]);

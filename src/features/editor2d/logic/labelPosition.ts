@@ -1,10 +1,8 @@
+import { clamp } from "@/shared/lib/clamp";
 import type { Point } from "@/shared/types";
 import type { ViewBox } from "./fitViewBox";
 
 type Half = { x: number; y: number }; // 글자 상자의 절반 크기 (cm)
-
-const clamp = (value: number, low: number, high: number) =>
-  low > high ? (low + high) / 2 : Math.min(Math.max(value, low), high);
 
 const isInside = (point: Point, box: ViewBox, half: Half) =>
   point.x >= box.x + half.x &&

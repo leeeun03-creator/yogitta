@@ -1,3 +1,4 @@
+import { clamp } from "@/shared/lib/clamp";
 import { ZOOM_MAX, ZOOM_MIN } from "@/shared/constants/floorPlan";
 import type { Floor, Point } from "@/shared/types";
 import { clampCenter } from "./clampCenter";
@@ -13,7 +14,7 @@ export function zoomAt(
   factor: number,
   anchor: Point,
 ): View {
-  const zoom = Math.min(Math.max(view.zoom * factor, ZOOM_MIN), ZOOM_MAX);
+  const zoom = clamp(view.zoom * factor, ZOOM_MIN, ZOOM_MAX);
   if (zoom === view.zoom) return view;
 
   const anchorCm = screenToCm(anchor, box);

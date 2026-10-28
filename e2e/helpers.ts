@@ -86,6 +86,16 @@ export function expectNear(actual: number[][] | undefined, expected: Cm[]) {
 }
 
 type TouchType = "touchStart" | "touchMove";
+/** 손가락 여러 개를 직접 보내는 함수 (CDP 터치). points 순서가 손가락 번호다. */
+export async function touchSender(page: Page) {
+  const cdp = await page.context().newCDPSession(page);
+  return (type: "touchStart" | "touchMove" | "touchEnd", points: Cm[]) =>
+    cdp.send("Input.dispatchTouchEvent", {
+      type,
+      touchPoints: points.map((p, id) => ({ ...p, id })),
+    });
+}
+
 const DRAG_STEPS = 5; // 지나는 점 사이를 몇 번에 나눠 움직이나
 
 /** 화면 좌표(px) path를 차례로 지나며 끈다. 모바일은 CDP 터치(Playwright 터치스크린은 탭만 된다). beforeUp은 떼기 직전에 돈다. */

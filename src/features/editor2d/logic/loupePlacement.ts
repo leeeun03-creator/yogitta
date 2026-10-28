@@ -1,10 +1,8 @@
+import { clamp } from "@/shared/lib/clamp";
 import type { Point } from "@/shared/types";
 import type { Size } from "./fitViewBox";
 
 type LoupeLayout = { size: number; lift: number; margin: number }; // px
-
-const clamp = (value: number, low: number, high: number) =>
-  low > high ? (low + high) / 2 : Math.min(Math.max(value, low), high);
 
 /**
  * 돋보기 가운데 자리(px). 손가락 위 lift만큼에 두고, 위가 모자라면 손가락 옆(화면 가운데 쪽)에 둔다.
