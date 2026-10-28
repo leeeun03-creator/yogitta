@@ -11,7 +11,7 @@ import { usePointerGestures } from "./usePointerGestures";
 import { useWheelZoom } from "./useWheelZoom";
 
 /** 2D 평면도의 줌·이동: 휠, 끌기, 두 손가락 핀치, 키보드(+ - 0 방향키). */
-export function usePanZoom(ref: RefObject<HTMLElement | null>, floor: Floor) {
+export function usePanZoom(ref: RefObject<HTMLElement | null>, floor: Floor, canPan: boolean) {
   const viewport = useElementSize(ref);
   const [view, setView] = useState(() => initialView(floor));
   const latest = useLatest({ viewport, floor });
@@ -33,7 +33,7 @@ export function usePanZoom(ref: RefObject<HTMLElement | null>, floor: Floor) {
     });
 
   useWheelZoom(ref, zoomBy);
-  const pointerHandlers = usePointerGestures(ref, { zoomBy, panByPx });
+  const pointerHandlers = usePointerGestures(ref, { zoomBy, panByPx, canPan });
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     const action = keyboardAction(event.key);

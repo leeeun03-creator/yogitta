@@ -29,3 +29,18 @@
 .dimension {
   fill: var(--yg-text-sub);
 }
+
+.drawing {
+  cursor: crosshair;
+}
+
+.joint {
+  fill: var(--yg-surface);
+}
+
+.draft {
+  opacity: 0.45;
+}
+.drawing:active {
+  cursor: crosshair;
+}

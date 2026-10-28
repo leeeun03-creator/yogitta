@@ -22,7 +22,7 @@ export function EditScreen() {
       <main className={styles.body}>
         <ToolBar />
         <section className={styles.canvas} aria-label="2D 평면도 영역">
-          <FloorPlan floor={space.floor} />
+          <FloorPlan floor={space.floor} walls={space.walls} />
         </section>
       </main>
     </div>
