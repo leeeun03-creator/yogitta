@@ -1,10 +1,11 @@
-import { FloorPlan, SnapToggle, ToolBar } from "@/features/editor2d";
+import { FloorPlan, SnapToggle, ToolBar, useHistoryKeys } from "@/features/editor2d";
 import { formatMeters } from "@/shared/lib/formatMeters";
 import { useAppStore } from "@/store/useAppStore";
 import styles from "./EditScreen.module.css";
 
 /** 벽·가구를 만들고 고치는 편집 모드 (시안 04). 속성 패널은 T6부터 붙인다. */
 export function EditScreen() {
+  useHistoryKeys();
   const space = useAppStore((state) =>
     state.data.spaces.find((candidate) => candidate.id === state.data.currentSpaceId),
   );

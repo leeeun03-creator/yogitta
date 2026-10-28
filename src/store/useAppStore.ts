@@ -10,6 +10,7 @@ import { moveHistory, type HistoryDirection } from "./logic/moveHistory";
 import { EMPTY_HISTORY, recordHistory, type History } from "./logic/recordHistory";
 
 export type AppMode = "main" | "edit";
+export type { HistoryDirection };
 
 /** 편집 모드의 그리기 도구. 가구 도구는 T6에서 더한다. */
 export const DRAWING_TOOLS = ["select", "line", "polyline", "rect", "eraser"] as const;
