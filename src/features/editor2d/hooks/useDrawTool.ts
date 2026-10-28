@@ -1,9 +1,13 @@
 import { useState, type KeyboardEvent, type PointerEvent } from "react";
+import { POINT_HIT_PX } from "@/shared/constants/floorPlan";
 import type { Floor, Point } from "@/shared/types";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
+import { drawKeyStep } from "../logic/drawKeyStep";
+import { drawTapStep, type DrawStep } from "../logic/drawTapStep";
 import type { ViewBox } from "../logic/fitViewBox";
-import { nextLineDraft } from "../logic/nextLineDraft";
 import { toFloorPoint } from "../logic/toFloorPoint";
+
+const TAP_TOOLS: readonly DrawingTool[] = ["line", "polyline"];
 
 /** 그리기 도구로 찍은 점(draft)과 커서 위치를 들고, 다 그리면 store에 벽을 더한다. 도구를 바꾸면 그리던 것은 버린다. */
 export function useDrawTool(tool: DrawingTool, box: ViewBox, floor: Floor) {
@@ -16,25 +20,31 @@ export function useDrawTool(tool: DrawingTool, box: ViewBox, floor: Floor) {
     setDrawingTool(tool);
     setPoints([]);
   }
-  const isDrawing = tool === "line";
+  const isDrawing = TAP_TOOLS.includes(tool);
 
-  const tap = (screen: Point) => {
-    if (!isDrawing) return;
-    const step = nextLineDraft(points, toFloorPoint(screen, box, floor));
+  const apply = (step: DrawStep) => {
     setPoints(step.draft);
-    if (step.wall) addWall({ tool: "line", points: step.wall, closed: false });
+    if (step.wall) addWall(step.wall);
+  };
+  const tap = (screen: Point) => {
+    const point = toFloorPoint(screen, box, floor);
+    if (isDrawing) apply(drawTapStep(tool, points, point, POINT_HIT_PX * box.cmPerPx));
   };
 
   const handlers = {
     onPointerMove: (event: PointerEvent<HTMLElement>) => {
       if (!isDrawing) return;
       const rect = event.currentTarget.getBoundingClientRect();
-      const screen = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-      setCursor(toFloorPoint(screen, box, floor));
+      setCursor(
+        toFloorPoint({ x: event.clientX - rect.left, y: event.clientY - rect.top }, box, floor),
+      );
     },
     onPointerLeave: () => setCursor(null),
     onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
-      if (event.key === "Escape" && points.length > 0) setPoints([]);
+      const step = drawKeyStep(tool, points, event.key);
+      if (!step) return;
+      event.preventDefault();
+      apply(step);
     },
   };
 
