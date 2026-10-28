@@ -2,3 +2,11 @@
 export const WALL_THICKNESS_CM = 12;
 /** 3D 벽 높이 (cm). 실제(240cm)보다 낮게 잘라 안이 보이게 한다 (컷어웨이, yogitta-design 5장). */
 export const WALL_HEIGHT_CM = 110;
+/** 3D 미리보기 카메라 세로 화각 (도). 좁게 잡아 등각에 가까운 디오라마처럼 보이게 한다. */
+export const PREVIEW_FOV_DEG = 30;
+/** 처음 카메라가 바닥 가운데를 내려다보는 방향 (오른쪽 앞 대각선 위, 크기는 상관없음). */
+export const CAMERA_DIRECTION = { x: 1, y: 1, z: 1 } as const;
+/** 처음 화면에 바닥이 꽉 차지 않게 두는 여유 (배). */
+export const CAMERA_FIT_MARGIN = 1.1;
+/** 3D 격자선을 바닥보다 살짝 띄우는 높이 (cm). 바닥 면과 겹쳐 깜빡이지 않게 한다. */
+export const FLOOR_GRID_LIFT_CM = 0.5;

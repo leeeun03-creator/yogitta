@@ -1,5 +1,15 @@
 import { expect, type Page } from "@playwright/test";
 
+/** 페이지에서 난 콘솔 에러와 처리 안 된 예외를 모은다. */
+export function collectErrors(page: Page): string[] {
+  const errors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  page.on("pageerror", (error) => errors.push(error.message));
+  return errors;
+}
+
 /** 첫 실행 화면에서 바닥 크기를 넣고 공간을 만들어 편집 모드로 들어간다. */
 export async function createSpace(page: Page, size: { width: string; depth: string }) {
   await page.goto("./");

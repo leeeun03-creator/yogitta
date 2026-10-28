@@ -16,12 +16,16 @@ export type { HistoryDirection };
 export const DRAWING_TOOLS = ["select", "line", "polyline", "rect", "eraser"] as const;
 export type DrawingTool = (typeof DRAWING_TOOLS)[number];
 
+/** 편집 모드에서 보는 것: 2D 평면도(plan) 또는 3D 미리보기(preview). */
+export type EditView = "plan" | "preview";
+
 type AppState = {
   data: AppData; // 저장 대상 (T11에서 localStorage와 연결)
-  ui: { mode: AppMode; tool: DrawingTool; snap: boolean }; // 화면 상태, 저장하지 않음
+  ui: { mode: AppMode; view: EditView; tool: DrawingTool; snap: boolean }; // 화면 상태, 저장하지 않음
   history: History; // 되돌리기 기록, 저장하지 않음
   addSpace: (input: NewSpaceInput) => AddSpaceResult;
   setMode: (mode: AppMode) => void;
+  setView: (view: EditView) => void;
   setTool: (tool: DrawingTool) => void;
   setSnap: (snap: boolean) => void;
   addWall: (wall: Omit<Wall, "id">) => void; // 현재 공간에 더한다
@@ -45,7 +49,7 @@ const move = (state: AppState, direction: HistoryDirection) =>
 /** 앱 전체 데이터와 화면 상태. 데이터 변경은 여기 액션으로만 한다. */
 export const useAppStore = create<AppState>()((set, get) => ({
   data: INITIAL_DATA,
-  ui: { mode: "main", tool: "select", snap: true },
+  ui: { mode: "main", view: "plan", tool: "select", snap: true },
   history: EMPTY_HISTORY,
   // 공간 만들기는 되돌리지 않고 기록을 비운다 (되돌려서 첫 실행 화면으로 가거나, 옛 기록이 새 공간을 지우지 않게)
   addSpace: (input) => {
@@ -54,6 +58,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
     return result;
   },
   setMode: (mode) => set((state) => ({ ui: { ...state.ui, mode } })),
+  setView: (view) => set((state) => ({ ui: { ...state.ui, view } })),
   setTool: (tool) => set((state) => ({ ui: { ...state.ui, tool } })),
   setSnap: (snap) => set((state) => ({ ui: { ...state.ui, snap } })),
   addWall: (wall) =>

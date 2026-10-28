@@ -12,9 +12,10 @@ const TOOLS: readonly { tool: DrawingTool; label: string; Icon: LucideIcon }[] =
   { tool: "eraser", label: "지우개", Icon: Eraser },
 ];
 
-/** 편집 모드 왼쪽 그리기 도구 막대 (컴포넌트 시안 08). 한 번에 도구 하나만 고른다. */
+/** 편집 모드 왼쪽 그리기 도구 막대 (컴포넌트 시안 08). 한 번에 도구 하나만 고른다. 3D 미리보기에서는 막힌다. */
 export function ToolBar() {
   const current = useAppStore((state) => state.ui.tool);
+  const isPreview = useAppStore((state) => state.ui.view === "preview");
   const setTool = useAppStore((state) => state.setTool);
 
   return (
@@ -25,6 +26,7 @@ export function ToolBar() {
           type="button"
           className={styles.tool}
           aria-pressed={current === tool}
+          disabled={isPreview}
           onClick={() => setTool(tool)}
         >
           <Icon size={ICON_SIZE} strokeWidth={2} aria-hidden="true" />

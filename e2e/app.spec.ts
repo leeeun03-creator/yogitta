@@ -1,15 +1,6 @@
 import { readFileSync } from "node:fs";
-import { expect, test, type Page } from "@playwright/test";
-
-/** 페이지에서 난 콘솔 에러와 처리 안 된 예외를 모은다. */
-function collectErrors(page: Page): string[] {
-  const errors: string[] = [];
-  page.on("console", (message) => {
-    if (message.type() === "error") errors.push(message.text());
-  });
-  page.on("pageerror", (error) => errors.push(error.message));
-  return errors;
-}
+import { expect, test } from "@playwright/test";
+import { collectErrors } from "./helpers";
 
 test.describe("첫 화면", () => {
   test("로고가 보이고 콘솔 에러가 없다", async ({ page }) => {

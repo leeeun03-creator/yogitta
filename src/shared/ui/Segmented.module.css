@@ -1,0 +1,37 @@
+/* 세그먼트 컨트롤. 값은 컴포넌트 시안 06 (바탕 패딩 4px, 버튼 패딩 0 18px, 14px). 높이는 터치 영역 44px */
+.group {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--yg-chip);
+  border-radius: var(--yg-radius-pill);
+}
+
+.option {
+  min-height: 44px;
+  padding: 0 18px;
+  background: transparent;
+  color: var(--yg-text-sub);
+  border: none;
+  border-radius: var(--yg-radius-pill);
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+.option:hover:not([aria-pressed="true"]) {
+  color: var(--yg-text);
+}
+.option[aria-pressed="true"] {
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  box-shadow: var(--yg-shadow-chip);
+}
+
+/* 좁은 화면: 360px에서 옆 버튼과 한 줄에 들어가게 안쪽 여백을 줄인다 */
+@media (max-width: 640px) {
+  .option {
+    padding: 0 14px;
+  }
+}

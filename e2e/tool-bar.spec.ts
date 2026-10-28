@@ -36,6 +36,13 @@ test.describe("그리기 도구 막대", () => {
     }
   });
 
+  test("엣지: 누른 도구 위에 마우스·손가락이 있어도 강조색 바탕이다", async ({ page }) => {
+    await tool(page, "직선").click(); // 누른 뒤 포인터는 버튼 위에 남아 있다
+    await expect(tool(page, "직선")).toHaveCSS("background-color", ACCENT);
+    await tool(page, "직선").hover();
+    await expect(tool(page, "직선")).toHaveCSS("background-color", ACCENT);
+  });
+
   test("키보드 Tab·Enter로도 고를 수 있다", async ({ page, isMobile }) => {
     test.skip(isMobile, "모바일에는 키보드 Tab 이동이 없다");
     await tool(page, "선택").focus();

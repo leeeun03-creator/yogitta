@@ -1,6 +1,6 @@
 import { FLOOR_PLAN_COLORS } from "@/shared/constants/colors2d";
 import type { Floor } from "@/shared/types";
-import { gridLines } from "../logic/gridLines";
+import { gridLines } from "@/shared/lib/gridLines";
 import styles from "./FloorPlan.module.css";
 
 type FloorGridProps = { floor: Floor; lineWidth: number }; // lineWidth: cm (화면 1px에 해당)

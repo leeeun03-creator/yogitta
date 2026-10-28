@@ -25,12 +25,22 @@
   cursor: pointer;
   transition: background-color 0.15s;
 }
-.tool:hover {
+/* 고른 도구와 막힌 도구는 올려도 바탕을 바꾸지 않는다 (고른 도구의 강조색을 덮지 않게) */
+.tool:hover:not(:disabled, [aria-pressed="true"]) {
   background: var(--yg-chip);
 }
 .tool[aria-pressed="true"] {
   background: var(--yg-accent);
   color: var(--yg-on-accent);
+}
+/* 3D 미리보기에서는 그릴 수 없어 막는다 (컴포넌트 시안 06 비활성 색). 고른 도구는 칩 바탕으로만 남긴다 */
+.tool:disabled {
+  color: var(--yg-disabled-icon);
+  cursor: not-allowed;
+}
+.tool[aria-pressed="true"]:disabled {
+  background: var(--yg-chip);
+  color: var(--yg-disabled-text);
 }
 
 .label {

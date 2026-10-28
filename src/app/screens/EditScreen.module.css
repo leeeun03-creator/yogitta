@@ -15,6 +15,20 @@
   border-bottom: 1px solid var(--yg-border-soft);
 }
 
+.heading {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+/* 전환 버튼 · 되돌리기 줄. 줄바꿈하지 않아 글꼴이 늦게 와도 상단 바 높이가 그대로다 */
+.controls {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .title {
   font-size: 22px;
 }
@@ -60,6 +74,10 @@
 @media (max-width: 640px) {
   .topBar {
     padding: 16px;
+  }
+  /* 좁은 화면: 제목 줄과 [전환 · 되돌리기] 줄을 항상 나눈다. 글꼴이 늦게 와도 줄바꿈 자리가 바뀌지 않게 */
+  .heading {
+    flex-basis: 100%;
   }
   .body {
     flex-direction: column;

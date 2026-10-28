@@ -45,4 +45,5 @@
   --yg-shadow-card: 0 8px 24px rgba(120, 80, 40, 0.14);
   --yg-shadow-panel: 0 10px 30px rgba(120, 80, 40, 0.12);
   --yg-shadow-pop: 0 18px 44px rgba(90, 60, 30, 0.24);
+  --yg-shadow-chip: 0 2px 6px rgba(120, 80, 40, 0.15); /* 세그먼트 컨트롤의 고른 버튼 (컴포넌트 시안 06) */
 }
