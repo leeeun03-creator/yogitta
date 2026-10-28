@@ -1,19 +1,17 @@
 import { useState, type KeyboardEvent, type PointerEvent } from "react";
-import type { Floor, Point } from "@/shared/types";
+import type { Point } from "@/shared/types";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
-import type { ViewBox } from "../logic/fitViewBox";
 import { rectFromDrag } from "../logic/rectFromDrag";
-import { toFloorPoint } from "../logic/toFloorPoint";
 import { eventPoint } from "./eventPoint";
+import type { SnapAt } from "./useSnapper";
 
 type Drag = { pointerId: number; start: Point; end: Point };
 
 /** 사각형 도구: 끌어서 놓으면 닫힌 벽(선분 4개). 끄는 동안 미리보기, 두 번째 손가락·Esc는 취소. */
-export function useRectTool(tool: DrawingTool, box: ViewBox, floor: Floor) {
+export function useRectTool(tool: DrawingTool, snapAt: SnapAt) {
   const addWall = useAppStore((state) => state.addWall);
   const [drag, setDrag] = useState<Drag | null>(null);
-  const floorPoint = (event: PointerEvent<HTMLElement>) =>
-    toFloorPoint(eventPoint(event), box, floor);
+  const floorPoint = (event: PointerEvent<HTMLElement>) => snapAt(eventPoint(event)).point;
   const isMine = (event: PointerEvent<HTMLElement>) => drag?.pointerId === event.pointerId;
 
   const handlers = {

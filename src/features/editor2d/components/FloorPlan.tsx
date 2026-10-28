@@ -4,6 +4,7 @@ import type { Floor, Wall } from "@/shared/types";
 import { useFloorPlanInput } from "../hooks/useFloorPlanInput";
 import { FloorDimensions } from "./FloorDimensions";
 import { FloorGrid } from "./FloorGrid";
+import { SnapIndicator } from "./SnapIndicator";
 import { WallLayer } from "./WallLayer";
 import styles from "./FloorPlan.module.css";
 
@@ -35,10 +36,11 @@ export function FloorPlan({ floor, walls }: FloorPlanProps) {
         <WallLayer
           walls={walls}
           draft={input.draft}
-          cursor={input.cursor}
+          cursor={input.previewCursor}
           erasing={input.erasing}
           cmPerPx={box.cmPerPx}
         />
+        <SnapIndicator cursor={input.cursor} cmPerPx={box.cmPerPx} />
         <FloorDimensions floor={floor} labels={labels} cmPerPx={box.cmPerPx} />
       </svg>
     </div>

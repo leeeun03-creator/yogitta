@@ -18,3 +18,6 @@ export const TAP_MOVE_PX = 5;
 
 /** 점·선분을 누른 것으로 보는 화면 거리 (px). 연속선 닫기, 지우개(T3-6). */
 export const POINT_HIT_PX = 8;
+
+/** 그리는 점이 기존 벽 점에 붙는 화면 거리 (px). 줌과 상관없이 같다. */
+export const SNAP_ENDPOINT_PX = 12;

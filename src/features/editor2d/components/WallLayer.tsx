@@ -7,7 +7,7 @@ import styles from "./FloorPlan.module.css";
 type WallLayerProps = {
   walls: readonly Wall[];
   draft: readonly Point[]; // 그리는 중인 점 (마지막에 커서를 이어 미리보기)
-  cursor: Point | null;
+  cursor: Point | null; // 붙을 커서 위치
   erasing: { from: Point; to: Point } | null; // 지우개로 지울 선분
   cmPerPx: number;
 };

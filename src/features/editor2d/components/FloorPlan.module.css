@@ -49,3 +49,12 @@
 .erasing {
   stroke: var(--yg-danger);
 }
+
+/* 붙을 곳 표시 (강조색) */
+.snapRing {
+  fill: none;
+  stroke: var(--yg-accent);
+}
+.snapDot {
+  fill: var(--yg-accent);
+}
