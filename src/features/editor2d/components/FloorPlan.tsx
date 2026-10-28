@@ -1,24 +1,18 @@
 import { useRef } from "react";
 import { formatMeters } from "@/features/spaces";
 import { FLOOR_PLAN_COLORS } from "@/shared/constants/colors2d";
-import {
-  DIMENSION_FONT_PX,
-  DIMENSION_GAP_PX,
-  FLOOR_PLAN_MARGIN_PX,
-} from "@/shared/constants/floorPlan";
+import { DIMENSION_FONT_PX, DIMENSION_GAP_PX } from "@/shared/constants/floorPlan";
 import type { Floor } from "@/shared/types";
-import { useElementSize } from "../hooks/useElementSize";
-import { fitViewBox } from "../logic/fitViewBox";
+import { usePanZoom } from "../hooks/usePanZoom";
 import { gridLines } from "../logic/gridLines";
 import styles from "./FloorPlan.module.css";
 
 type FloorPlanProps = { floor: Floor };
 
-/** 편집 모드의 2D 평면도. 바닥(cm)을 화면에 맞춰 그리고 50cm 격자와 치수를 보여 준다. */
+/** 편집 모드의 2D 평면도. 바닥(cm)에 50cm 격자와 치수를 그리고, 줌·이동할 수 있다. */
 export function FloorPlan({ floor }: FloorPlanProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const viewport = useElementSize(wrapperRef);
-  const box = fitViewBox(floor, viewport, FLOOR_PLAN_MARGIN_PX);
+  const { box, handlers } = usePanZoom(wrapperRef, floor);
   // 선·글자는 cm 좌표 안에 있으므로, 화면에서 같은 px로 보이게 1px = cmPerPx로 바꾼다
   const px = (value: number) => value * box.cmPerPx;
   const widthLabel = `${formatMeters(floor.w)} m`;
@@ -27,7 +21,13 @@ export function FloorPlan({ floor }: FloorPlanProps) {
   const labelY = floor.h / 2;
 
   return (
-    <div ref={wrapperRef} className={styles.wrapper}>
+    <div
+      ref={wrapperRef}
+      className={styles.wrapper}
+      tabIndex={0}
+      aria-label="2D 평면도 보기: 휠·+/-로 줌, 끌기·방향키로 이동, 0으로 처음 보기"
+      {...handlers}
+    >
       <svg
         className={styles.svg}
         viewBox={`${box.x} ${box.y} ${box.width} ${box.height}`}

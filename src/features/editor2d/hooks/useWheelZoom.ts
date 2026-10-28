@@ -1,0 +1,28 @@
+import { useEffect, useRef, type RefObject } from "react";
+import { ZOOM_STEP } from "@/shared/constants/floorPlan";
+import type { Point } from "@/shared/types";
+
+/** 휠을 올리면 커서 아래를 붙잡고 확대, 내리면 축소한다. 페이지는 스크롤되지 않는다. */
+export function useWheelZoom(
+  ref: RefObject<HTMLElement | null>,
+  zoomBy: (factor: number, anchor: Point) => void,
+) {
+  const zoomRef = useRef(zoomBy);
+  useEffect(() => {
+    zoomRef.current = zoomBy;
+  });
+
+  // React의 onWheel은 passive라 페이지 스크롤을 막을 수 없어서 직접 단다
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const rect = element.getBoundingClientRect();
+      const anchor = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      zoomRef.current(event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP, anchor);
+    };
+    element.addEventListener("wheel", handleWheel, { passive: false });
+    return () => element.removeEventListener("wheel", handleWheel);
+  }, [ref]);
+}

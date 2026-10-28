@@ -4,6 +4,15 @@
   width: 100%;
   height: 100%;
   min-height: 0;
+  touch-action: none; /* 핀치·끌기를 브라우저 대신 직접 처리한다 */
+  cursor: grab;
+}
+.wrapper:active {
+  cursor: grabbing;
+}
+.wrapper:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: -2px;
 }
 
 .svg {
