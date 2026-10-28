@@ -1,0 +1,38 @@
+import { describe, expect, it } from "vitest";
+import type { Wall } from "@/shared/types";
+import { addWall } from "./addWall";
+import { createWallTestData } from "./wallFixtures";
+
+const LINE: Wall = {
+  id: "wall_1",
+  tool: "line",
+  points: [
+    { x: 0, y: 0 },
+    { x: 100, y: 0 },
+  ],
+  closed: false,
+};
+
+describe("addWall", () => {
+  it("현재 공간에만 벽을 더한다", () => {
+    const data = addWall(createWallTestData(), LINE);
+    expect(data.spaces[0]?.walls).toEqual([LINE]);
+    expect(data.spaces[1]?.walls).toEqual([]);
+  });
+
+  it("점이 2개보다 적은 벽은 더하지 않는다", () => {
+    const original = createWallTestData();
+    expect(addWall(original, { ...LINE, points: [{ x: 0, y: 0 }] })).toBe(original);
+  });
+
+  it("현재 공간이 없으면 그대로 둔다", () => {
+    const original = { ...createWallTestData(), currentSpaceId: null };
+    expect(addWall(original, LINE)).toBe(original);
+  });
+
+  it("원본 데이터를 바꾸지 않는다", () => {
+    const original = createWallTestData();
+    addWall(original, LINE);
+    expect(original.spaces[0]?.walls).toEqual([]);
+  });
+});

@@ -1,7 +1,10 @@
 import { create } from "zustand";
 import { DATA_VERSION } from "@/shared/constants/storage";
-import type { AppData } from "@/shared/types";
+import { createId } from "@/shared/lib/createId";
+import type { AppData, Wall } from "@/shared/types";
 import { addSpace, type AddSpaceResult, type NewSpaceInput } from "./logic/addSpace";
+import { addWall } from "./logic/addWall";
+import { eraseSegment } from "./logic/eraseSegment";
 
 export type AppMode = "main" | "edit";
 
@@ -15,6 +18,8 @@ type AppState = {
   addSpace: (input: NewSpaceInput) => AddSpaceResult;
   setMode: (mode: AppMode) => void;
   setTool: (tool: DrawingTool) => void;
+  addWall: (wall: Omit<Wall, "id">) => void; // 현재 공간에 더한다
+  eraseSegment: (wallId: string, segment: number) => void;
 };
 
 const INITIAL_DATA: AppData = { version: DATA_VERSION, spaces: [], currentSpaceId: null };
@@ -30,4 +35,8 @@ export const useAppStore = create<AppState>()((set, get) => ({
   },
   setMode: (mode) => set((state) => ({ ui: { ...state.ui, mode } })),
   setTool: (tool) => set((state) => ({ ui: { ...state.ui, tool } })),
+  addWall: (wall) =>
+    set((state) => ({ data: addWall(state.data, { ...wall, id: createId("wall") }) })),
+  eraseSegment: (wallId, segment) =>
+    set((state) => ({ data: eraseSegment(state.data, { wallId, segment }, createId("wall")) })),
 }));
