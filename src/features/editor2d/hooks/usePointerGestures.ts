@@ -1,5 +1,6 @@
-import { useRef, type PointerEvent, type RefObject } from "react";
+import { useRef, type PointerEvent } from "react";
 import type { Point } from "@/shared/types";
+import { eventPoint } from "./eventPoint";
 
 type Gestures = {
   zoomBy: (factor: number, anchor: Point) => void;
@@ -12,21 +13,13 @@ function distance(a: Point, b: Point): number {
 }
 
 /** 손가락·마우스 하나로 끌면 이동(canPan일 때), 두 손가락을 벌리거나 모으면 그 가운데를 붙잡고 줌한다. */
-export function usePointerGestures(
-  ref: RefObject<HTMLElement | null>,
-  { zoomBy, panByPx, canPan }: Gestures,
-) {
+export function usePointerGestures({ zoomBy, panByPx, canPan }: Gestures) {
   const pointers = useRef(new Map<number, Point>());
-
-  const localPoint = (event: PointerEvent<HTMLElement>): Point => {
-    const rect = ref.current?.getBoundingClientRect();
-    return { x: event.clientX - (rect?.left ?? 0), y: event.clientY - (rect?.top ?? 0) };
-  };
 
   const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
     const previous = pointers.current.get(event.pointerId);
     if (!previous) return;
-    const current = localPoint(event);
+    const current = eventPoint(event);
     const others = [...pointers.current].filter(([id]) => id !== event.pointerId);
     pointers.current.set(event.pointerId, current);
 
@@ -47,7 +40,7 @@ export function usePointerGestures(
   return {
     onPointerDown: (event: PointerEvent<HTMLElement>) => {
       event.currentTarget.setPointerCapture(event.pointerId);
-      pointers.current.set(event.pointerId, localPoint(event));
+      pointers.current.set(event.pointerId, eventPoint(event));
     },
     onPointerMove: handlePointerMove,
     onPointerUp: handlePointerEnd,

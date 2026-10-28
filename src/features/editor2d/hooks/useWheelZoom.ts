@@ -1,6 +1,7 @@
 import { useEffect, type RefObject } from "react";
 import { ZOOM_STEP } from "@/shared/constants/floorPlan";
 import type { Point } from "@/shared/types";
+import { eventPoint } from "./eventPoint";
 import { useLatest } from "./useLatest";
 
 /** 휠을 올리면 커서 아래를 붙잡고 확대, 내리면 축소한다. 페이지는 스크롤되지 않는다. */
@@ -16,9 +17,7 @@ export function useWheelZoom(
     if (!element) return;
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
-      const rect = element.getBoundingClientRect();
-      const anchor = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-      zoomRef.current(event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP, anchor);
+      zoomRef.current(event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP, eventPoint(event));
     };
     element.addEventListener("wheel", handleWheel, { passive: false });
     return () => element.removeEventListener("wheel", handleWheel);

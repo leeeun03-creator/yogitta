@@ -33,7 +33,7 @@ export function usePanZoom(ref: RefObject<HTMLElement | null>, floor: Floor, can
     });
 
   useWheelZoom(ref, zoomBy);
-  const pointerHandlers = usePointerGestures(ref, { zoomBy, panByPx, canPan });
+  const pointerHandlers = usePointerGestures({ zoomBy, panByPx, canPan });
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     const action = keyboardAction(event.key);

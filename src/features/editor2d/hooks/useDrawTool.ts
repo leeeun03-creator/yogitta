@@ -6,6 +6,7 @@ import { drawKeyStep } from "../logic/drawKeyStep";
 import { drawTapStep, type DrawStep } from "../logic/drawTapStep";
 import type { ViewBox } from "../logic/fitViewBox";
 import { toFloorPoint } from "../logic/toFloorPoint";
+import { eventPoint } from "./eventPoint";
 
 const TAP_TOOLS: readonly DrawingTool[] = ["line", "polyline"];
 
@@ -34,10 +35,7 @@ export function useDrawTool(tool: DrawingTool, box: ViewBox, floor: Floor) {
   const handlers = {
     onPointerMove: (event: PointerEvent<HTMLElement>) => {
       if (!isDrawing) return;
-      const rect = event.currentTarget.getBoundingClientRect();
-      setCursor(
-        toFloorPoint({ x: event.clientX - rect.left, y: event.clientY - rect.top }, box, floor),
-      );
+      setCursor(toFloorPoint(eventPoint(event), box, floor));
     },
     onPointerLeave: () => setCursor(null),
     onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
