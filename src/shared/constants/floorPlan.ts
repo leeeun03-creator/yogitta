@@ -32,3 +32,7 @@ export const LOUPE_SIZE_PX = 120; // 지름
 export const LOUPE_ZOOM = 2; // 지금 2D 평면도보다 몇 배 크게
 export const LOUPE_LIFT_PX = 100; // 손가락에서 돋보기 가운데까지 (손가락에 가리지 않게)
 export const LOUPE_MARGIN_PX = 8; // 2D 평면도 가장자리와 돋보기 사이
+
+/** 구역 선 (px). 벽보다 얇은 점선이라 벽과 헷갈리지 않는다. */
+export const ROOM_LINE_WIDTH_PX = 2;
+export const ROOM_LINE_DASH_PX = 6;

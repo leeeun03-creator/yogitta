@@ -13,19 +13,19 @@ const LINE: Wall = { id: "line", tool: "line", points: [P(100, 100), P(200, 100)
 
 describe("findSegment", () => {
   it("반지름 안의 선분을 찾는다", () => {
-    expect(findSegment([RECT], P(150, 5), 10)).toMatchObject({ wallId: "rect", segment: 0 });
+    expect(findSegment([RECT], P(150, 5), 10)).toMatchObject({ lineId: "rect", segment: 0 });
   });
 
   it("닫힌 벽의 마지막 선분(마지막 → 첫 점)도 찾는다", () => {
-    expect(findSegment([RECT], P(3, 100), 10)).toMatchObject({ wallId: "rect", segment: 3 });
+    expect(findSegment([RECT], P(3, 100), 10)).toMatchObject({ lineId: "rect", segment: 3 });
   });
 
   it("여러 선분이 가까우면 가장 가까운 것을 고른다", () => {
-    expect(findSegment([RECT, LINE], P(150, 98), 10)).toMatchObject({ wallId: "line", segment: 0 });
+    expect(findSegment([RECT, LINE], P(150, 98), 10)).toMatchObject({ lineId: "line", segment: 0 });
   });
 
   it("선분 끝 너머는 끝점까지 거리로 잰다", () => {
-    expect(findSegment([LINE], P(208, 100), 10)).toMatchObject({ wallId: "line" });
+    expect(findSegment([LINE], P(208, 100), 10)).toMatchObject({ lineId: "line" });
     expect(findSegment([LINE], P(212, 100), 10)).toBeNull();
   });
 
@@ -36,7 +36,7 @@ describe("findSegment", () => {
 
   it("찾은 선분의 양 끝 점을 함께 돌려준다", () => {
     expect(findSegment([RECT], P(300, 100), 10)).toEqual({
-      wallId: "rect",
+      lineId: "rect",
       segment: 1,
       from: P(300, 0),
       to: P(300, 200),

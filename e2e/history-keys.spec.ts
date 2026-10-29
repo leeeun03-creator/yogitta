@@ -37,7 +37,7 @@ test.describe("되돌리기·다시하기 키", () => {
     expect(await wallCount(page)).toBe(1);
     await page.keyboard.press("Control+y");
     expect(await wallCount(page)).toBe(2);
-    await expect(page.getByRole("img", { name: /벽 2개$/ })).toBeVisible();
+    await expect(page.getByRole("img", { name: /벽 2개, 구역 선 0개$/ })).toBeVisible();
   });
 
   test("지운 선분을 되돌리면 벽이 원래대로 돌아온다", async ({ page }) => {

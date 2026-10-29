@@ -1,4 +1,12 @@
-import { Eraser, MousePointer2, Slash, Square, Waypoints, type LucideIcon } from "lucide-react";
+import {
+  Eraser,
+  MousePointer2,
+  Slash,
+  Spline,
+  Square,
+  Waypoints,
+  type LucideIcon,
+} from "lucide-react";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
 import styles from "./ToolBar.module.css";
 
@@ -9,6 +17,7 @@ const TOOLS: readonly { tool: DrawingTool; label: string; Icon: LucideIcon }[] =
   { tool: "line", label: "직선", Icon: Slash },
   { tool: "polyline", label: "연속선", Icon: Waypoints },
   { tool: "rect", label: "사각형", Icon: Square },
+  { tool: "roomLine", label: "구역 선", Icon: Spline },
   { tool: "eraser", label: "지우개", Icon: Eraser },
 ];
 

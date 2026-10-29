@@ -1,23 +1,16 @@
-import type { Point, Wall } from "@/shared/types";
 import { distance } from "@/shared/lib/distance";
+import type { Point } from "@/shared/types";
+import { closestPointOnSegment } from "./closestPointOnSegment";
 
-export type SegmentHit = { wallId: string; segment: number; from: Point; to: Point };
+/** 선분을 찾을 선: 벽(`Wall`) 또는 구역 선(`RoomLine`, 열림). */
+export type SegmentLine = { id: string; points: Point[]; closed?: boolean };
 
-/** 점에서 선분(a-b)까지 가장 짧은 거리. */
-function distanceToSegment(point: Point, a: Point, b: Point): number {
-  const dx = b.x - a.x;
-  const dy = b.y - a.y;
-  const lengthSquared = dx * dx + dy * dy;
-  const t =
-    lengthSquared === 0
-      ? 0
-      : Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / lengthSquared));
-  return distance(point, { x: a.x + t * dx, y: a.y + t * dy });
-}
+/** 찾은 선분. lineId는 벽 또는 구역 선의 id, segment는 그 선 안 선분 번호다. */
+export type SegmentHit = { lineId: string; segment: number; from: Point; to: Point };
 
-/** 점(cm)에서 hitRadius(cm) 안에 있는 가장 가까운 벽 선분. 닫힌 벽은 마지막 → 첫 점 선분도 본다. 없으면 null. */
+/** 점(cm)에서 hitRadius(cm) 안에 있는 가장 가까운 선분. 닫힌 벽은 마지막 → 첫 점 선분도 본다. 없으면 null. */
 export function findSegment(
-  walls: readonly Wall[],
+  walls: readonly SegmentLine[],
   point: Point,
   hitRadius: number,
 ): SegmentHit | null {
@@ -28,11 +21,11 @@ export function findSegment(
       const from = wall.points[segment];
       const to = wall.points[(segment + 1) % wall.points.length];
       if (!from || !to) continue;
-      const distance = distanceToSegment(point, from, to);
-      if (distance <= hitRadius && (!best || distance < best.distance)) {
-        best = { wallId: wall.id, segment, from, to, distance };
+      const gap = distance(point, closestPointOnSegment(point, from, to));
+      if (gap <= hitRadius && (!best || gap < best.distance)) {
+        best = { lineId: wall.id, segment, from, to, distance: gap };
       }
     }
   }
-  return best && { wallId: best.wallId, segment: best.segment, from: best.from, to: best.to };
+  return best && { lineId: best.lineId, segment: best.segment, from: best.from, to: best.to };
 }

@@ -31,7 +31,7 @@ test.describe("직선 도구", () => {
       { x: 100, y: 100 },
       { x: 400, y: 100 },
     ]);
-    await expect(page.getByRole("img", { name: /벽 1개$/ })).toBeVisible();
+    await expect(page.getByRole("img", { name: /벽 1개, 구역 선 0개$/ })).toBeVisible();
     await expect(plan(page).getByTestId("joint")).toHaveCount(2);
   });
 

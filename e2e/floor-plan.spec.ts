@@ -22,7 +22,9 @@ test.describe("편집 모드 2D 평면도", () => {
   test("원룸 6.0 × 4.5 바닥에 치수와 50cm 격자가 그려진다", async ({ page }) => {
     await createSpace(page, { width: "6.0", depth: "4.5" });
     await expect(page.getByText("내 방 · 6.0 × 4.5 m")).toBeVisible();
-    await expect(floorPlan(page)).toHaveAccessibleName("2D 평면도, 바닥 6.0 m × 4.5 m, 벽 0개");
+    await expect(floorPlan(page)).toHaveAccessibleName(
+      "2D 평면도, 바닥 6.0 m × 4.5 m, 벽 0개, 구역 선 0개",
+    );
     await expect(floorPlan(page).getByText("6.0 m", { exact: true })).toBeVisible();
     await expect(floorPlan(page).getByText("4.5 m", { exact: true })).toBeVisible();
     // 가로 11개 + 세로 8개 (양 끝은 바닥 테두리)

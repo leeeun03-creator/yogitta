@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createSpace } from "./helpers";
 
-const TOOLS = ["선택", "직선", "연속선", "사각형", "지우개"];
+const TOOLS = ["선택", "직선", "연속선", "사각형", "구역 선", "지우개"];
 const ACCENT = "rgb(168, 80, 27)"; // --yg-accent #A8501B
 
 function toolBar(page: Page) {
@@ -23,7 +23,7 @@ test.describe("그리기 도구 막대", () => {
     await createSpace(page, { width: "6.0", depth: "4.5" });
   });
 
-  test("도구 5개가 있고 처음에는 선택 도구다", async ({ page }) => {
+  test("도구 6개가 있고 처음에는 선택 도구다", async ({ page }) => {
     for (const name of TOOLS) await expect(tool(page, name)).toBeVisible();
     expect(await pressedTools(page)).toEqual(["선택"]);
     await expect(tool(page, "선택")).toHaveCSS("background-color", ACCENT);

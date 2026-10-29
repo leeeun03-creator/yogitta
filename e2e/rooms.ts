@@ -14,3 +14,18 @@ export async function addRoom(page: Page, name: string) {
   await nameInput(page).fill(name);
   await nameInput(page).press("Enter");
 }
+
+/** 그린 구역 선들의 점 목록(cm). */
+export async function roomLinePoints(page: Page) {
+  const lines = await page
+    .getByRole("img", { name: /^2D 평면도,/ })
+    .getByTestId("room-line")
+    .all();
+  return Promise.all(
+    lines.map(async (line) =>
+      ((await line.getAttribute("data-points")) ?? "")
+        .split(" ")
+        .map((pair) => pair.split(",").map(Number)),
+    ),
+  );
+}
