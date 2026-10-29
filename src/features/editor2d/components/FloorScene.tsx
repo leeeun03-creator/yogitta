@@ -1,4 +1,4 @@
-import type { RoomArea } from "@/features/spaces";
+import type { Rect, RoomArea } from "@/features/spaces";
 import type { Floor, Point, RoomLine, Wall } from "@/shared/types";
 import type { Measure } from "../logic/draftMeasure";
 import type { Erasing } from "../hooks/useEraserTool";
@@ -21,6 +21,7 @@ export type SceneState = {
   roomLineDraft: readonly Point[];
   roomAreas: readonly RoomArea[]; // 칠할 구역
   selectedRoom: string | null; // 고른 구역
+  partPreview: { rects: Rect[]; color: string } | null; // 누르면 새 구역이 될 구획 (옅게)
 };
 
 type FloorSceneProps = { floor: Floor; walls: readonly Wall[]; scene: SceneState; cmPerPx: number };
@@ -30,7 +31,11 @@ export function FloorScene({ floor, walls, scene, cmPerPx }: FloorSceneProps) {
   return (
     <>
       <FloorGrid floor={floor} lineWidth={cmPerPx} />
-      <RoomAreaLayer areas={scene.roomAreas} selected={scene.selectedRoom} />
+      <RoomAreaLayer
+        areas={scene.roomAreas}
+        selected={scene.selectedRoom}
+        preview={scene.partPreview}
+      />
       <RoomLineLayer
         lines={scene.roomLines}
         draft={scene.roomLineDraft}
