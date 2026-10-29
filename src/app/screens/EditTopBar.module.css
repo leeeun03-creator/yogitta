@@ -9,7 +9,17 @@
   border-bottom: 1px solid var(--yg-border-soft);
 }
 
+/* [‹ 완료] · 제목 줄. 한 줄로 두고 높이는 완료 버튼이 정한다 (글꼴이 늦게 와도 상단 바 높이가 그대로다) */
 .heading {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* 제목과 공간 정보는 글자 밑선을 맞추고, 공간 정보가 넘치면 말줄임한다 */
+.titleGroup {
+  min-width: 0;
   display: flex;
   align-items: baseline;
   gap: 14px;
@@ -24,10 +34,15 @@
 }
 
 .title {
+  flex-shrink: 0;
   font-size: 22px;
 }
 
 .spaceInfo {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 13px;
   color: var(--yg-text-sub);
 }

@@ -13,33 +13,17 @@ import { EMPTY_HISTORY, recordHistory, type History } from "./logic/recordHistor
 import { removeRoom } from "./logic/removeRoom";
 import { removeRoomLine } from "./logic/removeRoomLine";
 import { renameRoom } from "./logic/renameRoom";
+import { switchMode } from "./logic/switchMode";
+import type { AppMode, DrawingTool, EditView, RoomFocus, UiState } from "./uiState";
 
-export type AppMode = "main" | "edit";
+export type { AppMode, DrawingTool, EditView, RoomFocus } from "./uiState";
+export { DRAWING_TOOLS } from "./uiState";
 export type { HistoryDirection, RoomResult };
 export type { RoomNameError } from "./logic/checkRoomName";
 
-/** 편집 모드의 그리기 도구. 가구 도구는 T6에서 더한다. */
-export const DRAWING_TOOLS = ["select", "line", "polyline", "rect", "roomLine", "eraser"] as const;
-export type DrawingTool = (typeof DRAWING_TOOLS)[number];
-
-/**
- * 구역 입력칸이 열린 곳: 고른 구역 이름 바꾸기(rename, 하단 칩) 또는 이름 없는 구획을 누른 자리(new, cm)에서 새 구역 만들기.
- */
-export type RoomFocus = { type: "rename"; room: string } | { type: "new"; at: Point };
-
-/** 편집 모드에서 보는 것: 2D 평면도(plan) 또는 3D 미리보기(preview). */
-export type EditView = "plan" | "preview";
-
 type AppState = {
   data: AppData; // 저장 대상 (T11에서 localStorage와 연결)
-  // 화면 상태, 저장하지 않음
-  ui: {
-    mode: AppMode;
-    view: EditView;
-    tool: DrawingTool;
-    snap: boolean;
-    roomFocus: RoomFocus | null;
-  };
+  ui: UiState; // 화면 상태, 저장하지 않음
   history: History; // 되돌리기 기록, 저장하지 않음
   addSpace: (input: NewSpaceInput) => AddSpaceResult;
   setMode: (mode: AppMode) => void;
@@ -75,13 +59,19 @@ export const useAppStore = create<AppState>()((set, get) => ({
   data: INITIAL_DATA,
   ui: { mode: "main", view: "plan", tool: "select", snap: true, roomFocus: null },
   history: EMPTY_HISTORY,
-  // 공간 만들기는 되돌리지 않고 기록을 비운다 (되돌려서 첫 실행 화면으로 가거나, 옛 기록이 새 공간을 지우지 않게)
+  // 공간 만들기는 되돌리지 않고 기록을 비운다 (되돌려서 첫 실행 화면으로 가거나, 옛 기록이 새 공간을 지우지 않게).
+  // 새 공간은 벽부터 그리도록 편집 모드로 연다
   addSpace: (input) => {
     const result = addSpace(get().data, input);
-    if (result.ok) set({ data: result.data, history: EMPTY_HISTORY });
+    if (result.ok)
+      set((state) => ({
+        data: result.data,
+        history: EMPTY_HISTORY,
+        ui: switchMode(state.ui, "edit"),
+      }));
     return result;
   },
-  setMode: (mode) => set((state) => ({ ui: { ...state.ui, mode } })),
+  setMode: (mode) => set((state) => ({ ui: switchMode(state.ui, mode) })),
   setView: (view) => set((state) => ({ ui: { ...state.ui, view } })),
   // 도구를 바꾸면 열려 있던 구역 입력칸은 닫는다 (다른 도구로 누른 자리와 헷갈리지 않게)
   setTool: (tool) => set((state) => ({ ui: { ...state.ui, tool, roomFocus: null } })),

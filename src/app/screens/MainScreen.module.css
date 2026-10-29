@@ -1,0 +1,40 @@
+/* 메인 화면 틀. 값은 시안 01·02 + yogitta-design 7장 */
+.screen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 32px 8px;
+}
+
+.title {
+  font-size: inherit;
+}
+
+/* 편집 버튼은 머리 오른쪽 끝 */
+.edit {
+  margin-left: auto;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 32px 32px;
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 16px 16px 8px;
+  }
+  .body {
+    padding: 8px 16px 16px;
+  }
+}
