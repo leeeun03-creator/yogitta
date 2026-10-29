@@ -1,0 +1,101 @@
+/* 구역 목록. 값은 시안 04 하단 줄 (칩 높이는 터치 영역 44px로 올림) */
+.list {
+  flex: 1 1 auto; /* 자기 폭만큼 차지하고, 좁으면 격자 스냅이 아랫줄로 내려간다 */
+  min-width: 0;
+  display: flex;
+  align-items: flex-start; /* 칩이 여러 줄이 돼도 라벨은 첫 줄에 */
+  gap: 10px;
+  font-size: 14px;
+}
+
+/* 칩과 "+ 구역 추가"는 라벨 옆 남은 폭 안에서 줄바꿈된다 */
+.items {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* 칩 높이와 같게 해 가운데를 맞춘다 */
+  color: var(--yg-text-sub);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  border: 1px solid var(--yg-border);
+  border-radius: var(--yg-radius-pill);
+  white-space: nowrap;
+}
+
+.add {
+  min-height: 44px;
+  padding: 0 14px;
+  background: transparent;
+  color: var(--yg-accent);
+  border: 1px dashed var(--yg-dashed);
+  border-radius: var(--yg-radius-pill);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+.add:hover {
+  background: var(--yg-add-hover);
+  border-color: var(--yg-accent);
+}
+.add:active {
+  background: var(--yg-found-bg);
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.input {
+  width: 9em;
+  min-height: 44px;
+  padding: 0 16px;
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  border: 2px solid var(--yg-accent);
+  border-radius: var(--yg-radius-pill);
+  font: inherit;
+}
+.input:focus {
+  outline: none;
+}
+.input[aria-invalid="true"] {
+  background: var(--yg-danger-hover);
+  border-color: var(--yg-danger);
+}
+
+.error {
+  flex-basis: 100%;
+  padding-left: 16px;
+  font-size: 12px;
+  color: var(--yg-danger);
+}

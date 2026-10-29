@@ -1,5 +1,6 @@
 import { FloorPlan, SnapToggle, ToolBar, useHistoryKeys } from "@/features/editor2d";
 import { ScenePreview } from "@/features/scene3d";
+import { RoomList } from "@/features/spaces";
 import { useAppStore } from "@/store/useAppStore";
 import styles from "./EditScreen.module.css";
 import { EditTopBar } from "./EditTopBar";
@@ -23,8 +24,9 @@ export function EditScreen() {
             <div className={styles.plan}>
               <FloorPlan floor={space.floor} walls={space.walls} />
             </div>
-            {/* TODO(T5): 왼쪽 구역 목록, TODO(T26): 바닥 크기 버튼 */}
+            {/* TODO(T26): 바닥 크기 버튼 */}
             <footer className={styles.canvasBar}>
+              <RoomList rooms={space.rooms} />
               <SnapToggle />
             </footer>
           </section>

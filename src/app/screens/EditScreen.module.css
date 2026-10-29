@@ -32,9 +32,10 @@
 /* 2D 평면도 아래 줄 (시안 04: 왼쪽 구역 목록 · 오른쪽 격자 스냅·바닥 크기) */
 .canvasBar {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   align-items: center;
-  gap: 16px;
+  gap: 12px 16px;
   padding: 8px 20px 16px;
 }
 
