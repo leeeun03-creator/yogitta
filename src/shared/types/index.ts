@@ -4,6 +4,7 @@ export { FURNITURE_TYPES } from "./furniture";
 export type { FurnitureType } from "./furniture";
 export type { Item } from "./item";
 export type { Point } from "./point";
+export type { RoomLine } from "./roomLine";
 export type { Floor, Space } from "./space";
 export { WALL_TOOLS } from "./wall";
 export type { Wall, WallTool } from "./wall";

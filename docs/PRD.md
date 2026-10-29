@@ -307,7 +307,7 @@ type Space = {
   id: string; name: string;            // 내 방, 형 방 (중복 불가)
   floor: { w: number; h: number };     // cm
   rooms: string[];                     // 공간 안 구역 (선택)
-  roomLines?: { x: number; y: number }[][];               // 구역 선 (3D에 서지 않음)
+  roomLines?: { id: string; points: { x: number; y: number }[] }[]; // 구역 선 (3D에 서지 않음)
   roomAnchors?: Record<string, { x: number; y: number }>; // 구역 이름 → 구역 기준점
   walls: Wall[]; boxes: Box[];
 };
