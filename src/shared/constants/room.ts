@@ -10,3 +10,9 @@ export const ROOM_LINE_ATTACH_CM = 30;
 export const ROOM_LINE_POINT_GAP_CM = 5;
 /** 이보다 짧은 구역 선(cm)은 실수로 보고 더하지 않는다. */
 export const ROOM_LINE_MIN_CM = 20;
+
+/** 구획을 누르면 그 자리에 뜨는 새 구역 이름 입력칸 (px). */
+export const ROOM_POPOVER_WIDTH_PX = 272;
+export const ROOM_POPOVER_HEIGHT_PX = 64; // 안내 문구가 없을 때
+export const ROOM_POPOVER_GAP_PX = 12; // 누른 자리와 입력칸 사이
+export const ROOM_POPOVER_MARGIN_PX = 8; // 2D 평면도 가장자리와 입력칸 사이

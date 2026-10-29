@@ -1,12 +1,9 @@
 import { FloorPlan, SnapToggle, ToolBar, useHistoryKeys } from "@/features/editor2d";
 import { ScenePreview } from "@/features/scene3d";
 import { RoomList } from "@/features/spaces";
-import type { RoomLine } from "@/shared/types";
 import { useAppStore } from "@/store/useAppStore";
 import styles from "./EditScreen.module.css";
 import { EditTopBar } from "./EditTopBar";
-
-const EMPTY_ROOM_LINES: RoomLine[] = []; // 구역 선이 없는 공간 (매번 새 배열을 만들지 않게)
 
 /** 벽·가구를 만들고 고치는 편집 모드 (시안 04). 속성 패널은 T6부터 붙인다. */
 export function EditScreen() {
@@ -25,11 +22,7 @@ export function EditScreen() {
         {view === "plan" ? (
           <section className={styles.canvas} aria-label="2D 평면도 영역">
             <div className={styles.plan}>
-              <FloorPlan
-                floor={space.floor}
-                walls={space.walls}
-                roomLines={space.roomLines ?? EMPTY_ROOM_LINES}
-              />
+              <FloorPlan space={space} />
             </div>
             {/* TODO(T26): 바닥 크기 버튼 */}
             <footer className={styles.canvasBar}>

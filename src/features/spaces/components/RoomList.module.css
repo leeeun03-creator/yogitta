@@ -66,25 +66,40 @@
   border-color: var(--yg-accent-hover);
 }
 
-.add {
-  min-height: 44px;
-  padding: 0 14px;
-  background: transparent;
-  color: var(--yg-accent);
-  border: 1px dashed var(--yg-dashed);
+.hint {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* 라벨과 가운데를 맞춘다 */
+  color: var(--yg-text-sub);
+}
+
+/* 구획을 누르면 그 자리에 뜨는 새 구역 이름 입력칸 (카드 모양, yogitta-design 4장) */
+.popover {
+  position: absolute;
+  z-index: 1;
+  width: 272px; /* ROOM_POPOVER_WIDTH_PX */
+  padding: 10px;
+  background: var(--yg-surface);
+  border-radius: var(--yg-radius-card);
+  box-shadow: var(--yg-shadow-pop);
+  font-size: 14px;
+}
+.popover .form {
+  flex-wrap: nowrap;
+}
+.popover .input {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+.popover .error {
+  position: absolute;
+  top: 100%;
+  left: 10px;
+  margin-top: 4px;
+  padding: 2px 8px;
+  background: var(--yg-surface);
   border-radius: var(--yg-radius-pill);
-  font: inherit;
-  cursor: pointer;
-  transition:
-    background-color 0.15s,
-    border-color 0.15s;
-}
-.add:hover {
-  background: var(--yg-add-hover);
-  border-color: var(--yg-accent);
-}
-.add:active {
-  background: var(--yg-found-bg);
 }
 
 .form {

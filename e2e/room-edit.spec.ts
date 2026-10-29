@@ -1,58 +1,76 @@
 import { expect, test, type Page } from "@playwright/test";
-import { collectErrors, createSpace } from "./helpers";
-import { addButton, addRoom, roomChip, rooms } from "./rooms";
+import { collectErrors, createSpace, pressCm } from "./helpers";
+import { makeRoom, roomAreas, roomChip, roomLabels, rooms, splitAt } from "./rooms";
 
 const ACCENT = "rgb(168, 80, 27)"; // --yg-accent
+const FLOOR = { w: 600, h: 450 };
 const editInput = (page: Page) => page.getByRole("textbox", { name: "구역 이름", exact: true });
 const removeButton = (page: Page) => page.getByRole("button", { name: "삭제" });
 const undoButton = (page: Page) => page.getByRole("button", { name: "되돌리기" });
 
 test.describe("구역 이름 바꾸기·삭제", () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, isMobile }) => {
     await createSpace(page, { width: "6.0", depth: "4.5" });
-    await addRoom(page, "안방");
-    await addRoom(page, "거실");
+    await splitAt(page, [300], isMobile);
+    await makeRoom(page, "안방", { x: 150, y: 200 }, isMobile);
+    await makeRoom(page, "거실", { x: 450, y: 200 }, isMobile);
   });
 
-  test("칩을 누르면 고른 칩이 강조되고, 이름을 바꾸면 칩이 바뀐다", async ({ page }) => {
+  test("칩을 누르면 고른 칩이 강조되고, 이름을 바꾸면 칩과 2D 평면도 이름이 바뀐다", async ({
+    page,
+  }) => {
     const errors = collectErrors(page);
     await roomChip(page, "안방").click();
     await expect(roomChip(page, "안방")).toHaveAttribute("aria-pressed", "true");
     await page.mouse.move(0, 0); // 칩 위 올림 색이 아닌 고른 색을 본다
     await expect(roomChip(page, "안방")).toHaveCSS("background-color", ACCENT);
     await expect(roomChip(page, "거실")).toHaveAttribute("aria-pressed", "false");
+    await expect(roomAreas(page).first()).toHaveAttribute("fill-opacity", "1"); // 고른 구역은 진하게
     await expect(editInput(page)).toBeFocused();
     await expect(editInput(page)).toHaveValue("안방");
-    await expect(removeButton(page)).toBeVisible();
 
     await editInput(page).fill("침실 ");
     await editInput(page).press("Enter");
     await expect(rooms(page)).toHaveText(["침실", "거실"]);
+    await expect(roomLabels(page)).toHaveText(["침실", "거실"]);
     await expect(editInput(page)).toHaveCount(0);
     await expect(roomChip(page, "침실")).toBeFocused();
-    await expect(roomChip(page, "침실")).toHaveAttribute("aria-pressed", "false");
 
     await undoButton(page).click();
     await expect(rooms(page)).toHaveText(["안방", "거실"]);
+    await expect(roomLabels(page)).toHaveText(["안방", "거실"]);
     expect(errors).toEqual([]);
   });
 
-  test("삭제하면 칩이 사라지고, 되돌리기로 돌아온다", async ({ page }) => {
+  test("2D 평면도에서 구역을 누르면 그 칩이 골라지고, 다시 누르면 닫힌다", async ({
+    page,
+    isMobile,
+  }) => {
+    await pressCm(page, FLOOR, [{ x: 500, y: 400 }], isMobile);
+    await expect(roomChip(page, "거실")).toHaveAttribute("aria-pressed", "true");
+    await expect(editInput(page)).toHaveValue("거실");
+    await pressCm(page, FLOOR, [{ x: 500, y: 400 }], isMobile);
+    await expect(editInput(page)).toHaveCount(0);
+  });
+
+  test("삭제하면 칩과 칠한 구역이 사라지고, 되돌리기로 돌아온다", async ({ page }) => {
     await roomChip(page, "안방").click();
     await removeButton(page).click();
     await expect(rooms(page)).toHaveText(["거실"]);
-    await expect(addButton(page)).toBeFocused();
+    await expect(roomLabels(page)).toHaveText(["거실"]);
     await undoButton(page).click();
     await expect(rooms(page)).toHaveText(["안방", "거실"]);
+    await expect(roomAreas(page)).toHaveCount(2);
   });
 
-  test('엣지: 마지막 구역까지 지우면 목록이 비고 "+ 구역 추가"만 남는다', async ({ page }) => {
+  test("엣지: 마지막 구역까지 지우면 목록이 비고 안내 문구가 나온다", async ({ page }) => {
     for (const name of ["안방", "거실"]) {
       await roomChip(page, name).click();
       await removeButton(page).click();
     }
     await expect(page.getByRole("list", { name: "구역" })).toHaveCount(0);
-    await expect(addButton(page)).toBeVisible();
+    await expect(page.getByText("구역 선으로 나눈 바닥을 누르면 구역이 생겨요")).toBeVisible();
+    await expect(roomAreas(page)).toHaveCount(0);
   });
 
   test("엣지: 다른 구역과 같은 이름·빈 이름은 막힌다", async ({ page }) => {
@@ -64,15 +82,13 @@ test.describe("구역 이름 바꾸기·삭제", () => {
     await page.getByRole("button", { name: "확인" }).click();
     await expect(page.getByRole("alert")).toHaveText("구역 이름을 써 주세요");
     await expect(rooms(page)).toHaveText(["안방", "거실"]);
-    await expect(roomChip(page, "안방")).toHaveAttribute("aria-pressed", "true");
   });
 
   test("엣지: 이름을 그대로 두고 확인하면 닫히고 되돌리기 기록도 늘지 않는다", async ({ page }) => {
     await roomChip(page, "안방").click();
     await editInput(page).press("Enter");
     await expect(editInput(page)).toHaveCount(0);
-    await expect(rooms(page)).toHaveText(["안방", "거실"]);
-    await undoButton(page).click(); // 한 번이면 마지막에 더한 거실이 사라진다
+    await undoButton(page).click(); // 한 번이면 마지막에 만든 거실이 사라진다
     await expect(rooms(page)).toHaveText(["안방"]);
   });
 
@@ -83,10 +99,9 @@ test.describe("구역 이름 바꾸기·삭제", () => {
     await expect(editInput(page)).toHaveCount(0);
     await expect(rooms(page)).toHaveText(["안방", "거실"]);
     await expect(roomChip(page, "안방")).toBeFocused();
-    await expect(roomChip(page, "안방")).toHaveAttribute("aria-pressed", "false");
 
     await roomChip(page, "거실").click();
-    await expect(editInput(page)).toHaveValue("거실"); // 닫으면 쓴 글자도 지운다
+    await expect(editInput(page)).toHaveValue("거실");
     await page.getByRole("button", { name: "취소" }).click();
     await expect(editInput(page)).toHaveCount(0);
 
@@ -101,7 +116,6 @@ test.describe("구역 이름 바꾸기·삭제", () => {
     await roomChip(page, "거실").click();
     await expect(editInput(page)).toHaveValue("거실");
     await expect(roomChip(page, "안방")).toHaveAttribute("aria-pressed", "false");
-    await expect(roomChip(page, "거실")).toHaveAttribute("aria-pressed", "true");
   });
 
   test("엣지: 고르는 중에 되돌리기로 그 구역이 없어지면 입력칸이 닫힌다", async ({ page }) => {
@@ -109,7 +123,6 @@ test.describe("구역 이름 바꾸기·삭제", () => {
     await undoButton(page).click();
     await expect(rooms(page)).toHaveText(["안방"]);
     await expect(editInput(page)).toHaveCount(0);
-    await expect(addButton(page)).toBeVisible();
   });
 
   test("엣지: 키보드만으로 이름 바꾸기·삭제", async ({ page, isMobile }) => {
