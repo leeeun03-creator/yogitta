@@ -1,4 +1,5 @@
 import { WALL_HEIGHT_CM, WALL_THICKNESS_CM } from "@/shared/constants/scene";
+import { lineSegments } from "@/shared/lib/lineSegments";
 import type { Point, Wall } from "@/shared/types";
 
 /** 선분 하나로 세우는 3D 벽 박스. 위치·크기는 cm, 바닥 위 가운데 기준이다. */
@@ -32,15 +33,8 @@ function segmentToBox(key: string, a: Point, b: Point): WallBox | null {
 
 /** 벽의 점 목록을 선분마다 벽 박스로 바꾼다. 닫힌 벽은 마지막 점 → 첫 점 선분도 만든다. */
 export function wallToBoxes(wall: Wall): WallBox[] {
-  const { points } = wall;
-  if (points.length < 2) return [];
-  const count = wall.closed ? points.length : points.length - 1;
-  const boxes: WallBox[] = [];
-  for (let segment = 0; segment < count; segment++) {
-    const a = points[segment];
-    const b = points[(segment + 1) % points.length];
-    const box = a && b ? segmentToBox(`${wall.id}:${segment}`, a, b) : null;
-    if (box) boxes.push(box);
-  }
-  return boxes;
+  if (wall.points.length < 2) return [];
+  return lineSegments(wall)
+    .map(([a, b], segment) => segmentToBox(`${wall.id}:${segment}`, a, b))
+    .filter((box): box is WallBox => box !== null);
 }

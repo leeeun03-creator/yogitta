@@ -1,9 +1,10 @@
+import {
+  SNAP_GRID_DOT_PX,
+  SNAP_RING_RADIUS_PX,
+  SNAP_RING_STROKE_PX,
+} from "@/shared/constants/floorPlan";
 import type { Snapped } from "../hooks/useSnapper";
 import styles from "./FloorPlan.module.css";
-
-const GRID_DOT_PX = 3;
-const RING_STROKE_PX = 2;
-const RING_RADIUS_PX = 9; // 붙는 거리(12px)보다 조금 작게
 
 type SnapIndicatorProps = { cursor: Snapped | null; cmPerPx: number };
 
@@ -17,9 +18,9 @@ export function SnapIndicator({ cursor, cmPerPx }: SnapIndicatorProps) {
         data-testid="snap-endpoint"
         cx={x}
         cy={y}
-        r={RING_RADIUS_PX * cmPerPx}
+        r={SNAP_RING_RADIUS_PX * cmPerPx}
         className={styles.snapRing}
-        strokeWidth={RING_STROKE_PX * cmPerPx}
+        strokeWidth={SNAP_RING_STROKE_PX * cmPerPx}
       />
     );
   }
@@ -28,7 +29,7 @@ export function SnapIndicator({ cursor, cmPerPx }: SnapIndicatorProps) {
       data-testid="snap-grid"
       cx={x}
       cy={y}
-      r={GRID_DOT_PX * cmPerPx}
+      r={SNAP_GRID_DOT_PX * cmPerPx}
       className={styles.snapDot}
     />
   );

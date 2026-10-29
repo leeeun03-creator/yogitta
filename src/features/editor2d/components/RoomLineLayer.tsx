@@ -6,6 +6,7 @@ import {
   ROOM_LINE_WIDTH_PX,
 } from "@/shared/constants/floorPlan";
 import type { Point, RoomLine } from "@/shared/types";
+import { toSvgPoints } from "../logic/toSvgPoints";
 import styles from "./FloorPlan.module.css";
 
 type RoomLineLayerProps = {
@@ -14,8 +15,6 @@ type RoomLineLayerProps = {
   erasing: readonly Point[] | null; // 지우개로 지울 구역 선
   cmPerPx: number;
 };
-
-const toPath = (points: readonly Point[]) => points.map(({ x, y }) => `${x},${y}`).join(" ");
 
 /** 구역 선 모양: 벽과 같은 색의 얇은 점선 (화면 px 기준). */
 const lineStyleOf = (cmPerPx: number) =>
@@ -59,8 +58,8 @@ export function RoomLineLayer({ lines, draft, erasing, cmPerPx }: RoomLineLayerP
         <g key={line.id}>
           <polyline
             data-testid="room-line"
-            data-points={toPath(line.points)}
-            points={toPath(line.points)}
+            data-points={toSvgPoints(line.points)}
+            points={toSvgPoints(line.points)}
             {...lineStyle}
           />
           <RoomLineEnds line={line} cmPerPx={cmPerPx} />
@@ -69,7 +68,7 @@ export function RoomLineLayer({ lines, draft, erasing, cmPerPx }: RoomLineLayerP
       {draft.length > 1 && (
         <polyline
           data-testid="room-line-draft"
-          points={toPath(draft)}
+          points={toSvgPoints(draft)}
           className={styles.draft}
           {...lineStyle}
         />
@@ -77,7 +76,7 @@ export function RoomLineLayer({ lines, draft, erasing, cmPerPx }: RoomLineLayerP
       {erasing && (
         <polyline
           data-testid="erasing"
-          points={toPath(erasing)}
+          points={toSvgPoints(erasing)}
           className={styles.erasing}
           {...lineStyle}
           strokeWidth={ROOM_LINE_WIDTH_PX * 2 * cmPerPx}

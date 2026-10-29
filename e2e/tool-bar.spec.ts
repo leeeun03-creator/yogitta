@@ -3,6 +3,7 @@ import { createSpace } from "./helpers";
 
 const TOOLS = ["선택", "직선", "연속선", "사각형", "구역 선", "지우개"];
 const ACCENT = "rgb(168, 80, 27)"; // --yg-accent #A8501B
+const LABEL_LINE_PX = 20; // 도구 이름(12px) 한 줄 높이
 
 function toolBar(page: Page) {
   return page.getByRole("toolbar", { name: "그리기 도구" });
@@ -86,5 +87,34 @@ test.describe("그리기 도구 막대", () => {
     await tool(page, "직선").click();
     await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ path: testInfo.outputPath("tool-bar.png"), fullPage: true });
+  });
+
+  test("엣지: 키보드로 구역 선 도구를 고른다", async ({ page, isMobile }) => {
+    test.skip(isMobile, "키보드는 데스크톱에서만");
+    const bar = page.getByRole("toolbar", { name: "그리기 도구" });
+    await bar.getByRole("button", { name: "사각형" }).focus();
+    await page.keyboard.press("Tab");
+    await expect(bar.getByRole("button", { name: "구역 선" })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(bar.getByRole("button", { name: "구역 선" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+
+  test("엣지: 도구 6개가 360px에서도 막대 안에 한 줄로 들어가고 44px이다", async ({ page }) => {
+    const bar = page.getByRole("toolbar", { name: "그리기 도구" });
+    const barBox = await bar.boundingBox();
+    for (const button of await bar.getByRole("button").all()) {
+      const box = await button.boundingBox();
+      const label = await button.locator("span").boundingBox();
+      expect(label?.height).toBeLessThanOrEqual(LABEL_LINE_PX); // 글자가 두 줄로 꺾이지 않는다
+      expect(box?.width).toBeGreaterThanOrEqual(44);
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(
+        (barBox?.x ?? 0) + (barBox?.width ?? 0),
+      );
+    }
+    const scroll = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(scroll).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
   });
 });

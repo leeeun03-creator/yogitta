@@ -19,10 +19,15 @@ export const roomAreas = (page: Page) => planImage(page).getByTestId("room-area"
 /** 2D 평면도에 쓴 구역 이름들. */
 export const roomLabels = (page: Page) => planImage(page).getByTestId("room-label");
 
-/** 바닥 좌표(cm) 경로를 따라 끈다. */
-export async function dragCm(page: Page, path: Cm[], isMobile: boolean) {
+/** 바닥 좌표(cm) 경로를 따라 끈다. beforeUp은 떼기 직전에 부른다 (끄는 중 화면 확인용). */
+export async function dragCm(
+  page: Page,
+  path: Cm[],
+  isMobile: boolean,
+  beforeUp?: () => Promise<void>,
+) {
   const screen = await Promise.all(path.map((point) => cmToScreen(page, FLOOR, point)));
-  await dragPath(page, screen, isMobile);
+  await dragPath(page, screen, isMobile, beforeUp);
 }
 
 /** 바닥을 위에서 아래로 가로지르는 구역 선을 x(cm)마다 그어 구획을 나눈다. 끝나면 선택 도구로 돌아온다. */

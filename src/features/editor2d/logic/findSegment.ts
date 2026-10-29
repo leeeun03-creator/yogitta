@@ -1,4 +1,5 @@
 import { distance } from "@/shared/lib/distance";
+import { lineSegments } from "@/shared/lib/lineSegments";
 import type { Point } from "@/shared/types";
 import { closestPointOnSegment } from "./closestPointOnSegment";
 
@@ -16,11 +17,7 @@ export function findSegment(
 ): SegmentHit | null {
   let best: (SegmentHit & { distance: number }) | null = null;
   for (const wall of walls) {
-    const count = wall.closed ? wall.points.length : wall.points.length - 1;
-    for (let segment = 0; segment < count; segment++) {
-      const from = wall.points[segment];
-      const to = wall.points[(segment + 1) % wall.points.length];
-      if (!from || !to) continue;
+    for (const [segment, [from, to]] of lineSegments(wall).entries()) {
       const gap = distance(point, closestPointOnSegment(point, from, to));
       if (gap <= hitRadius && (!best || gap < best.distance)) {
         best = { lineId: wall.id, segment, from, to, distance: gap };

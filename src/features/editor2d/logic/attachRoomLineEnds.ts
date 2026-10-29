@@ -1,24 +1,12 @@
-import { distance } from "@/shared/lib/distance";
 import type { Floor, Point } from "@/shared/types";
 import { closestPointOnSegment } from "./closestPointOnSegment";
-import type { SegmentLine } from "./findSegment";
+import { findSegment, type SegmentLine } from "./findSegment";
 import { floorEdges } from "./floorEdges";
 
 /** point에서 radius(cm) 안에 있는 선 위의 가장 가까운 점. 없으면 null. */
 function nearestOnLines(point: Point, lines: readonly SegmentLine[], radius: number) {
-  let best: { point: Point; gap: number } | null = null;
-  for (const line of lines) {
-    const count = line.closed ? line.points.length : line.points.length - 1;
-    for (let index = 0; index < count; index++) {
-      const a = line.points[index];
-      const b = line.points[(index + 1) % line.points.length];
-      if (!a || !b) continue;
-      const candidate = closestPointOnSegment(point, a, b);
-      const gap = distance(point, candidate);
-      if (gap <= radius && (!best || gap < best.gap)) best = { point: candidate, gap };
-    }
-  }
-  return best?.point ?? null;
+  const hit = findSegment(lines, point, radius);
+  return hit && closestPointOnSegment(point, hit.from, hit.to);
 }
 
 /**

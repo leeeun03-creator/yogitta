@@ -22,6 +22,11 @@ export const POINT_HIT_PX = 8;
 /** 그리는 점이 기존 벽 점에 붙는 화면 거리 (px). 줌과 상관없이 같다. */
 export const SNAP_ENDPOINT_PX = 12;
 
+/** 커서가 붙을 곳 표시 (px): 벽 점이면 고리, 격자면 점. */
+export const SNAP_RING_RADIUS_PX = 9; // 붙는 거리(12px)보다 조금 작게
+export const SNAP_RING_STROKE_PX = 2;
+export const SNAP_GRID_DOT_PX = 3;
+
 /** 그리는 동안 길이 표시 (px). 글자 크기는 치수 글자와 같다. */
 export const LENGTH_LABEL_GAP_PX = 6; // 벽 가장자리에서 글자 상자까지
 export const LENGTH_LABEL_HALO_PX = 4; // 벽·격자 위에서도 읽히게 두르는 바탕색 테두리

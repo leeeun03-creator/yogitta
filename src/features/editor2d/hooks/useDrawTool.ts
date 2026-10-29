@@ -22,6 +22,22 @@ function useToolDraft(tool: DrawingTool) {
   return [points, setPoints] as const;
 }
 
+/** 키를 누르면 drawKeyStep대로 그리던 점을 바꾼다(Enter로 끝내기, Esc로 버리기 등). Esc는 끌던 것도 버린다. */
+function keyHandler(
+  tool: DrawingTool,
+  points: Point[],
+  cancelDrag: () => void,
+  apply: (step: DrawStep) => void,
+) {
+  return (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === "Escape") cancelDrag();
+    const step = drawKeyStep(tool, points, event.key);
+    if (!step) return;
+    event.preventDefault();
+    apply(step);
+  };
+}
+
 const TAP_TOOLS: readonly DrawingTool[] = ["line", "polyline"];
 const CURSOR_TOOLS: readonly DrawingTool[] = [...TAP_TOOLS, "rect"];
 
@@ -53,21 +69,13 @@ export function useDrawTool(tool: DrawingTool, box: ViewBox, snapAt: SnapAt) {
     if (TAP_TOOLS.includes(tool))
       apply(drawTapStep(tool, points, snapAt(screen, points).point, closeRadius));
   };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Escape") drag.cancel();
-    const step = drawKeyStep(tool, points, event.key);
-    if (!step) return;
-    event.preventDefault();
-    apply(step);
-  };
   const handlers = {
     ...drag.handlers,
     onPointerMove: callAll(drag.handlers.onPointerMove, (event: PointerEvent<HTMLElement>) => {
       if (CURSOR_TOOLS.includes(tool)) setCursor(snapAt(eventPoint(event), shown));
     }),
     onPointerLeave: () => setCursor(null),
-    onKeyDown: handleKeyDown,
+    onKeyDown: keyHandler(tool, points, drag.cancel, apply),
   };
 
   return { points: shown, cursor: CURSOR_TOOLS.includes(tool) ? cursor : null, tap, handlers };

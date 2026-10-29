@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import {
   chooseTool,
   cmToScreen,
@@ -10,17 +10,10 @@ import {
   preview,
   pressCm,
 } from "./helpers";
-import { roomLinePoints } from "./rooms";
+import { dragCm, roomLinePoints } from "./rooms";
 
 const FLOOR = { w: 600, h: 450 };
-const LABEL_LINE_PX = 20; // 도구 이름(12px) 한 줄 높이
 type Cm = { x: number; y: number };
-
-/** 바닥 좌표(cm) 경로를 따라 끈다. */
-async function dragCm(page: Page, path: Cm[], isMobile: boolean, beforeUp?: () => Promise<void>) {
-  const screen = await Promise.all(path.map((point) => cmToScreen(page, FLOOR, point)));
-  await dragPath(page, screen, isMobile, beforeUp);
-}
 
 /** 점 [x, y]가 기대한 점과 tolerance(cm) 안인지 본다 (자유 곡선이라 화면 px 반올림 오차가 있다). */
 function expectPoint(actual: number[] | undefined, expected: Cm, tolerance = 2) {
@@ -160,35 +153,6 @@ test.describe("구역 선 도구", () => {
     await expect(preview(page)).toHaveAccessibleName(
       "3D 미리보기, 바닥 6.0 × 4.5 m, 벽 0개, 선분 0개, 구역 0개",
     );
-  });
-
-  test("엣지: 키보드로 구역 선 도구를 고른다", async ({ page, isMobile }) => {
-    test.skip(isMobile, "키보드는 데스크톱에서만");
-    const bar = page.getByRole("toolbar", { name: "그리기 도구" });
-    await bar.getByRole("button", { name: "사각형" }).focus();
-    await page.keyboard.press("Tab");
-    await expect(bar.getByRole("button", { name: "구역 선" })).toBeFocused();
-    await page.keyboard.press("Enter");
-    await expect(bar.getByRole("button", { name: "구역 선" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-  });
-
-  test("엣지: 도구 6개가 360px에서도 막대 안에 한 줄로 들어가고 44px이다", async ({ page }) => {
-    const bar = page.getByRole("toolbar", { name: "그리기 도구" });
-    const barBox = await bar.boundingBox();
-    for (const button of await bar.getByRole("button").all()) {
-      const box = await button.boundingBox();
-      const label = await button.locator("span").boundingBox();
-      expect(label?.height).toBeLessThanOrEqual(LABEL_LINE_PX); // 글자가 두 줄로 꺾이지 않는다
-      expect(box?.width).toBeGreaterThanOrEqual(44);
-      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(
-        (barBox?.x ?? 0) + (barBox?.width ?? 0),
-      );
-    }
-    const scroll = await page.evaluate(() => document.documentElement.scrollWidth);
-    expect(scroll).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
   });
 
   test("스크린샷을 남긴다", async ({ page, isMobile }, testInfo) => {

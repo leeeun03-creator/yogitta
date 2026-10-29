@@ -1,3 +1,4 @@
+import { lineSegments } from "@/shared/lib/lineSegments";
 import type { Point, Wall } from "@/shared/types";
 
 const MIN_POINTS = 2;
@@ -13,7 +14,7 @@ function toWall(id: string, points: Point[]): Wall {
  */
 export function removeSegment(wall: Wall, index: number, newId: string): Wall[] {
   const { points } = wall;
-  const segmentCount = wall.closed ? points.length : points.length - 1;
+  const segmentCount = lineSegments(wall).length;
   if (!Number.isInteger(index) || index < 0 || index >= segmentCount) return [wall];
 
   if (wall.closed) {

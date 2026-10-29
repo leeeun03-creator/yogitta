@@ -5,6 +5,7 @@ import {
   ROOM_LINE_TOUCH_CM,
 } from "@/shared/constants/room";
 import { distance } from "@/shared/lib/distance";
+import { lineSegments } from "@/shared/lib/lineSegments";
 import type { Floor, Point } from "@/shared/types";
 import { findSegment, type SegmentLine } from "./findSegment";
 import { floorEdges } from "./floorEdges";
@@ -25,16 +26,11 @@ function extendEnd(ordered: readonly Point[], targets: readonly SegmentLine[]): 
   const [end] = ordered;
   const aim = aimOf(ordered);
   if (!end || !aim) return null;
-  let nearest: number | null = null;
-  for (const line of targets) {
-    const count = line.closed ? line.points.length : line.points.length - 1;
-    for (let index = 0; index < count; index++) {
-      const a = line.points[index];
-      const b = line.points[(index + 1) % line.points.length];
-      const hit = a && b ? rayHitSegment(end, aim, a, b) : null;
-      if (hit !== null && hit > 0 && (nearest === null || hit < nearest)) nearest = hit;
-    }
-  }
+  const hits = targets
+    .flatMap(lineSegments)
+    .map(([a, b]) => rayHitSegment(end, aim, a, b))
+    .filter((hit): hit is number => hit !== null && hit > 0);
+  const nearest = hits.length > 0 ? Math.min(...hits) : null;
   return nearest === null ? null : { x: end.x + aim.x * nearest, y: end.y + aim.y * nearest };
 }
 

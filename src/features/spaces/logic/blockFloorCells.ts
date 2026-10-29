@@ -1,5 +1,6 @@
 import { ROOM_GRID_CM, ROOM_LINE_STEP_CM } from "@/shared/constants/room";
 import { clamp } from "@/shared/lib/clamp";
+import { lineSegments } from "@/shared/lib/lineSegments";
 import type { Floor, Point } from "@/shared/types";
 
 /** 구획을 나누는 선: 벽(closed면 마지막 → 첫 점도) 또는 구역 선(열림). */
@@ -49,15 +50,7 @@ export function blockFloorCells(floor: Floor, lines: FloorLine[]): FloorGrid {
     count: new Uint32Array(size),
   };
   const grid = { cols, rows, blocked: new Uint8Array(size), lineX: sums.x, lineY: sums.y };
-  for (const line of lines) {
-    const { points } = line;
-    const count = line.closed ? points.length : points.length - 1;
-    for (let index = 0; index < count; index++) {
-      const a = points[index];
-      const b = points[(index + 1) % points.length];
-      if (a && b) blockSegment(grid, sums, a, b);
-    }
-  }
+  for (const [a, b] of lines.flatMap(lineSegments)) blockSegment(grid, sums, a, b);
   // 합 → 평균 (선이 안 지나는 격자는 0으로 둔다)
   sums.count.forEach((count, cell) => {
     if (count === 0) return;
