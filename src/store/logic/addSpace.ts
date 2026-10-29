@@ -1,21 +1,18 @@
 import type { AppData, Floor, Space } from "@/shared/types";
+import { spaceNameError, type SpaceResult } from "./spaceNameError";
 
 export type NewSpaceInput = { id: string; name: string; floor: Floor };
 
-export type AddSpaceResult =
-  { ok: true; data: AppData } | { ok: false; reason: "emptyName" | "duplicateName" };
+export type AddSpaceResult = SpaceResult;
 
 /** 빈 공간 하나를 전체 데이터에 붙이고 현재 공간으로 바꾼 새 데이터를 돌려준다. 원본은 바꾸지 않는다. */
 export function addSpace(data: AppData, input: NewSpaceInput): AddSpaceResult {
-  const name = input.name.trim();
-  if (name === "") return { ok: false, reason: "emptyName" };
-  if (data.spaces.some((space) => space.name.trim() === name)) {
-    return { ok: false, reason: "duplicateName" };
-  }
+  const error = spaceNameError(data.spaces, input.name);
+  if (error) return { ok: false, reason: error };
 
   const space: Space = {
     id: input.id,
-    name,
+    name: input.name.trim(),
     floor: { ...input.floor },
     rooms: [],
     walls: [],

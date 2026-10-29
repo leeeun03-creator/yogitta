@@ -2,18 +2,10 @@ import { describe, expect, it } from "vitest";
 import { DATA_VERSION } from "@/shared/constants/storage";
 import type { AppData } from "@/shared/types";
 import { addSpace } from "./addSpace";
+import { deepFreeze } from "./spaceFixtures";
 
 const EMPTY: AppData = { version: DATA_VERSION, spaces: [], currentSpaceId: null };
 const FLOOR = { w: 600, h: 450 };
-
-/** 테스트 중 원본이 바뀌면 바로 에러가 나도록 깊게 얼린다. */
-function deepFreeze<T>(value: T): T {
-  if (value && typeof value === "object") {
-    Object.values(value).forEach(deepFreeze);
-    Object.freeze(value);
-  }
-  return value;
-}
 
 function addOrThrow(data: AppData, id: string, name: string): AppData {
   const result = addSpace(data, { id, name, floor: FLOOR });
