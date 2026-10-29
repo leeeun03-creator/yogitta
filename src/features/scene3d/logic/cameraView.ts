@@ -1,0 +1,60 @@
+import {
+  CAMERA_MAX_DISTANCE_RATIO,
+  CAMERA_MAX_POLAR_DEG,
+  CAMERA_MIN_DISTANCE_CM,
+  CAMERA_ZOOM_STEP,
+} from "@/shared/constants/scene";
+import type { Floor } from "@/shared/types";
+import type { CameraStart, Vector } from "./startCamera";
+
+/** 카메라를 움직일 수 있는 범위. 거리는 cm, 각도는 라디안(0 = 바로 위). */
+export type CameraLimits = {
+  minDistance: number;
+  maxDistance: number;
+  maxPolarAngle: number;
+};
+/** 지금 카메라 상태. 처음 보기·확대·축소 버튼을 막을지 정한다. */
+export type ViewStatus = { isStart: boolean; canZoomIn: boolean; canZoomOut: boolean };
+export type ZoomDirection = "in" | "out";
+
+const SAME_CM = 1; // 1cm 안이면 같은 자리로 본다 (소수 오차)
+const DEG_TO_RAD = Math.PI / 180;
+
+const distanceBetween = (a: Vector, b: Vector) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+
+/** 처음 카메라에 맞춘 움직임 범위. 아주 작은 바닥에서도 처음 거리보다 가까운 끝이 멀지 않게 한다. */
+export function cameraLimits(start: CameraStart): CameraLimits {
+  const startDistance = distanceBetween(start.position, start.target);
+  return {
+    minDistance: Math.min(CAMERA_MIN_DISTANCE_CM, startDistance),
+    maxDistance: startDistance * CAMERA_MAX_DISTANCE_RATIO,
+    maxPolarAngle: CAMERA_MAX_POLAR_DEG * DEG_TO_RAD,
+  };
+}
+
+/** 확대(in)·축소(out) 한 번 뒤의 거리. 범위 끝에서 멈춘다. */
+export function zoomDistance(distance: number, direction: ZoomDirection, limits: CameraLimits) {
+  const next = direction === "in" ? distance / CAMERA_ZOOM_STEP : distance * CAMERA_ZOOM_STEP;
+  return Math.min(limits.maxDistance, Math.max(limits.minDistance, next));
+}
+
+/** 카메라 자리·보는 곳으로 지금 상태를 판단한다. */
+export function viewStatus(
+  view: { position: Vector; target: Vector },
+  start: CameraStart,
+  limits: CameraLimits,
+): ViewStatus {
+  const distance = distanceBetween(view.position, view.target);
+  return {
+    isStart:
+      distanceBetween(view.position, start.position) < SAME_CM &&
+      distanceBetween(view.target, start.target) < SAME_CM,
+    canZoomIn: distance > limits.minDistance + SAME_CM,
+    canZoomOut: distance < limits.maxDistance - SAME_CM,
+  };
+}
+
+/** 이동으로 보는 곳이 바닥 밖으로 나가지 않게 바닥 안(바닥 높이)으로 당긴다. */
+export function clampTarget(target: Vector, floor: Floor): Vector {
+  return [Math.min(floor.w, Math.max(0, target[0])), 0, Math.min(floor.h, Math.max(0, target[2]))];
+}

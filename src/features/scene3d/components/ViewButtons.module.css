@@ -1,0 +1,8 @@
+/* 3D 미리보기 왼쪽 아래에 띄운다 (시안 01). 버튼 사이 8px */
+.buttons {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 8px;
+}

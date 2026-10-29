@@ -1,19 +1,46 @@
 import { Canvas } from "@react-three/fiber";
+import { useCallback, useRef, useState } from "react";
 import { PREVIEW_FOV_DEG } from "@/shared/constants/scene";
 import type { Floor, Wall } from "@/shared/types";
-import { CameraRig } from "./CameraRig";
+import type { ViewStatus, ZoomDirection } from "../logic/cameraView";
 import { FloorMesh } from "./FloorMesh";
+import styles from "./PreviewCanvas.module.css";
+import { PreviewCamera, type CameraCommands } from "./PreviewCamera";
+import { ViewButtons } from "./ViewButtons";
 import { WallMeshes } from "./WallMeshes";
 
-/** three.js를 쓰는 3D 미리보기 본체. 무거워서 ScenePreview가 처음 열 때 따로 불러온다. */
-export function PreviewCanvas({ floor, walls }: { floor: Floor; walls: Wall[] }) {
+type PreviewCanvasProps = { floor: Floor; walls: Wall[]; label: string };
+
+// 카메라가 준비되기 전에는 눌러도 아무 일이 없으므로 모두 막아 둔다
+const NOT_READY: ViewStatus = { isStart: true, canZoomIn: false, canZoomOut: false };
+const isSameStatus = (a: ViewStatus, b: ViewStatus) =>
+  a.isStart === b.isStart && a.canZoomIn === b.canZoomIn && a.canZoomOut === b.canZoomOut;
+
+/** three.js를 쓰는 3D 미리보기 본체와 보기 버튼. 무거워서 ScenePreview가 처음 열 때 따로 불러온다. */
+export function PreviewCanvas({ floor, walls, label }: PreviewCanvasProps) {
+  const camera = useRef<CameraCommands>(null);
+  const [status, setStatus] = useState(NOT_READY);
+  // 끄는 동안 매번 불리므로 바뀐 때만 다시 그린다
+  const handleViewChange = useCallback(
+    (next: ViewStatus) => setStatus((prev) => (isSameStatus(prev, next) ? prev : next)),
+    [],
+  );
   return (
-    // flat: 색 보정(톤 매핑)을 끄고 yogitta-design 5장 색을 그대로 낸다
-    // frameloop demand: 매 프레임 다시 그리지 않고 바뀔 때만 그린다 (휴대폰 배터리·CPU)
-    <Canvas flat frameloop="demand" camera={{ fov: PREVIEW_FOV_DEG }} aria-hidden="true">
-      <CameraRig floor={floor} />
-      <FloorMesh floor={floor} />
-      <WallMeshes walls={walls} />
-    </Canvas>
+    <div className={styles.wrap}>
+      <div className={styles.scene} role="img" aria-label={label}>
+        {/* flat: 색 보정(톤 매핑)을 끄고 yogitta-design 5장 색을 그대로 낸다
+            frameloop demand: 매 프레임 다시 그리지 않고 바뀔 때만 그린다 (휴대폰 배터리·CPU) */}
+        <Canvas flat frameloop="demand" camera={{ fov: PREVIEW_FOV_DEG }} aria-hidden="true">
+          <PreviewCamera floor={floor} ref={camera} onViewChange={handleViewChange} />
+          <FloorMesh floor={floor} />
+          <WallMeshes walls={walls} />
+        </Canvas>
+      </div>
+      <ViewButtons
+        status={status}
+        onReset={() => camera.current?.reset()}
+        onZoom={(direction: ZoomDirection) => camera.current?.zoom(direction)}
+      />
+    </div>
   );
 }

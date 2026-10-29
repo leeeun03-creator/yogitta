@@ -3,7 +3,7 @@
 .preview {
   flex: 1;
   min-height: 0;
-  touch-action: none; /* 끌기·두 손가락을 3D 카메라가 받는다 (T4-4) */
+  display: flex;
 }
 
 .message {

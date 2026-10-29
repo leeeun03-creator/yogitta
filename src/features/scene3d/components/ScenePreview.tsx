@@ -28,9 +28,9 @@ export function ScenePreview({ floor, walls }: { floor: Floor; walls: Wall[] }) 
   const segments = walls.flatMap(wallToBoxes).length;
   const label = `3D 미리보기, 바닥 ${formatMeters(floor.w)} × ${formatMeters(floor.h)} m, 벽 ${walls.length}개, 선분 ${segments}개`;
   return (
-    <div className={styles.preview} role="img" aria-label={label}>
+    <div className={styles.preview}>
       <Suspense fallback={<p className={styles.message}>3D를 불러오고 있어요</p>}>
-        <PreviewCanvas floor={floor} walls={walls} />
+        <PreviewCanvas floor={floor} walls={walls} label={label} />
       </Suspense>
     </div>
   );

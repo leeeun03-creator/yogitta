@@ -1,10 +1,15 @@
-import { CAMERA_DIRECTION, CAMERA_FIT_MARGIN, WALL_HEIGHT_CM } from "@/shared/constants/scene";
+import {
+  CAMERA_DIRECTION,
+  CAMERA_FIT_MARGIN,
+  CAMERA_MIN_DISTANCE_CM,
+  WALL_HEIGHT_CM,
+} from "@/shared/constants/scene";
 import type { Floor } from "@/shared/types";
 
-type Vector = [x: number, y: number, z: number];
+export type Vector = [x: number, y: number, z: number];
 export type CameraStart = { position: Vector; target: Vector; near: number; far: number };
 
-const NEAR_RATIO = 0.01; // 가까운 면 = 거리의 1%
+const NEAR_RATIO = 0.05; // 가까운 면 = 가장 가까이 줌했을 때 거리의 5%
 const FAR_RATIO = 4; // 먼 면 = 거리의 4배 (줌아웃 여유)
 
 /** 바닥 전체(벽 높이까지)가 보이도록 대각선 위에서 바닥 가운데를 보는 처음 카메라. aspect = 가로 / 세로. */
@@ -24,5 +29,5 @@ export function startCamera(floor: Floor, fovDeg: number, aspect: number): Camer
     target[1] + (y / length) * distance,
     target[2] + (z / length) * distance,
   ];
-  return { position, target, near: distance * NEAR_RATIO, far: distance * FAR_RATIO };
+  return { position, target, near: CAMERA_MIN_DISTANCE_CM * NEAR_RATIO, far: distance * FAR_RATIO };
 }

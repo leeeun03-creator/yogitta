@@ -26,3 +26,9 @@
   color: var(--yg-disabled-icon);
   cursor: not-allowed;
 }
+
+/* 테두리형: 3D 위에 떠 있는 버튼 (시안 01 처음 보기·확대·축소, 컴포넌트 시안 06) */
+.outline {
+  background: var(--yg-surface);
+  border: 1px solid var(--yg-border);
+}
