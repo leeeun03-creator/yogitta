@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create, type StoreApi } from "zustand";
 import { UNDO_LIMIT } from "@/shared/constants/history";
 import { DATA_VERSION } from "@/shared/constants/storage";
 import { createId } from "@/shared/lib/createId";
@@ -54,6 +54,18 @@ const change = (state: AppState, data: AppData) => ({
 const move = (state: AppState, direction: HistoryDirection) =>
   moveHistory(state.history, state.data, direction) ?? {};
 
+type UiActions = Pick<AppState, "setMode" | "setView" | "setTool" | "setSnap" | "setRoomFocus">;
+
+/** 화면 상태(ui)만 바꾸는 액션. 데이터·되돌리기 기록은 건드리지 않는다. */
+const uiActions = (set: StoreApi<AppState>["setState"]): UiActions => ({
+  setMode: (mode) => set((state) => ({ ui: switchMode(state.ui, mode) })),
+  setView: (view) => set((state) => ({ ui: { ...state.ui, view } })),
+  // 도구를 바꾸면 열려 있던 구역 입력칸은 닫는다 (다른 도구로 누른 자리와 헷갈리지 않게)
+  setTool: (tool) => set((state) => ({ ui: { ...state.ui, tool, roomFocus: null } })),
+  setSnap: (snap) => set((state) => ({ ui: { ...state.ui, snap } })),
+  setRoomFocus: (roomFocus) => set((state) => ({ ui: { ...state.ui, roomFocus } })),
+});
+
 /** 앱 전체 데이터와 화면 상태. 데이터 변경은 여기 액션으로만 한다. */
 export const useAppStore = create<AppState>()((set, get) => ({
   data: INITIAL_DATA,
@@ -71,12 +83,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       }));
     return result;
   },
-  setMode: (mode) => set((state) => ({ ui: switchMode(state.ui, mode) })),
-  setView: (view) => set((state) => ({ ui: { ...state.ui, view } })),
-  // 도구를 바꾸면 열려 있던 구역 입력칸은 닫는다 (다른 도구로 누른 자리와 헷갈리지 않게)
-  setTool: (tool) => set((state) => ({ ui: { ...state.ui, tool, roomFocus: null } })),
-  setSnap: (snap) => set((state) => ({ ui: { ...state.ui, snap } })),
-  setRoomFocus: (roomFocus) => set((state) => ({ ui: { ...state.ui, roomFocus } })),
+  ...uiActions(set),
   addWall: (wall) =>
     set((state) => change(state, addWall(state.data, { ...wall, id: createId("wall") }))),
   eraseSegment: (wallId, segment) =>

@@ -1,9 +1,8 @@
 import { useMemo } from "react";
 import type { RoomArea } from "@/features/spaces";
 import { ROOM_FLOOR_OPACITY } from "@/shared/constants/colors3d";
+import { XYZ_PER_POINT } from "@/shared/constants/scene";
 import { roomFloorPoints } from "../logic/roomFloorPoints";
-
-const XYZ = 3; // 점 하나 = x, y, z
 
 /** 구역 하나의 바닥 색. 2D 평면도와 같은 색을 옅게 깐다. */
 function RoomFloor({ area }: { area: RoomArea }) {
@@ -11,7 +10,7 @@ function RoomFloor({ area }: { area: RoomArea }) {
   return (
     <mesh key={points.length}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[points, XYZ]} />
+        <bufferAttribute attach="attributes-position" args={[points, XYZ_PER_POINT]} />
       </bufferGeometry>
       {/* depthWrite를 끄면 투명 면이 그 위 격자선을 가리지 않는다 */}
       <meshBasicMaterial

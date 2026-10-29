@@ -1,13 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { FLOOR_GRID_LIFT_CM, ROOM_FLOOR_LIFT_CM } from "@/shared/constants/scene";
+import { FLOOR_GRID_LIFT_CM, ROOM_FLOOR_LIFT_CM, XYZ_PER_POINT } from "@/shared/constants/scene";
 import { roomFloorPoints } from "./roomFloorPoints";
-
-const XYZ = 3;
 
 /** 점 목록을 [x, y, z] 묶음으로. */
 const triples = (points: number[]) =>
-  Array.from({ length: points.length / XYZ }, (_, index) =>
-    points.slice(index * XYZ, index * XYZ + XYZ),
+  Array.from({ length: points.length / XYZ_PER_POINT }, (_, index) =>
+    points.slice(index * XYZ_PER_POINT, index * XYZ_PER_POINT + XYZ_PER_POINT),
   );
 
 describe("roomFloorPoints", () => {
@@ -45,6 +43,6 @@ describe("roomFloorPoints", () => {
       { x: 0, y: 0, w: 10, h: 10 },
       { x: 0, y: 10, w: 10, h: 10 },
     ]);
-    expect(two).toHaveLength(2 * 6 * XYZ);
+    expect(two).toHaveLength(2 * 6 * XYZ_PER_POINT);
   });
 });

@@ -20,3 +20,5 @@ export const CAMERA_MAX_DISTANCE_RATIO = 2.5;
 export const CAMERA_MAX_POLAR_DEG = 80;
 /** 확대·축소 버튼을 한 번 누를 때 거리가 바뀌는 배수. */
 export const CAMERA_ZOOM_STEP = 1.25;
+/** 3D 점 목록(Float32Array)에서 점 하나가 차지하는 칸 수: x, y, z. */
+export const XYZ_PER_POINT = 3;

@@ -1,11 +1,15 @@
+import { LINE_MIN_POINTS } from "@/shared/constants/units";
 import { lineSegments } from "@/shared/lib/lineSegments";
 import type { Point, Wall } from "@/shared/types";
 
-const MIN_POINTS = 2;
-
 /** 점 목록 조각을 벽으로 만든다. 점 2개면 직선, 더 많으면 연속선. */
 function toWall(id: string, points: Point[]): Wall {
-  return { id, tool: points.length === MIN_POINTS ? "line" : "polyline", points, closed: false };
+  return {
+    id,
+    tool: points.length === LINE_MIN_POINTS ? "line" : "polyline",
+    points,
+    closed: false,
+  };
 }
 
 /**
@@ -25,7 +29,7 @@ export function removeSegment(wall: Wall, index: number, newId: string): Wall[] 
   const before = points.slice(0, index + 1);
   const after = points.slice(index + 1);
   const pieces: Wall[] = [];
-  if (before.length >= MIN_POINTS) pieces.push(toWall(wall.id, before));
-  if (after.length >= MIN_POINTS) pieces.push(toWall(pieces.length ? newId : wall.id, after));
+  if (before.length >= LINE_MIN_POINTS) pieces.push(toWall(wall.id, before));
+  if (after.length >= LINE_MIN_POINTS) pieces.push(toWall(pieces.length ? newId : wall.id, after));
   return pieces;
 }
