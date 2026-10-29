@@ -1,20 +1,8 @@
-import {
-  FloorPlan,
-  HistoryButtons,
-  SnapToggle,
-  ToolBar,
-  useHistoryKeys,
-} from "@/features/editor2d";
+import { FloorPlan, SnapToggle, ToolBar, useHistoryKeys } from "@/features/editor2d";
 import { ScenePreview } from "@/features/scene3d";
-import { formatMeters } from "@/shared/lib/formatMeters";
-import { Segmented } from "@/shared/ui";
-import { useAppStore, type EditView } from "@/store/useAppStore";
+import { useAppStore } from "@/store/useAppStore";
 import styles from "./EditScreen.module.css";
-
-const VIEW_OPTIONS: readonly { value: EditView; label: string }[] = [
-  { value: "plan", label: "2D 평면도" },
-  { value: "preview", label: "3D 미리보기" },
-];
+import { EditTopBar } from "./EditTopBar";
 
 /** 벽·가구를 만들고 고치는 편집 모드 (시안 04). 속성 패널은 T6부터 붙인다. */
 export function EditScreen() {
@@ -23,24 +11,11 @@ export function EditScreen() {
     state.data.spaces.find((candidate) => candidate.id === state.data.currentSpaceId),
   );
   const view = useAppStore((state) => state.ui.view);
-  const setView = useAppStore((state) => state.setView);
   if (!space) return null;
 
   return (
     <div className={styles.screen}>
-      {/* TODO(T25): ‹ 완료 버튼, TODO(T11): 자동 저장됨 */}
-      <header className={styles.topBar}>
-        <div className={styles.heading}>
-          <h1 className={styles.title}>편집 모드</h1>
-          <span className={styles.spaceInfo}>
-            {space.name} · {formatMeters(space.floor.w)} × {formatMeters(space.floor.h)} m
-          </span>
-        </div>
-        <div className={styles.controls}>
-          <Segmented label="보기 전환" options={VIEW_OPTIONS} value={view} onChange={setView} />
-          <HistoryButtons />
-        </div>
-      </header>
+      <EditTopBar space={space} />
       <main className={styles.body}>
         <ToolBar />
         {view === "plan" ? (

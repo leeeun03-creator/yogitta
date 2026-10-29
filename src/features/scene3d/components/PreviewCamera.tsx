@@ -8,19 +8,21 @@ import {
   useRef,
   type ComponentRef,
   type Ref,
+  type RefObject,
 } from "react";
-import type { Vector3 } from "three";
 import { PREVIEW_FOV_DEG } from "@/shared/constants/scene";
 import type { Floor } from "@/shared/types";
 import {
   cameraLimits,
-  clampTarget,
+  keepViewOnFloor,
   viewStatus,
-  zoomDistance,
+  zoomView,
+  type CameraLimits,
+  type CameraView,
   type ViewStatus,
   type ZoomDirection,
 } from "../logic/cameraView";
-import { startCamera, type Vector } from "../logic/startCamera";
+import { startCamera, type CameraStart } from "../logic/startCamera";
 
 /** 3D 밖(버튼)에서 카메라를 움직이는 명령. */
 export type CameraCommands = { reset: () => void; zoom: (direction: ZoomDirection) => void };
@@ -30,10 +32,80 @@ type PreviewCameraProps = {
   ref: Ref<CameraCommands>;
   onViewChange: (status: ViewStatus) => void;
 };
-
 type Controls = ComponentRef<typeof OrbitControls>;
+type ControlsRef = RefObject<Controls | null>;
 
-const toVector = (vector: Vector3): Vector => [vector.x, vector.y, vector.z];
+const readView = (controls: Controls): CameraView => {
+  const { position } = controls.object;
+  const { target } = controls;
+  return { position: [position.x, position.y, position.z], target: [target.x, target.y, target.z] };
+};
+/** controls의 카메라 자리·보는 곳을 view로 바꾼다 (update는 부르지 않는다). */
+const writeView = (controls: Controls, view: CameraView) => {
+  controls.object.position.set(...view.position);
+  controls.target.set(...view.target);
+};
+
+/** 지금 카메라 상태를 알리는 report와, 카메라를 옮기고 다시 그리는 moveTo. */
+function useCameraMove(
+  controls: ControlsRef,
+  start: CameraStart,
+  limits: CameraLimits,
+  onViewChange: (status: ViewStatus) => void,
+) {
+  const get = useThree((state) => state.get);
+  const report = useCallback(() => {
+    if (controls.current) onViewChange(viewStatus(readView(controls.current), start, limits));
+  }, [controls, onViewChange, start, limits]);
+  const moveTo = useCallback(
+    (view: CameraView) => {
+      const current = controls.current;
+      if (!current) return;
+      writeView(current, view);
+      current.update();
+      get().invalidate(); // frameloop demand라 직접 다시 그리게 한다
+      report();
+    },
+    [controls, get, report],
+  );
+  return { report, moveTo };
+}
+
+/** 처음 자리에 두고, 화면 크기가 바뀌면 (사용자가 움직이지 않았을 때만) 다시 맞춘다. 버튼 명령도 연결한다. */
+function useCameraStart(
+  ref: Ref<CameraCommands>,
+  controls: ControlsRef,
+  isMoved: RefObject<boolean>,
+  { start, limits }: { start: CameraStart; limits: CameraLimits },
+  { report, moveTo }: ReturnType<typeof useCameraMove>,
+) {
+  const get = useThree((state) => state.get);
+  // three.js 카메라는 바꿔 쓰는 객체라 effect 안에서 꺼내 고친다
+  useLayoutEffect(() => {
+    const { camera } = get();
+    camera.near = start.near;
+    camera.far = start.far;
+    camera.updateProjectionMatrix();
+    if (isMoved.current) report();
+    else moveTo(start);
+  }, [get, isMoved, start, moveTo, report]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      reset: () => {
+        isMoved.current = false;
+        moveTo(start);
+      },
+      zoom: (direction) => {
+        if (!controls.current) return;
+        isMoved.current = true;
+        moveTo(zoomView(readView(controls.current), direction, limits));
+      },
+    }),
+    [controls, isMoved, start, limits, moveTo],
+  );
+}
 
 /**
  * 3D 미리보기 카메라. 처음에는 바닥 전체가 보이게 두고,
@@ -42,7 +114,6 @@ const toVector = (vector: Vector3): Vector => [vector.x, vector.y, vector.z];
 export function PreviewCamera({ floor, ref, onViewChange }: PreviewCameraProps) {
   const controls = useRef<Controls>(null);
   const isMoved = useRef(false); // 사용자가 움직였으면 화면 크기가 바뀌어도 처음 자리로 되돌리지 않는다
-  const get = useThree((state) => state.get);
   const width = useThree((state) => state.size.width);
   const height = useThree((state) => state.size.height);
   const start = useMemo(
@@ -50,71 +121,17 @@ export function PreviewCamera({ floor, ref, onViewChange }: PreviewCameraProps) 
     [floor, width, height],
   );
   const limits = useMemo(() => cameraLimits(start), [start]);
+  const move = useCameraMove(controls, start, limits, onViewChange);
+  useCameraStart(ref, controls, isMoved, { start, limits }, move);
 
-  const report = useCallback(() => {
-    const current = controls.current;
-    if (!current) return;
-    const view = { position: toVector(current.object.position), target: toVector(current.target) };
-    onViewChange(viewStatus(view, start, limits));
-  }, [onViewChange, start, limits]);
-
-  const moveTo = useCallback(
-    (position: Vector, target: Vector) => {
-      const current = controls.current;
-      if (!current) return;
-      current.object.position.set(...position);
-      current.target.set(...target);
-      current.update();
-      get().invalidate(); // frameloop demand라 직접 다시 그리게 한다
-      report();
-    },
-    [get, report],
-  );
-
-  // three.js 카메라는 바꿔 쓰는 객체라 effect 안에서 꺼내 고친다
-  useLayoutEffect(() => {
-    const { camera } = get();
-    camera.near = start.near;
-    camera.far = start.far;
-    camera.updateProjectionMatrix();
-    if (isMoved.current) report();
-    else moveTo(start.position, start.target);
-  }, [get, start, moveTo, report]);
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      reset: () => {
-        isMoved.current = false;
-        moveTo(start.position, start.target);
-      },
-      zoom: (direction) => {
-        const current = controls.current;
-        if (!current) return;
-        isMoved.current = true;
-        const offset = current.object.position.clone().sub(current.target);
-        offset.setLength(zoomDistance(offset.length(), direction, limits));
-        moveTo(toVector(current.target.clone().add(offset)), toVector(current.target));
-      },
-    }),
-    [start, limits, moveTo],
-  );
-
+  const { report } = move;
   /** 이동으로 보는 곳이 바닥 밖으로 나가면 카메라째 바닥 안으로 당긴다. */
   const handleChange = useCallback(() => {
     const current = controls.current;
     if (!current) return;
-    const target = toVector(current.target);
-    const [x, y, z] = clampTarget(target, floor);
-    if (x !== target[0] || y !== target[1] || z !== target[2]) {
-      const position = current.object.position;
-      position.set(
-        position.x + x - target[0],
-        position.y + y - target[1],
-        position.z + z - target[2],
-      );
-      current.target.set(x, y, z);
-    }
+    const view = readView(current);
+    const kept = keepViewOnFloor(view, floor);
+    if (kept !== view) writeView(current, kept);
     report();
   }, [floor, report]);
 

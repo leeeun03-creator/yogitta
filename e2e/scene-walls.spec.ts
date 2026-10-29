@@ -1,16 +1,19 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, collectErrors, createSpace, dragFloorCm, plan, pressCm } from "./helpers";
+import {
+  chooseTool,
+  collectErrors,
+  createSpace,
+  dragFloorCm,
+  openPreview,
+  plan,
+  preview,
+  pressCm,
+  viewGroup,
+} from "./helpers";
 
 const FLOOR = { w: 600, h: 450 };
 type Cm = { x: number; y: number };
 
-const viewGroup = (page: Page) => page.getByRole("group", { name: "보기 전환" });
-const preview = (page: Page) => page.getByRole("img", { name: /^3D 미리보기,/ });
-
-async function openPreview(page: Page) {
-  await viewGroup(page).getByRole("button", { name: "3D 미리보기" }).click();
-  await expect(preview(page).locator("canvas")).toBeVisible();
-}
 async function openPlan(page: Page) {
   await viewGroup(page).getByRole("button", { name: "2D 평면도" }).click();
   await expect(plan(page)).toBeVisible();

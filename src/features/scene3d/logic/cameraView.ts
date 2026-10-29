@@ -13,6 +13,8 @@ export type CameraLimits = {
   maxDistance: number;
   maxPolarAngle: number;
 };
+/** 카메라 자리와 보는 곳 (cm). */
+export type CameraView = { position: Vector; target: Vector };
 /** 지금 카메라 상태. 처음 보기·확대·축소 버튼을 막을지 정한다. */
 export type ViewStatus = { isStart: boolean; canZoomIn: boolean; canZoomOut: boolean };
 export type ZoomDirection = "in" | "out";
@@ -39,11 +41,7 @@ export function zoomDistance(distance: number, direction: ZoomDirection, limits:
 }
 
 /** 카메라 자리·보는 곳으로 지금 상태를 판단한다. */
-export function viewStatus(
-  view: { position: Vector; target: Vector },
-  start: CameraStart,
-  limits: CameraLimits,
-): ViewStatus {
+export function viewStatus(view: CameraView, start: CameraStart, limits: CameraLimits): ViewStatus {
   const distance = distanceBetween(view.position, view.target);
   return {
     isStart:
@@ -57,4 +55,40 @@ export function viewStatus(
 /** 이동으로 보는 곳이 바닥 밖으로 나가지 않게 바닥 안(바닥 높이)으로 당긴다. */
 export function clampTarget(target: Vector, floor: Floor): Vector {
   return [Math.min(floor.w, Math.max(0, target[0])), 0, Math.min(floor.h, Math.max(0, target[2]))];
+}
+
+/** 보는 곳은 그대로 두고, 확대(in)·축소(out) 한 번만큼 카메라를 보는 곳 쪽으로 당기거나 민다. */
+export function zoomView(
+  view: CameraView,
+  direction: ZoomDirection,
+  limits: CameraLimits,
+): CameraView {
+  const { position, target } = view;
+  const distance = distanceBetween(position, target);
+  if (distance === 0) return view;
+  const ratio = zoomDistance(distance, direction, limits) / distance;
+  return {
+    position: [
+      target[0] + (position[0] - target[0]) * ratio,
+      target[1] + (position[1] - target[1]) * ratio,
+      target[2] + (position[2] - target[2]) * ratio,
+    ],
+    target,
+  };
+}
+
+/** 보는 곳이 바닥 밖이면 카메라째 바닥 안으로 옮긴다. 바닥 안이면 받은 view를 그대로 돌려준다. */
+export function keepViewOnFloor(view: CameraView, floor: Floor): CameraView {
+  const { position, target } = view;
+  const next = clampTarget(target, floor);
+  const shift = [next[0] - target[0], next[1] - target[1], next[2] - target[2]];
+  if (shift.every((value) => value === 0)) return view;
+  return {
+    position: [
+      position[0] + (shift[0] ?? 0),
+      position[1] + (shift[1] ?? 0),
+      position[2] + (shift[2] ?? 0),
+    ],
+    target: next,
+  };
 }

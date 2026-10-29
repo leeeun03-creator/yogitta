@@ -5,7 +5,15 @@ import {
   CAMERA_ZOOM_STEP,
   PREVIEW_FOV_DEG,
 } from "@/shared/constants/scene";
-import { cameraLimits, clampTarget, viewStatus, zoomDistance } from "./cameraView";
+import {
+  cameraLimits,
+  clampTarget,
+  type CameraView,
+  keepViewOnFloor,
+  viewStatus,
+  zoomDistance,
+  zoomView,
+} from "./cameraView";
 import { startCamera, type Vector } from "./startCamera";
 
 const FLOOR = { w: 600, h: 450 };
@@ -101,5 +109,33 @@ describe("clampTarget", () => {
   it("엣지: 바닥 밖으로 나가면 가장자리로 당긴다", () => {
     expect(clampTarget([-50, 0, 900], FLOOR)).toEqual([0, 0, 450]);
     expect(clampTarget([700, 0, -1], FLOOR)).toEqual([600, 0, 0]);
+  });
+});
+
+describe("zoomView", () => {
+  it("보는 곳은 그대로, 같은 방향으로 거리만 바뀐다", () => {
+    const zoomed = zoomView(start, "in", limits);
+    expect(zoomed.target).toEqual(start.target);
+    const expected = at(startDistance / CAMERA_ZOOM_STEP);
+    zoomed.position.forEach((value, axis) => expect(value).toBeCloseTo(expected[axis] ?? NaN));
+  });
+
+  it("엣지: 카메라가 보는 곳과 같은 자리면(거리 0) 그대로 둔다", () => {
+    const same = { position: start.target, target: start.target };
+    expect(zoomView(same, "out", limits)).toBe(same);
+  });
+});
+
+describe("keepViewOnFloor", () => {
+  it("보는 곳이 바닥 안이면 그대로 돌려준다", () => {
+    expect(keepViewOnFloor(start, FLOOR)).toBe(start);
+  });
+
+  it("엣지: 바닥 밖이면 카메라도 같은 만큼 옮겨 보는 방향을 지킨다", () => {
+    const outside: CameraView = { position: [900, 500, 300], target: [700, 0, 100] };
+    expect(keepViewOnFloor(outside, FLOOR)).toEqual({
+      position: [800, 500, 300],
+      target: [600, 0, 100],
+    });
   });
 });

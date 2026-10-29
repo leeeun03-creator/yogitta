@@ -22,6 +22,18 @@ export async function createSpace(page: Page, size: { width: string; depth: stri
 /** 2D 평면도 그림(svg). 돋보기 안에도 같은 그림이 있어서, 벽·미리보기 등은 이 안에서 찾는다. */
 export const plan = (page: Page) => page.getByRole("img", { name: /^2D 평면도,/ });
 
+/** 상단 바의 [2D 평면도 | 3D 미리보기] 전환 버튼 묶음. */
+export const viewGroup = (page: Page) => page.getByRole("group", { name: "보기 전환" });
+/** 3D 미리보기 그림. 이름에 바닥 크기·벽 수·선분 수가 나온다. */
+export const preview = (page: Page) => page.getByRole("img", { name: /^3D 미리보기,/ });
+
+/** 3D 미리보기로 바꾸고, 그림이 뜨고 카메라가 준비될 때까지(확대 버튼이 풀림) 기다린다. */
+export async function openPreview(page: Page) {
+  await viewGroup(page).getByRole("button", { name: "3D 미리보기" }).click();
+  await expect(preview(page).locator("canvas")).toBeVisible();
+  await expect(page.getByRole("button", { name: "확대" })).toBeEnabled();
+}
+
 const FLOOR_STROKE_PX = 1; // 바닥 테두리는 줌과 상관없이 1px
 
 /** 바닥 사각형의 화면 위치·크기(px). 테두리 선 두께는 빼서 바닥만 잰다. */

@@ -1,11 +1,18 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, collectErrors, createSpace, plan, pressCm, wallPoints } from "./helpers";
+import {
+  chooseTool,
+  collectErrors,
+  createSpace,
+  plan,
+  preview,
+  pressCm,
+  viewGroup,
+  wallPoints,
+} from "./helpers";
 
 const FLOOR = { w: 600, h: 450 };
-const viewGroup = (page: Page) => page.getByRole("group", { name: "보기 전환" });
 const planButton = (page: Page) => viewGroup(page).getByRole("button", { name: "2D 평면도" });
 const previewButton = (page: Page) => viewGroup(page).getByRole("button", { name: "3D 미리보기" });
-const preview = (page: Page) => page.getByRole("img", { name: /^3D 미리보기,/ });
 
 test.describe("2D 평면도 / 3D 미리보기 전환", () => {
   test("상단 바의 전환 버튼으로 3D 미리보기를 열고 2D 평면도로 돌아온다", async ({ page }) => {
@@ -17,7 +24,9 @@ test.describe("2D 평면도 / 3D 미리보기 전환", () => {
 
     await previewButton(page).click();
     await expect(previewButton(page)).toHaveAttribute("aria-pressed", "true");
-    await expect(preview(page)).toHaveAccessibleName("3D 미리보기, 바닥 6.0 × 4.5 m, 벽 0개, 선분 0개");
+    await expect(preview(page)).toHaveAccessibleName(
+      "3D 미리보기, 바닥 6.0 × 4.5 m, 벽 0개, 선분 0개",
+    );
     await expect(plan(page)).toHaveCount(0);
     // 3D 그림판(canvas)이 영역을 채운다. 처음엔 기본 크기(300×150)였다가 영역을 잰 뒤 커지므로 다시 읽는다
     const canvas = preview(page).locator("canvas");
