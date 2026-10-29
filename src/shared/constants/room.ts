@@ -6,6 +6,12 @@ export const ROOM_GRID_CM = 10;
 export const ROOM_LINE_STEP_CM = 1;
 /** 구역 선 끝이 벽·바닥 테두리·다른 구역 선에서 이 거리(cm) 안이면 그 위로 이어 붙인다. 손으로 그어도 끝이 딱 닿게 한다. */
 export const ROOM_LINE_ATTACH_CM = 30;
+/** 그보다 먼 끝은 그어 가던 방향으로 늘려 경계에 닿게 한다. 방향은 끝에서 이 거리(cm) 안쪽 점과 이어 정해 손 떨림에 덜 흔들린다. */
+export const ROOM_LINE_AIM_CM = 20;
+/** 끝이 경계에서 이 거리(cm) 안이면 이미 닿은 것으로 본다 (점은 0.1cm까지 남긴다). */
+export const ROOM_LINE_TOUCH_CM = 0.1;
+/** 두 끝이 서로 30cm 안인데 선이 끝에서 이 거리(cm)보다 멀리 갔다 왔으면 고리로 보고, 늘리지 않고 닫는다. */
+export const ROOM_LINE_LOOP_MIN_CM = 50;
 /** 끌면서 찍힌 점을 이 간격(cm)보다 가까우면 버린다. 저장할 점 수를 줄인다. */
 export const ROOM_LINE_POINT_GAP_CM = 5;
 /** 이보다 짧은 구역 선(cm)은 실수로 보고 더하지 않는다. */

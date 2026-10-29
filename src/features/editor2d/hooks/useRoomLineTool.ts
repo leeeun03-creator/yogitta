@@ -3,6 +3,7 @@ import { ROOM_LINE_ATTACH_CM } from "@/shared/constants/room";
 import type { Floor, Point } from "@/shared/types";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
 import { attachRoomLineEnds } from "../logic/attachRoomLineEnds";
+import { extendRoomLineEnds } from "../logic/extendRoomLineEnds";
 import type { SegmentLine } from "../logic/findSegment";
 import type { ViewBox } from "../logic/fitViewBox";
 import { screenToCm } from "../logic/screenToCm";
@@ -13,6 +14,7 @@ type Drag = { pointerId: number; points: Point[] };
 
 /**
  * 구역 선 도구: 누른 채 끌면 손 가는 대로 선을 그리고, 떼면 점을 줄이고 끝을 가까운 경계에 붙여 저장한다.
+ * 경계에서 먼 끝은 그어 가던 방향으로 늘려 닿게 한다(바닥이 꼭 나뉘게).
  * 스냅하지 않는다(자유 곡선). 두 번째 손가락·Esc는 취소, 20cm보다 짧으면 버린다.
  */
 export function useRoomLineTool(
@@ -28,7 +30,9 @@ export function useRoomLineTool(
 
   const finish = (points: Point[]) => {
     const line = simplifyRoomLine(points, floor);
-    if (line) addRoomLine(attachRoomLineEnds(line, floor, lines, ROOM_LINE_ATTACH_CM));
+    if (!line) return;
+    const attached = attachRoomLineEnds(line, floor, lines, ROOM_LINE_ATTACH_CM);
+    addRoomLine(extendRoomLineEnds(attached, floor, lines));
   };
   const handlers = {
     onPointerDown: (event: PointerEvent<HTMLElement>) => {

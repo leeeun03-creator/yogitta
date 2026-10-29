@@ -89,7 +89,9 @@ test.describe("구역 선 도구", () => {
     );
     const points = (await roomLinePoints(page))[0] ?? [];
     expectPoint(points[0], { x: 250, y: 100 });
-    expectPoint(points[points.length - 1], { x: 250, y: 400 }); // 테두리에서 50cm라 그대로
+    // 테두리에서 50cm라 붙지 않고, 그어 가던 방향(아래)으로 늘어 테두리에 닿는다
+    expectPoint(points[points.length - 2], { x: 250, y: 400 });
+    expectPoint(points[points.length - 1], { x: 250, y: 450 }, 5);
   });
 
   test("지우개로 누르면 구역 선이 통째로 지워진다", async ({ page, isMobile }) => {

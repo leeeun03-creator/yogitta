@@ -2,17 +2,7 @@ import { distance } from "@/shared/lib/distance";
 import type { Floor, Point } from "@/shared/types";
 import { closestPointOnSegment } from "./closestPointOnSegment";
 import type { SegmentLine } from "./findSegment";
-
-/** 바닥 테두리 네 변. 구역 선 끝은 테두리에도 붙는다. */
-function floorEdges(floor: Floor): SegmentLine {
-  const corners = [
-    { x: 0, y: 0 },
-    { x: floor.w, y: 0 },
-    { x: floor.w, y: floor.h },
-    { x: 0, y: floor.h },
-  ];
-  return { id: "floor", points: corners, closed: true };
-}
+import { floorEdges } from "./floorEdges";
 
 /** point에서 radius(cm) 안에 있는 선 위의 가장 가까운 점. 없으면 null. */
 function nearestOnLines(point: Point, lines: readonly SegmentLine[], radius: number) {
