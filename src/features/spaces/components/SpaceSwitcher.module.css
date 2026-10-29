@@ -1,17 +1,31 @@
 /* 공간 알약. 값은 시안 01 · 컴포넌트 시안 08 (SpaceSwitcher) */
+.root {
+  position: relative; /* 공간 전환 목록을 알약 아래에 띄운다 */
+  min-width: 0;
+  display: flex;
+}
+
 .switcher {
   min-width: 0;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 44px;
-  margin: 0;
-  padding: 0 16px;
+  padding: 0 14px 0 16px;
   background: var(--yg-surface);
   color: var(--yg-text);
   border: 2px solid var(--yg-accent);
   border-radius: var(--yg-radius-pill);
+  font: inherit;
   font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.switcher:hover {
+  background: var(--yg-add-hover);
+}
+.switcher[aria-expanded="true"] {
+  background: var(--yg-found-bg);
 }
 
 .label {
@@ -26,6 +40,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.arrow {
+  flex-shrink: 0;
 }
 
 /* 휴대폰: "공간" 글자는 화면에서 숨기고 공간 이름만 보인다 (시안 02). 화면 읽기 프로그램은 그대로 읽는다 */

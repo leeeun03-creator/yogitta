@@ -1,0 +1,99 @@
+/* 공간 전환 목록. 값은 시안 01 · 컴포넌트 시안 08 (폭 340 · 22px 모서리 · --yg-shadow-pop) */
+.list {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 10;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background: var(--yg-surface);
+  border-radius: 22px;
+  box-shadow: var(--yg-shadow-pop);
+}
+
+.heading {
+  padding: 4px 8px 2px;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+/* 공간이 많으면 목록 안에서 위아래로 넘긴다 */
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: min(50vh, 360px);
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--yg-text);
+  border: none;
+  border-radius: var(--yg-radius-row);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.item:hover {
+  background: var(--yg-surface-2);
+}
+/* 지금 공간 */
+.item[aria-current="true"] {
+  background: var(--yg-found-bg);
+}
+
+.texts {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+}
+
+.summary {
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+.item[aria-current="true"] .summary {
+  color: var(--yg-found-text);
+}
+
+.check {
+  flex-shrink: 0;
+  color: var(--yg-accent);
+}
+
+.create {
+  margin-top: 4px;
+}
+
+/* 휴대폰: 알약이 오른쪽에 있어 340px이 넘치므로, 머리 아래에 화면 폭(양옆 16px)으로 띄운다 */
+@media (max-width: 640px) {
+  .list {
+    position: fixed;
+    top: 68px; /* 머리 위 여백 16px + 알약 44px + 8px */
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+}

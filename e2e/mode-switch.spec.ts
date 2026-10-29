@@ -134,6 +134,7 @@ test.describe("편집 모드 ↔ 메인 화면", () => {
     await expect(doneButton(page)).toBeFocused();
     await page.keyboard.press("Enter");
     await expect(mainTitle(page)).toBeFocused();
+    await page.keyboard.press("Tab"); // 공간 알약
     await page.keyboard.press("Tab");
     await expect(editButton(page)).toBeFocused();
     await page.keyboard.press("Enter");

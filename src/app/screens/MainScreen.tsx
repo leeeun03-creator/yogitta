@@ -29,7 +29,7 @@ export function MainScreen() {
         <h1 ref={titleRef} tabIndex={-1} className={styles.title}>
           <Logo />
         </h1>
-        <SpaceSwitcher name={space.name} />
+        <SpaceSwitcher />
         <Button
           className={styles.edit}
           icon={<Pencil size={ICON_SIZE} aria-hidden="true" />}

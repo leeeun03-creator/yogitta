@@ -1,0 +1,25 @@
+/* 새 공간 대화상자. 바닥 크기 카드가 곧 대화상자 모양이라 dialog 자체는 투명하게 둔다 */
+.dialog {
+  width: min(420px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  overflow-y: auto;
+  background: transparent;
+  border: none;
+  border-radius: var(--yg-radius-panel);
+}
+.dialog::backdrop {
+  background: color-mix(in srgb, var(--yg-text) 35%, transparent);
+}
+
+.body {
+  position: relative;
+  display: flex;
+}
+
+/* 카드 오른쪽 위 닫기 (카드 뒤에 둬서 열리면 이름 칸에 먼저 초점이 간다) */
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}

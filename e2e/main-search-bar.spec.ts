@@ -4,7 +4,7 @@ import { collectErrors, createSpace } from "./helpers";
 const SEARCH_MAX_PX = 640; // 검색창 최대 폭 (yogitta-design 4장)
 const SEARCH_HEIGHT_PX = 56;
 const TOUCH_PX = 44;
-const PILL_GAP_MAX_PX = 40; // 알약 글자 끝 ~ [편집] 사이 (알약 안쪽 여백 + 머리 간격)
+const PILL_GAP_MAX_PX = 14; // 공간 알약 ~ [편집] 사이 = 머리 간격
 const LONG_QUERY = "여권".repeat(100);
 
 const searchBox = (page: Page) => page.getByRole("searchbox", { name: "물건 검색" });
@@ -72,9 +72,11 @@ test.describe("메인 화면 검색창", () => {
     await expectNoSideScroll(page);
   });
 
-  test("엣지: 키보드만으로 [편집] → 검색창 → 지우기", async ({ page, isMobile }) => {
+  test("엣지: 키보드만으로 공간 알약 → [편집] → 검색창 → 지우기", async ({ page, isMobile }) => {
     test.skip(isMobile, "키보드는 데스크톱에서만");
     await expect(mainTitle(page)).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("button", { name: "공간 내 방" })).toBeFocused();
     await page.keyboard.press("Tab");
     await expect(editButton(page)).toBeFocused();
     await page.keyboard.press("Tab");
@@ -103,8 +105,8 @@ test.describe("휴대폰 메인 화면 (시안 02)", () => {
     const edit = await editButton(page).boundingBox();
     expect(edit?.width).toBe(TOUCH_PX);
     expect(edit?.height).toBe(TOUCH_PX);
-    // 공간 알약은 [편집] 바로 옆 오른쪽에 모인다
-    const pill = await page.getByRole("banner").getByText("내 방", { exact: true }).boundingBox();
+    // 공간 알약은 [편집] 바로 옆 오른쪽에 모인다 (사이는 머리 간격만)
+    const pill = await page.getByRole("button", { name: "공간 내 방" }).boundingBox();
     expect((edit?.x ?? 0) - ((pill?.x ?? 0) + (pill?.width ?? 0))).toBeLessThanOrEqual(
       PILL_GAP_MAX_PX,
     );
