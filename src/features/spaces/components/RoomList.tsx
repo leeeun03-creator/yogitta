@@ -1,5 +1,7 @@
-import { useEffect, useId, useRef } from "react";
+import { useId, useRef } from "react";
+import { useRoomFocus } from "../hooks/useRoomFocus";
 import { useRoomForm } from "../hooks/useRoomForm";
+import { RoomChips } from "./RoomChips";
 import { RoomForm } from "./RoomForm";
 import styles from "./RoomList.module.css";
 
@@ -10,20 +12,8 @@ export function RoomList({ rooms }: RoomListProps) {
   const labelId = useId();
   const form = useRoomForm(rooms);
   const listRef = useRef<HTMLDivElement>(null);
-  const selected = form.mode?.type === "rename" ? form.mode.room : undefined;
-
-  // 입력칸을 닫으면 초점을 칩이나 "+ 구역 추가"로 돌려 키보드로 이어서 할 수 있게 한다
-  useEffect(() => {
-    const room = form.focusTarget?.room;
-    if (!form.focusTarget) return;
-    const buttons = listRef.current?.querySelectorAll<HTMLButtonElement>("button[data-room]");
-    const chip = [...(buttons ?? [])].find((button) => button.dataset.room === room);
-    const add = listRef.current?.querySelector<HTMLButtonElement>("button[data-add]");
-    (chip ?? add)?.focus();
-  }, [form.focusTarget]);
-
-  const select = (room: string) =>
-    room === selected ? form.cancel() : form.open({ type: "rename", room });
+  useRoomFocus(listRef, form.focusTarget);
+  const { selected } = form;
 
   return (
     <div ref={listRef} className={styles.list}>
@@ -31,23 +21,7 @@ export function RoomList({ rooms }: RoomListProps) {
         구역
       </span>
       <div className={styles.items}>
-        {rooms.length > 0 && (
-          <ul className={styles.chips} aria-labelledby={labelId}>
-            {rooms.map((room) => (
-              <li key={room}>
-                <button
-                  type="button"
-                  className={styles.chip}
-                  data-room={room}
-                  aria-pressed={room === selected}
-                  onClick={() => select(room)}
-                >
-                  {room}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+        <RoomChips rooms={rooms} selected={selected} labelId={labelId} onSelect={form.toggle} />
         {form.mode ? (
           <RoomForm
             key={selected ?? "add"}

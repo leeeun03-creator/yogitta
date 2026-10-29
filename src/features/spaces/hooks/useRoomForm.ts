@@ -58,6 +58,9 @@ export function useRoomForm(rooms: string[]) {
     if (active?.type === "rename") removeRoom(active.room);
     close({});
   };
+  // 칩을 누르면 그 구역을 고르고, 고른 칩을 다시 누르면 닫는다
+  const selected = active?.type === "rename" ? active.room : undefined;
+  const toggle = (room: string) => (room === selected ? cancel() : open({ type: "rename", room }));
 
-  return { mode: active, ...field, focusTarget, open, submit, cancel, remove };
+  return { mode: active, selected, ...field, focusTarget, open, toggle, submit, cancel, remove };
 }

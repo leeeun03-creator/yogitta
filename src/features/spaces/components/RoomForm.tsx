@@ -1,7 +1,6 @@
-import { Check, Trash2, X } from "lucide-react";
 import { useId, type FormEvent, type KeyboardEvent } from "react";
 import { ROOM_NAME_MAX_LENGTH } from "@/shared/constants/room";
-import { Button, IconButton } from "@/shared/ui";
+import { RoomFormActions } from "./RoomFormActions";
 import styles from "./RoomList.module.css";
 
 type RoomFormProps = {
@@ -46,13 +45,7 @@ export function RoomForm({
         aria-describedby={error ? errorId : undefined}
         autoFocus
       />
-      <IconButton type="submit" label="확인" icon={<Check size={20} strokeWidth={2} />} />
-      <IconButton label="취소" icon={<X size={20} strokeWidth={2} />} onClick={onCancel} />
-      {onRemove && (
-        <Button variant="danger" icon={<Trash2 size={18} strokeWidth={2} />} onClick={onRemove}>
-          삭제
-        </Button>
-      )}
+      <RoomFormActions onCancel={onCancel} onRemove={onRemove} />
       {error && (
         <span id={errorId} className={styles.error} role="alert">
           {error}
