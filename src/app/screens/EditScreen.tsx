@@ -32,7 +32,7 @@ export function EditScreen() {
           </section>
         ) : (
           <section className={styles.canvas} aria-label="3D 미리보기 영역">
-            <ScenePreview floor={space.floor} walls={space.walls} />
+            <ScenePreview space={space} />
           </section>
         )}
       </main>

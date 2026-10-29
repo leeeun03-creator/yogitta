@@ -6,5 +6,8 @@ export const SCENE_COLORS = {
   edge: "#9B7A5A", // 모서리 선
 } as const;
 
+/** 3D 바닥 구역 색의 불투명도. 색은 2D 평면도와 같은 `ROOM_COLORS`이고, 마루색이 비쳐 옅게 보이게 한다. */
+export const ROOM_FLOOR_OPACITY = 0.6;
+
 /** 면 음영: 윗면 = 기본색, 앞면 86%, 옆면 74% 밝기. */
 export const FACE_SHADE = { top: 1, front: 0.86, side: 0.74 } as const;

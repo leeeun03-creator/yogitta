@@ -10,6 +10,8 @@ export const CAMERA_DIRECTION = { x: 1, y: 1, z: 1 } as const;
 export const CAMERA_FIT_MARGIN = 1.1;
 /** 3D 격자선을 바닥보다 살짝 띄우는 높이 (cm). 바닥 면과 겹쳐 깜빡이지 않게 한다. */
 export const FLOOR_GRID_LIFT_CM = 0.5;
+/** 3D 바닥에 구역 색을 까는 높이 (cm). 바닥보다 위, 격자선보다 아래라 격자선이 구역 위에 보인다 (T5). */
+export const ROOM_FLOOR_LIFT_CM = 0.25;
 /** 3D 카메라가 바닥 가운데(보는 곳)에 다가갈 수 있는 가장 가까운 거리 (cm). 가구 하나가 화면에 찰 정도. */
 export const CAMERA_MIN_DISTANCE_CM = 200;
 /** 3D 카메라가 물러날 수 있는 가장 먼 거리 = 처음 거리의 몇 배. */
