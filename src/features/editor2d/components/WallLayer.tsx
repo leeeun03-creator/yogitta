@@ -1,8 +1,8 @@
 import { FLOOR_PLAN_COLORS } from "@/shared/constants/colors2d";
 import { JOINT_RADIUS_PX, JOINT_STROKE_PX } from "@/shared/constants/floorPlan";
 import { WALL_THICKNESS_CM } from "@/shared/constants/scene";
+import { toSvgPoints } from "@/shared/lib/toSvgPoints";
 import type { Point, Wall } from "@/shared/types";
-import { toSvgPoints } from "../logic/toSvgPoints";
 import styles from "./FloorPlan.module.css";
 
 type WallLayerProps = {

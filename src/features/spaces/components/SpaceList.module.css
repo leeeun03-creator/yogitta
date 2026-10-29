@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 12px;
+  padding: 8px;
   background: transparent;
   color: var(--yg-text);
   border: none;
@@ -53,6 +53,13 @@
 /* 지금 공간 */
 .item[aria-current="true"] {
   background: var(--yg-found-bg);
+}
+
+/* 공간 썸네일 (시안 01: 76 × 56, 캔버스 바탕, 12px 모서리) */
+.thumbnail {
+  flex-shrink: 0;
+  background: var(--yg-canvas);
+  border-radius: 12px;
 }
 
 .texts {
@@ -80,6 +87,7 @@
 
 .check {
   flex-shrink: 0;
+  margin-right: 4px;
   color: var(--yg-accent);
 }
 

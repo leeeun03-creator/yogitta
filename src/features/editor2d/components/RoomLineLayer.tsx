@@ -5,8 +5,8 @@ import {
   ROOM_LINE_DASH_PX,
   ROOM_LINE_WIDTH_PX,
 } from "@/shared/constants/floorPlan";
+import { toSvgPoints } from "@/shared/lib/toSvgPoints";
 import type { Point, RoomLine } from "@/shared/types";
-import { toSvgPoints } from "../logic/toSvgPoints";
 import styles from "./FloorPlan.module.css";
 
 type RoomLineLayerProps = {

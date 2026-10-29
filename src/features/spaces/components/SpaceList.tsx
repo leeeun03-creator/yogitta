@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui";
 import { listFocusIndex } from "../logic/listFocusIndex";
 import { spaceSummary } from "../logic/spaceSummary";
 import styles from "./SpaceList.module.css";
+import { SpaceThumbnail } from "./SpaceThumbnail";
 
 const ICON_SIZE = 18;
 
@@ -17,7 +18,7 @@ type SpaceListProps = {
 };
 
 /**
- * 공간 전환 목록 (시안 01): 공간마다 이름과 "바닥 크기 · 가구 · 물건", 지금 공간은 강조 바탕 + 체크.
+ * 공간 전환 목록 (시안 01): 공간마다 공간 썸네일·이름·"바닥 크기 · 가구 · 물건", 지금 공간은 강조 바탕 + 체크.
  * 맨 아래 점선 "+ 새 공간 만들기". 열리면 지금 공간에 초점을 두고, ↑↓·Home·End로 공간 사이를 옮긴다.
  */
 export function SpaceList({ id, spaces, currentId, onSelect, onCreate }: SpaceListProps) {
@@ -71,7 +72,7 @@ function SpaceItem({ space, isCurrent, onSelect }: SpaceItemProps) {
       aria-current={isCurrent ? "true" : undefined}
       onClick={() => onSelect(space.id)}
     >
-      {/* TODO(T27-4): 공간 썸네일 */}
+      <SpaceThumbnail space={space} />
       <span className={styles.texts}>
         <span className={styles.name}>{space.name}</span>
         <span className={styles.summary}>{spaceSummary(space)}</span>
