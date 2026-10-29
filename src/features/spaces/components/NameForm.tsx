@@ -1,51 +1,58 @@
 import { useId, type FormEvent, type KeyboardEvent } from "react";
-import { ROOM_NAME_MAX_LENGTH } from "@/shared/constants/room";
-import { RoomFormActions } from "./RoomFormActions";
+import { NameFormActions } from "./NameFormActions";
 import styles from "./RoomList.module.css";
 
-type RoomFormProps = {
-  label: string; // 입력칸 이름 ("새 구역 이름" / "구역 이름")
+/** 입력칸 자체: 이름(aria-label)과, 있으면 보기 글자·최대 글자 수. */
+type NameField = { label: string; placeholder?: string; maxLength?: number };
+
+type NameFormProps = {
+  field: NameField;
   value: string;
   error?: string; // 있으면 오류 상태 + 아래 안내 문구
   onChange: (value: string) => void;
   onSubmit: () => void;
   onCancel: () => void;
-  onRemove?: () => void; // 있으면 삭제 버튼을 보인다 (이름 바꾸기 때)
+  onRemove?: () => void; // 있으면 삭제 버튼을 보인다 (구역 이름 바꾸기 때)
 };
 
-/** 구역 이름 입력칸. Enter·확인으로 정하고 Esc·취소로 닫는다. */
-export function RoomForm({
-  label,
+/**
+ * 이름 입력칸 (구역 이름, 공간 이름 바꾸기). Enter·확인으로 정하고 Esc·취소로 닫는다.
+ * Esc는 여기서 멈춰 바깥(공간 전환 목록 등)까지 닫히지 않게 한다.
+ */
+export function NameForm({
+  field,
   value,
   error,
   onChange,
   onSubmit,
   onCancel,
   onRemove,
-}: RoomFormProps) {
+}: NameFormProps) {
   const errorId = useId();
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     onSubmit();
   };
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Escape") onCancel();
+    if (event.key !== "Escape") return;
+    event.stopPropagation();
+    onCancel();
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
       <input
         className={styles.input}
-        aria-label={label}
-        placeholder={onRemove ? undefined : "예: 안방"}
+        aria-label={field.label}
+        placeholder={field.placeholder}
         value={value}
-        maxLength={ROOM_NAME_MAX_LENGTH}
+        maxLength={field.maxLength}
         onChange={(event) => onChange(event.target.value)}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
         autoFocus
       />
-      <RoomFormActions onCancel={onCancel} onRemove={onRemove} />
+      <NameFormActions onCancel={onCancel} onRemove={onRemove} />
       {error && (
         <span id={errorId} className={styles.error} role="alert">
           {error}

@@ -32,8 +32,31 @@
   list-style: none;
 }
 
+/* 공간 한 줄: [공간 버튼 | ⋯]. 올림·지금 공간 바탕은 줄 전체에 칠한다 */
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-right: 4px;
+  border-radius: var(--yg-radius-row);
+}
+.line:hover {
+  background: var(--yg-surface-2);
+}
+/* 지금 공간 */
+.line[data-current="true"] {
+  background: var(--yg-found-bg);
+}
+
 .item {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   min-height: 56px;
   display: flex;
   align-items: center;
@@ -47,12 +70,27 @@
   text-align: left;
   cursor: pointer;
 }
-.item:hover {
-  background: var(--yg-surface-2);
+
+/* "⋯"를 누르면 줄 아래에 나오는 [이름 바꾸기] [삭제] */
+.rowButtons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 4px 4px;
 }
-/* 지금 공간 */
-.item[aria-current="true"] {
-  background: var(--yg-found-bg);
+
+/* 이름 바꾸기 중인 줄: 입력칸이 줄 폭을 채운다 */
+.rename {
+  padding: 4px;
+}
+.rename form {
+  flex-wrap: wrap;
+}
+.rename input {
+  flex: 1;
+  min-width: 0;
+  width: auto;
 }
 
 /* 공간 썸네일 (시안 01: 76 × 56, 캔버스 바탕, 12px 모서리) */
@@ -80,6 +118,9 @@
 .summary {
   font-size: 13px;
   color: var(--yg-text-sub);
+}
+.part {
+  white-space: nowrap;
 }
 .item[aria-current="true"] .summary {
   color: var(--yg-found-text);

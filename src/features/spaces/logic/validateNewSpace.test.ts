@@ -15,21 +15,21 @@ describe("validateNewSpace", () => {
   it("빈 이름을 막는다", () => {
     expect(validateNewSpace({ ...VALID, name: "  " }, [])).toEqual({
       ok: false,
-      errors: { name: "empty" },
+      errors: { name: "emptyName" },
     });
   });
 
   it("이미 있는 공간 이름을 막는다 (앞뒤 공백 무시)", () => {
     expect(validateNewSpace({ ...VALID, name: "형 방" }, [" 형 방 "])).toEqual({
       ok: false,
-      errors: { name: "duplicate" },
+      errors: { name: "duplicateName" },
     });
   });
 
   it("틀린 칸을 모두 한 번에 알려준다", () => {
     expect(validateNewSpace({ name: "", width: "0", depth: "abc" }, [])).toEqual({
       ok: false,
-      errors: { name: "empty", width: "tooSmall", depth: "notNumber" },
+      errors: { name: "emptyName", width: "tooSmall", depth: "notNumber" },
     });
   });
 });

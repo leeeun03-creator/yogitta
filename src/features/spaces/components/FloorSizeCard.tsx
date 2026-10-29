@@ -2,14 +2,10 @@ import type { Ref } from "react";
 import { Button, TextField } from "@/shared/ui";
 import { useFloorSizeForm } from "../hooks/useFloorSizeForm";
 import type { MetersError } from "../logic/parseMeters";
-import type { NameError } from "../logic/validateNewSpace";
+import { spaceNameMessage } from "../logic/spaceNameMessage";
 import { FloorPresets } from "./FloorPresets";
 import styles from "./FloorSizeCard.module.css";
 
-const NAME_MESSAGES: Record<NameError, string> = {
-  empty: "공간 이름을 적어 주세요",
-  duplicate: "이미 같은 이름의 공간이 있어요",
-};
 const METERS_MESSAGES: Record<MetersError, string> = {
   empty: "크기를 적어 주세요",
   notNumber: "숫자로 적어 주세요 (예: 6.0)",
@@ -32,7 +28,7 @@ export function FloorSizeCard({ nameInputRef }: FloorSizeCardProps) {
           label="공간 이름"
           value={fields.name}
           onChange={setters.setName}
-          error={errors.name && NAME_MESSAGES[errors.name]}
+          error={errors.name && spaceNameMessage(errors.name)}
         />
         <div className={styles.sizeRow}>
           <TextField

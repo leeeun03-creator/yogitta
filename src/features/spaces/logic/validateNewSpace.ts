@@ -1,9 +1,9 @@
 import type { Floor } from "@/shared/types";
+import type { SpaceNameError } from "@/store/useAppStore";
 import { parseMeters, type MetersError } from "./parseMeters";
 
 export type NewSpaceForm = { name: string; width: string; depth: string };
-export type NameError = "empty" | "duplicate";
-export type NewSpaceErrors = { name?: NameError; width?: MetersError; depth?: MetersError };
+export type NewSpaceErrors = { name?: SpaceNameError; width?: MetersError; depth?: MetersError };
 
 export type ValidateNewSpaceResult =
   { ok: true; name: string; floor: Floor } | { ok: false; errors: NewSpaceErrors };
@@ -18,8 +18,9 @@ export function validateNewSpace(
   const depth = parseMeters(form.depth);
 
   const errors: NewSpaceErrors = {};
-  if (name === "") errors.name = "empty";
-  else if (existingNames.some((existing) => existing.trim() === name)) errors.name = "duplicate";
+  if (name === "") errors.name = "emptyName";
+  else if (existingNames.some((existing) => existing.trim() === name))
+    errors.name = "duplicateName";
   if (!width.ok) errors.width = width.reason;
   if (!depth.ok) errors.depth = depth.reason;
 

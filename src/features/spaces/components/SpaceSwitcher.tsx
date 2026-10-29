@@ -47,6 +47,7 @@ export function SpaceSwitcher() {
             switchSpace(id);
             close(true);
           }}
+          onRemoved={() => close(true)}
           onCreate={() => {
             close(false);
             setIsCreating(true);

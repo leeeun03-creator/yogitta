@@ -1,11 +1,12 @@
-import { Check, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useEffect, useId, useRef, type KeyboardEvent } from "react";
+import { josa } from "@/shared/lib/josa";
 import type { Space } from "@/shared/types";
-import { Button } from "@/shared/ui";
+import { Button, ConfirmDialog } from "@/shared/ui";
+import { useSpaceEditing } from "../hooks/useSpaceEditing";
 import { listFocusIndex } from "../logic/listFocusIndex";
-import { spaceSummary } from "../logic/spaceSummary";
 import styles from "./SpaceList.module.css";
-import { SpaceThumbnail } from "./SpaceThumbnail";
+import { SpaceRow, type SpaceRowActions } from "./SpaceRow";
 
 const ICON_SIZE = 18;
 
@@ -15,13 +16,31 @@ type SpaceListProps = {
   currentId: string;
   onSelect: (id: string) => void;
   onCreate: () => void;
+  onRemoved: () => void; // 공간을 지운 뒤 (목록을 닫는다)
 };
 
 /**
  * 공간 전환 목록 (시안 01): 공간마다 공간 썸네일·이름·"바닥 크기 · 가구 · 물건", 지금 공간은 강조 바탕 + 체크.
- * 맨 아래 점선 "+ 새 공간 만들기". 열리면 지금 공간에 초점을 두고, ↑↓·Home·End로 공간 사이를 옮긴다.
+ * 줄마다 "⋯"로 이름 바꾸기·삭제(확인 후). 맨 아래 점선 "+ 새 공간 만들기".
+ * 열리면 지금 공간에 초점을 두고, ↑↓·Home·End로 공간 사이를 옮긴다.
  */
-export function SpaceList({ id, spaces, currentId, onSelect, onCreate }: SpaceListProps) {
+export function SpaceList({
+  id,
+  spaces,
+  currentId,
+  onSelect,
+  onCreate,
+  onRemoved,
+}: SpaceListProps) {
+  const editing = useSpaceEditing(onRemoved);
+  const actions: SpaceRowActions = {
+    onSelect,
+    onToggle: editing.toggleActions,
+    onRename: editing.startRename,
+    onSave: editing.rename,
+    onCancel: editing.stopEditing,
+    onRemove: editing.askRemove,
+  };
   const headingId = useId();
   const listRef = useRef<HTMLUListElement>(null);
   useEffect(() => {
@@ -43,8 +62,13 @@ export function SpaceList({ id, spaces, currentId, onSelect, onCreate }: SpaceLi
       </span>
       <ul ref={listRef} className={styles.items} onKeyDown={handleKeyDown}>
         {spaces.map((space) => (
-          <li key={space.id}>
-            <SpaceItem space={space} isCurrent={space.id === currentId} onSelect={onSelect} />
+          <li key={space.id} className={styles.row}>
+            <SpaceRow
+              space={space}
+              isCurrent={space.id === currentId}
+              mode={editing.modeOf(space.id)}
+              actions={actions}
+            />
           </li>
         ))}
       </ul>
@@ -56,28 +80,15 @@ export function SpaceList({ id, spaces, currentId, onSelect, onCreate }: SpaceLi
       >
         새 공간 만들기
       </Button>
+      {editing.removing && (
+        <ConfirmDialog
+          title={`'${editing.removing.name}'${josa(editing.removing.name, "을/를")} 지울까요?`}
+          message="벽·가구·물건이 모두 사라지고 되돌릴 수 없어요."
+          confirmLabel="지우기"
+          onConfirm={editing.confirmRemove}
+          onCancel={editing.cancelRemove}
+        />
+      )}
     </section>
-  );
-}
-
-type SpaceItemProps = { space: Space; isCurrent: boolean; onSelect: (id: string) => void };
-
-/** 목록의 공간 한 줄. 누르면 그 공간을 고른다. */
-function SpaceItem({ space, isCurrent, onSelect }: SpaceItemProps) {
-  return (
-    <button
-      type="button"
-      className={styles.item}
-      data-space={space.id}
-      aria-current={isCurrent ? "true" : undefined}
-      onClick={() => onSelect(space.id)}
-    >
-      <SpaceThumbnail space={space} />
-      <span className={styles.texts}>
-        <span className={styles.name}>{space.name}</span>
-        <span className={styles.summary}>{spaceSummary(space)}</span>
-      </span>
-      {isCurrent && <Check className={styles.check} size={ICON_SIZE} aria-hidden="true" />}
-    </button>
   );
 }

@@ -1,6 +1,7 @@
+import { ROOM_NAME_MAX_LENGTH } from "@/shared/constants/room";
 import { useAppStore } from "@/store/useAppStore";
 import { useRoomNameForm } from "../hooks/useRoomNameForm";
-import { RoomForm } from "./RoomForm";
+import { NameForm } from "./NameForm";
 
 type RenameRoomFormProps = {
   room: string;
@@ -17,8 +18,8 @@ export function RenameRoomForm({ room, onClose }: RenameRoomFormProps) {
     onClose();
   };
   return (
-    <RoomForm
-      label="구역 이름"
+    <NameForm
+      field={{ label: "구역 이름", maxLength: ROOM_NAME_MAX_LENGTH }}
       value={form.value}
       error={form.error}
       onChange={form.change}

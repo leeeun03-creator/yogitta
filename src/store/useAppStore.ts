@@ -24,6 +24,7 @@ export type { AppMode, DrawingTool, EditView, RoomFocus } from "./uiState";
 export { DRAWING_TOOLS } from "./uiState";
 export type { HistoryDirection, RoomResult, SpaceResult };
 export type { RoomNameError } from "./logic/checkRoomName";
+export type { SpaceNameError } from "./logic/spaceNameError";
 
 type AppState = {
   data: AppData; // 저장 대상 (T11에서 localStorage와 연결)
