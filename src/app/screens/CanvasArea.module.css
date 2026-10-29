@@ -1,0 +1,12 @@
+/* 2D 평면도·3D 그림을 담는 캔버스 영역 (yogitta-design 7장). 편집 모드와 메인 화면이 같이 쓴다 */
+.canvas {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--yg-canvas);
+  border-radius: var(--yg-radius-canvas);
+  box-shadow: inset 0 0 0 1px var(--yg-border-soft);
+  overflow: hidden;
+}

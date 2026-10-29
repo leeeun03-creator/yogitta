@@ -23,7 +23,7 @@ const NOT_READY: ViewStatus = { isStart: true, canZoomIn: false, canZoomOut: fal
 const isSameStatus = (a: ViewStatus, b: ViewStatus) =>
   a.isStart === b.isStart && a.canZoomIn === b.canZoomIn && a.canZoomOut === b.canZoomOut;
 
-/** three.js를 쓰는 3D 미리보기 본체와 보기 버튼. 무거워서 ScenePreview가 처음 열 때 따로 불러온다. */
+/** three.js를 쓰는 3D 그림 본체와 보기 버튼. 무거워서 SceneView가 처음 열 때 따로 불러온다. */
 export function PreviewCanvas({ floor, walls, areas, label }: PreviewCanvasProps) {
   const camera = useRef<CameraCommands>(null);
   const [status, setStatus] = useState(NOT_READY);

@@ -2,6 +2,7 @@ import { FloorPlan, SnapToggle, ToolBar, useHistoryKeys } from "@/features/edito
 import { ScenePreview } from "@/features/scene3d";
 import { RoomList } from "@/features/spaces";
 import { useAppStore } from "@/store/useAppStore";
+import canvasStyles from "./CanvasArea.module.css";
 import styles from "./EditScreen.module.css";
 import { EditTopBar } from "./EditTopBar";
 
@@ -20,7 +21,7 @@ export function EditScreen() {
       <main className={styles.body}>
         <ToolBar />
         {view === "plan" ? (
-          <section className={styles.canvas} aria-label="2D 평면도 영역">
+          <section className={canvasStyles.canvas} aria-label="2D 평면도 영역">
             <div className={styles.plan}>
               <FloorPlan space={space} />
             </div>
@@ -31,7 +32,7 @@ export function EditScreen() {
             </footer>
           </section>
         ) : (
-          <section className={styles.canvas} aria-label="3D 미리보기 영역">
+          <section className={canvasStyles.canvas} aria-label="3D 미리보기 영역">
             <ScenePreview space={space} />
           </section>
         )}

@@ -13,11 +13,13 @@
 }
 
 .title {
+  flex-shrink: 0;
   font-size: inherit;
 }
 
 /* 편집 버튼은 머리 오른쪽 끝 */
 .edit {
+  flex-shrink: 0;
   margin-left: auto;
 }
 

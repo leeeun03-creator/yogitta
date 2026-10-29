@@ -1,0 +1,29 @@
+/* 공간 알약. 값은 시안 01 · 컴포넌트 시안 08 (SpaceSwitcher) */
+.switcher {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 16px;
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  border: 2px solid var(--yg-accent);
+  border-radius: var(--yg-radius-pill);
+  font-size: 16px;
+}
+
+.label {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+/* 긴 공간 이름은 말줄임해서 머리가 넘치지 않게 한다 */
+.name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
