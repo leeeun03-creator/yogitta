@@ -25,13 +25,17 @@
   color: var(--yg-text-sub);
 }
 
+/* 칩은 두 줄(44px × 2 + 사이 10px)까지만 보이고 나머지는 안에서 위아래로 넘긴다.
+   구역이 많아도 2D 평면도가 납작해지지 않게. 안쪽 4px은 포커스 테두리가 잘리지 않게 둔다 */
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   min-width: 0;
-  margin: 0;
-  padding: 0;
+  max-height: calc(44px * 2 + 10px + 4px * 2);
+  overflow-y: auto;
+  margin: -4px;
+  padding: 4px;
   list-style: none;
 }
 

@@ -1,10 +1,12 @@
 import { expect, test } from "@playwright/test";
 import { collectErrors, createSpace, plan, pressCm } from "./helpers";
-import { makeRoom, nameInput, roomAreas, roomLabels, rooms, splitAt } from "./rooms";
+import { makeRoom, nameInput, roomAreas, roomChip, roomLabels, rooms, splitAt } from "./rooms";
 
 const FLOOR = { w: 600, h: 450 };
 const LEFT = { x: 150, y: 200 };
 const RIGHT = { x: 450, y: 200 };
+const CHIP_ROWS_MAX_PX = 44 * 2 + 10 + 4 * 2; // 칩 두 줄 + 사이 + 포커스 테두리 자리
+const PLAN_MIN_PX = 200; // 구역이 많아도 2D 평면도가 이만큼은 남는다
 
 test.describe("구획을 눌러 구역 만들기", () => {
   test.beforeEach(async ({ page }) => {
@@ -178,7 +180,14 @@ test.describe("구획을 눌러 구역 만들기", () => {
     expect(await fill(1)).not.toBe(await fill(0));
     const scroll = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(scroll).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
-    await expect(plan(page)).toBeVisible();
+    // 칩은 두 줄까지만 보여서 2D 평면도가 납작해지지 않는다
+    const list = await page.getByRole("list", { name: "구역" }).boundingBox();
+    expect(list?.height).toBeLessThanOrEqual(CHIP_ROWS_MAX_PX);
+    expect((await plan(page).boundingBox())?.height).toBeGreaterThanOrEqual(PLAN_MIN_PX);
+    // 2D 평면도에서 마지막 구역을 누르면 가려져 있던 칩이 보이게 넘어간다
+    await pressCm(page, FLOOR, [{ x: 575, y: 200 }], isMobile);
+    await expect(roomChip(page, "수납구역12")).toHaveAttribute("aria-pressed", "true");
+    await expect(roomChip(page, "수납구역12")).toBeInViewport({ ratio: 1 });
   });
 
   test("스크린샷을 남긴다 (시안 04와 비교)", async ({ page, isMobile }, testInfo) => {
