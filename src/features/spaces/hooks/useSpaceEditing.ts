@@ -32,13 +32,15 @@ export function useSpaceEditing(onRemoved: () => void) {
 
   return {
     modeOf,
-    toggleActions: (id: string) => setEditing(modeOf(id) ? null : { id, mode: "actions" }),
-    startRename: (id: string) => setEditing({ id, mode: "rename" }),
-    stopEditing: () => setEditing(null),
-    rename,
+    // 공간 줄에서 부르는 일들 (고르기 onSelect는 목록이 붙인다)
+    rowActions: {
+      onToggle: (id: string) => setEditing(modeOf(id) ? null : { id, mode: "actions" }),
+      onRename: (id: string) => setEditing({ id, mode: "rename" }),
+      onSave: rename,
+      onCancel: () => setEditing(null),
+      onRemove: (space: Space) => setRemoving(space),
+    },
     removing,
-    askRemove: (space: Space) => setRemoving(space),
-    cancelRemove: () => setRemoving(null),
-    confirmRemove,
+    removeActions: { onConfirm: confirmRemove, onCancel: () => setRemoving(null) },
   };
 }

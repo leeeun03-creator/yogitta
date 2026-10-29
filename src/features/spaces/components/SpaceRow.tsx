@@ -1,5 +1,5 @@
 import { Check, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, type Ref } from "react";
 import type { Space } from "@/shared/types";
 import { Button, IconButton } from "@/shared/ui";
 import type { SpaceNameError } from "@/store/useAppStore";
@@ -54,21 +54,12 @@ export function SpaceRow({ space, isCurrent, mode, actions }: SpaceRowProps) {
   return (
     <>
       <div className={styles.line} data-current={isCurrent}>
-        <button
+        <SpaceButton
           ref={itemRef}
-          type="button"
-          className={styles.item}
-          data-space={space.id}
-          aria-current={isCurrent ? "true" : undefined}
+          space={space}
+          isCurrent={isCurrent}
           onClick={() => actions.onSelect(space.id)}
-        >
-          <SpaceThumbnail space={space} />
-          <span className={styles.texts}>
-            <span className={styles.name}>{space.name}</span>
-            <SummaryLine space={space} />
-          </span>
-          {isCurrent && <Check className={styles.check} size={ICON_SIZE} aria-hidden="true" />}
-        </button>
+        />
         <IconButton
           label={`${space.name} 이름 바꾸기·삭제`}
           icon={<MoreHorizontal size={ICON_SIZE} />}
@@ -78,6 +69,34 @@ export function SpaceRow({ space, isCurrent, mode, actions }: SpaceRowProps) {
       </div>
       {mode === "actions" && <RowButtons space={space} actions={actions} />}
     </>
+  );
+}
+
+type SpaceButtonProps = {
+  space: Space;
+  isCurrent: boolean;
+  onClick: () => void;
+  ref: Ref<HTMLButtonElement>;
+};
+
+/** 누르면 그 공간을 고르는 버튼: 썸네일 · 이름 · 한 줄 설명 (지금 공간은 체크). */
+function SpaceButton({ space, isCurrent, onClick, ref }: SpaceButtonProps) {
+  return (
+    <button
+      ref={ref}
+      type="button"
+      className={styles.item}
+      data-space={space.id}
+      aria-current={isCurrent ? "true" : undefined}
+      onClick={onClick}
+    >
+      <SpaceThumbnail space={space} />
+      <span className={styles.texts}>
+        <span className={styles.name}>{space.name}</span>
+        <SummaryLine space={space} />
+      </span>
+      {isCurrent && <Check className={styles.check} size={ICON_SIZE} aria-hidden="true" />}
+    </button>
   );
 }
 

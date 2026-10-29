@@ -15,6 +15,13 @@ type NameFormProps = {
   onRemove?: () => void; // 있으면 삭제 버튼을 보인다 (구역 이름 바꾸기 때)
 };
 
+/** Esc를 누르면 닫는다. 여기서 멈춰 바깥(공간 전환 목록 등)까지 닫히지 않게 한다. */
+const cancelOnEscape = (onCancel: () => void) => (event: KeyboardEvent) => {
+  if (event.key !== "Escape") return;
+  event.stopPropagation();
+  onCancel();
+};
+
 /**
  * 이름 입력칸 (구역 이름, 공간 이름 바꾸기). Enter·확인으로 정하고 Esc·취소로 닫는다.
  * Esc는 여기서 멈춰 바깥(공간 전환 목록 등)까지 닫히지 않게 한다.
@@ -33,14 +40,9 @@ export function NameForm({
     event.preventDefault();
     onSubmit();
   };
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key !== "Escape") return;
-    event.stopPropagation();
-    onCancel();
-  };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
+    <form className={styles.form} onSubmit={handleSubmit} onKeyDown={cancelOnEscape(onCancel)}>
       <input
         className={styles.input}
         aria-label={field.label}

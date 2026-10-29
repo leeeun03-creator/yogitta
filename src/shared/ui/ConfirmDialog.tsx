@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef, type KeyboardEvent } from "react";
+import { useId, type KeyboardEvent, type SyntheticEvent } from "react";
 import { Button } from "./Button";
 import styles from "./ConfirmDialog.module.css";
+import { useModalDialog } from "./useModalDialog";
 
 type ConfirmDialogProps = {
   title: string; // 묻는 말 ("'형 방'을 지울까요?")
@@ -8,6 +9,33 @@ type ConfirmDialogProps = {
   confirmLabel: string; // 되돌릴 수 없는 쪽 버튼 ("지우기")
   onConfirm: () => void;
   onCancel: () => void;
+};
+
+/** Esc로 닫힐 때: 브라우저가 닫기 전에 직접 닫고 초점을 돌린다. */
+const cancelOnEscape = (event: SyntheticEvent, cancel: () => void) => {
+  event.preventDefault();
+  cancel();
+};
+
+type ConfirmTextProps = { ids: { title: string; message: string }; title: string; message: string };
+
+/** 묻는 말(제목)과 설명. 대화상자의 이름·설명이 된다. */
+function ConfirmText({ ids, title, message }: ConfirmTextProps) {
+  return (
+    <>
+      <h2 id={ids.title} className={styles.title}>
+        {title}
+      </h2>
+      <p id={ids.message} className={styles.message}>
+        {message}
+      </p>
+    </>
+  );
+}
+
+/** Esc는 여기서 멈춰, 대화상자를 연 목록 등 바깥까지 닫히지 않게 한다. */
+const stopEscape = (event: KeyboardEvent) => {
+  if (event.key === "Escape") event.stopPropagation();
 };
 
 /**
@@ -21,27 +49,12 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const opener = useRef<Element | null>(null);
-  const cancelRef = useRef<HTMLButtonElement>(null);
+  const { dialogRef, firstRef, close } = useModalDialog<HTMLButtonElement>();
   const titleId = useId();
   const messageId = useId();
-  // 연 버튼을 먼저 기억한 뒤 열고 [취소]에 초점을 둔다
-  useEffect(() => {
-    opener.current = document.activeElement;
-    dialogRef.current?.showModal();
-    cancelRef.current?.focus();
-  }, []);
-
-  // 모달이 열려 있는 동안은 뒤 화면에 초점을 줄 수 없어서, 먼저 닫고 연 버튼으로 초점을 돌린다
   const cancel = () => {
-    dialogRef.current?.close();
-    if (opener.current instanceof HTMLElement) opener.current.focus();
+    close();
     onCancel();
-  };
-  // Esc는 여기서 멈춰, 대화상자를 연 목록 등 바깥까지 닫히지 않게 한다
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Escape") event.stopPropagation();
   };
 
   return (
@@ -51,21 +64,13 @@ export function ConfirmDialog({
       className={styles.dialog}
       aria-labelledby={titleId}
       aria-describedby={messageId}
-      onCancel={(event) => {
-        event.preventDefault();
-        cancel();
-      }}
-      onKeyDown={handleKeyDown}
+      onCancel={(event) => cancelOnEscape(event, cancel)}
+      onKeyDown={stopEscape}
       onClick={(event) => event.target === event.currentTarget && cancel()}
     >
-      <h2 id={titleId} className={styles.title}>
-        {title}
-      </h2>
-      <p id={messageId} className={styles.message}>
-        {message}
-      </p>
+      <ConfirmText ids={{ title: titleId, message: messageId }} title={title} message={message} />
       <div className={styles.actions}>
-        <Button ref={cancelRef} onClick={cancel}>
+        <Button ref={firstRef} onClick={cancel}>
           취소
         </Button>
         <Button variant="danger" onClick={onConfirm}>
