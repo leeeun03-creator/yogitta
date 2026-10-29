@@ -44,7 +44,26 @@
   color: var(--yg-text);
   border: 1px solid var(--yg-border);
   border-radius: var(--yg-radius-pill);
+  font: inherit;
   white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+.chip:hover {
+  background: var(--yg-surface-2);
+  border-color: var(--yg-dashed);
+}
+/* 고른 구역 (시안 04 강조 칩) */
+.chip[aria-pressed="true"] {
+  background: var(--yg-accent);
+  color: var(--yg-on-accent);
+  border-color: var(--yg-accent);
+}
+.chip[aria-pressed="true"]:hover {
+  background: var(--yg-accent-hover);
+  border-color: var(--yg-accent-hover);
 }
 
 .add {

@@ -1,16 +1,6 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { collectErrors, createSpace } from "./helpers";
-
-const rooms = (page: Page) => page.getByRole("list", { name: "구역" }).getByRole("listitem");
-const addButton = (page: Page) => page.getByRole("button", { name: "+ 구역 추가" });
-const nameInput = (page: Page) => page.getByRole("textbox", { name: "새 구역 이름" });
-
-/** "+ 구역 추가"를 누르고 이름을 써서 Enter로 더한다. */
-async function addRoom(page: Page, name: string) {
-  await addButton(page).click();
-  await nameInput(page).fill(name);
-  await nameInput(page).press("Enter");
-}
+import { addButton, addRoom, nameInput, rooms } from "./rooms";
 
 test.describe("구역 목록과 구역 추가", () => {
   test.beforeEach(async ({ page }) => {
