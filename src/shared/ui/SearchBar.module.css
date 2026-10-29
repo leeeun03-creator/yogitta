@@ -1,0 +1,77 @@
+/* 검색창. 값은 yogitta-design 4장 + 컴포넌트 시안 07 (높이 56 · 최대 폭 640 · 2px 강조 테두리 · 포커스 바깥 링 4px) */
+.bar {
+  width: 100%;
+  max-width: 640px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto;
+  padding: 0 8px 0 22px;
+  background: var(--yg-surface);
+  border: 2px solid var(--yg-accent);
+  border-radius: var(--yg-radius-pill);
+  box-shadow: var(--yg-shadow-card);
+  transition: box-shadow 0.15s;
+}
+.bar:focus-within {
+  box-shadow:
+    0 0 0 4px var(--yg-found-bg),
+    var(--yg-shadow-card);
+}
+
+/* 화면에는 안 보이고 화면 읽기 프로그램만 읽는다 */
+.label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: var(--yg-accent);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  background: transparent;
+  color: var(--yg-text);
+  border: none;
+  font: inherit;
+  font-size: 17px;
+}
+.input:focus {
+  outline: none; /* 바깥 링(.bar:focus-within)으로 보인다 */
+}
+.input::placeholder {
+  color: var(--yg-text-sub);
+}
+/* 브라우저가 붙이는 지우기 단추는 숨기고 아래 지우기 버튼을 쓴다 */
+.input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* 검색어 지우기 (시안 07: 칩 바탕 원형) */
+.clear {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: var(--yg-chip);
+  color: var(--yg-text-sub);
+  border: none;
+  border-radius: var(--yg-radius-pill);
+  cursor: pointer;
+}
+.clear:hover {
+  color: var(--yg-text);
+}

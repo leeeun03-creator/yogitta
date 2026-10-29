@@ -36,6 +36,25 @@
   .header {
     padding: 16px 16px 8px;
   }
+  /* 휴대폰: 공간 알약은 [편집] 옆 오른쪽으로 모은다 (시안 02) */
+  .title {
+    margin-right: auto;
+  }
+  /* 휴대폰: [편집]은 44px 원형 아이콘 버튼. 글자는 화면 읽기 프로그램만 읽는다 */
+  .edit {
+    width: 44px;
+    margin-left: 0;
+    padding: 0;
+    justify-content: center;
+  }
+  .editText {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .body {
     padding: 8px 16px 16px;
   }
