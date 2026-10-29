@@ -1,26 +1,8 @@
-import { expect, test, type Page } from "@playwright/test";
-import { collectErrors, createSpace } from "./helpers";
+import { expect, test } from "@playwright/test";
+import { collectErrors } from "./helpers";
+import { newSpaceDialog, openMain, openNewSpaceDialog, pill, spaceItem, spaceList } from "./spaces";
 
-const pill = (page: Page, name = "내 방") =>
-  page.getByRole("button", { name: `공간 ${name}`, exact: true });
-const spaceList = (page: Page) => page.getByRole("region", { name: "공간 바꾸기" });
-const spaceItem = (page: Page, name: string) =>
-  spaceList(page).getByRole("button", { name: new RegExp(`^${name} `) });
-const dialog = (page: Page) => page.getByRole("dialog", { name: "바닥 크기를 정해요" });
-const mainTitle = (page: Page) => page.getByRole("heading", { level: 1, name: "요깃따" });
-
-/** 새 공간을 만들고 [‹ 완료]로 메인 화면에 온다. */
-async function openMain(page: Page) {
-  await createSpace(page, { width: "6.0", depth: "4.5" });
-  await page.getByRole("button", { name: "완료" }).click();
-  await expect(mainTitle(page)).toBeVisible();
-}
-/** 목록의 "+ 새 공간 만들기"로 대화상자를 연다. */
-async function openNewSpaceDialog(page: Page) {
-  await pill(page).click();
-  await spaceList(page).getByRole("button", { name: "새 공간 만들기" }).click();
-  await expect(dialog(page)).toBeVisible();
-}
+const dialog = newSpaceDialog;
 
 test.describe("공간 전환 목록", () => {
   test.beforeEach(async ({ page }) => {

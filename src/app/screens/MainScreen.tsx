@@ -42,7 +42,8 @@ export function MainScreen() {
       <main className={styles.body}>
         <SearchBar value={query} onChange={setQuery} />
         <section className={canvasStyles.canvas} aria-label="3D 공간 영역">
-          <SpaceScene space={space} />
+          {/* 공간을 바꾸면 3D 공간을 새로 만들어 카메라도 그 공간의 처음 자리에서 시작한다 */}
+          <SpaceScene key={space.id} space={space} />
         </section>
       </main>
     </div>

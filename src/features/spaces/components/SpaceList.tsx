@@ -1,7 +1,8 @@
 import { Check, Plus } from "lucide-react";
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, type KeyboardEvent } from "react";
 import type { Space } from "@/shared/types";
 import { Button } from "@/shared/ui";
+import { listFocusIndex } from "../logic/listFocusIndex";
 import { spaceSummary } from "../logic/spaceSummary";
 import styles from "./SpaceList.module.css";
 
@@ -17,7 +18,7 @@ type SpaceListProps = {
 
 /**
  * 공간 전환 목록 (시안 01): 공간마다 이름과 "바닥 크기 · 가구 · 물건", 지금 공간은 강조 바탕 + 체크.
- * 맨 아래 점선 "+ 새 공간 만들기". 열리면 지금 공간에 초점을 둔다.
+ * 맨 아래 점선 "+ 새 공간 만들기". 열리면 지금 공간에 초점을 두고, ↑↓·Home·End로 공간 사이를 옮긴다.
  */
 export function SpaceList({ id, spaces, currentId, onSelect, onCreate }: SpaceListProps) {
   const headingId = useId();
@@ -25,13 +26,21 @@ export function SpaceList({ id, spaces, currentId, onSelect, onCreate }: SpaceLi
   useEffect(() => {
     listRef.current?.querySelector<HTMLButtonElement>('[aria-current="true"]')?.focus();
   }, []);
+  const handleKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
+    const items = [...event.currentTarget.querySelectorAll<HTMLButtonElement>("[data-space]")];
+    const current = items.findIndex((item) => item === document.activeElement);
+    const next = listFocusIndex(current, items.length, event.key);
+    if (next === null) return;
+    event.preventDefault(); // 목록·화면이 스크롤되지 않게
+    items[next]?.focus();
+  };
 
   return (
     <section id={id} className={styles.list} aria-labelledby={headingId}>
       <span id={headingId} className={styles.heading}>
         공간 바꾸기
       </span>
-      <ul ref={listRef} className={styles.items}>
+      <ul ref={listRef} className={styles.items} onKeyDown={handleKeyDown}>
         {spaces.map((space) => (
           <li key={space.id}>
             <SpaceItem space={space} isCurrent={space.id === currentId} onSelect={onSelect} />
@@ -58,6 +67,7 @@ function SpaceItem({ space, isCurrent, onSelect }: SpaceItemProps) {
     <button
       type="button"
       className={styles.item}
+      data-space={space.id}
       aria-current={isCurrent ? "true" : undefined}
       onClick={() => onSelect(space.id)}
     >

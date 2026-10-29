@@ -10,11 +10,12 @@ const ICON_SIZE = 16;
 
 /**
  * 메인 화면 머리의 공간 알약: "공간" 라벨 + 지금 공간 이름 + 화살표 (시안 01). 누르면 공간 전환 목록이 열리고,
- * 목록의 "+ 새 공간 만들기"는 새 공간 대화상자를 연다. 대화상자를 닫으면 초점을 알약으로 돌린다.
+ * 공간을 고르면 그 공간으로 바꾼다. 목록의 "+ 새 공간 만들기"는 새 공간 대화상자를 연다. 대화상자를 닫으면 초점을 알약으로 돌린다.
  */
 export function SpaceSwitcher() {
   const spaces = useAppStore((state) => state.data.spaces);
   const currentId = useAppStore((state) => state.data.currentSpaceId);
+  const switchSpace = useAppStore((state) => state.switchSpace);
   const { isOpen, rootRef, buttonRef, toggle, close, focusButton, handleKeyDown } =
     useSpaceListPopover();
   const [isCreating, setIsCreating] = useState(false);
@@ -42,8 +43,10 @@ export function SpaceSwitcher() {
           id={listId}
           spaces={spaces}
           currentId={current.id}
-          // TODO(T27-3): 고른 공간으로 바꾸기
-          onSelect={() => close(true)}
+          onSelect={(id) => {
+            switchSpace(id);
+            close(true);
+          }}
           onCreate={() => {
             close(false);
             setIsCreating(true);
