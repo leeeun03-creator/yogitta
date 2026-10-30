@@ -20,5 +20,16 @@ export const CAMERA_MAX_DISTANCE_RATIO = 2.5;
 export const CAMERA_MAX_POLAR_DEG = 80;
 /** 확대·축소 버튼을 한 번 누를 때 거리가 바뀌는 배수. */
 export const CAMERA_ZOOM_STEP = 1.25;
+/**
+ * 3D 가구 정면의 손잡이 홈 (cm). 정면 위쪽에 가로로 긴 얇은 막대를 붙여 어느 쪽이 정면인지 보이게 한다.
+ * 폭은 가구 가로의 widthRatio배(최대 maxWidth), 높이 자리는 가구 높이의 heightRatio배, 정면에서 depth만큼 나온다.
+ */
+export const BOX_HANDLE_3D = {
+  widthRatio: 0.4,
+  maxWidth: 20,
+  height: 3,
+  heightRatio: 0.8,
+  depth: 1,
+} as const;
 /** 3D 점 목록(Float32Array)에서 점 하나가 차지하는 칸 수: x, y, z. */
 export const XYZ_PER_POINT = 3;

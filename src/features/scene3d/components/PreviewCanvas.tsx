@@ -2,8 +2,9 @@ import { Canvas } from "@react-three/fiber";
 import { useCallback, useRef, useState } from "react";
 import { PREVIEW_FOV_DEG } from "@/shared/constants/scene";
 import type { RoomArea } from "@/features/spaces";
-import type { Floor, Wall } from "@/shared/types";
+import type { Box, Floor, Wall } from "@/shared/types";
 import type { ViewStatus, ZoomDirection } from "../logic/cameraView";
+import { BoxMeshes } from "./BoxMeshes";
 import { FloorMesh } from "./FloorMesh";
 import styles from "./PreviewCanvas.module.css";
 import { PreviewCamera, type CameraCommands } from "./PreviewCamera";
@@ -14,6 +15,7 @@ import { WallMeshes } from "./WallMeshes";
 type PreviewCanvasProps = {
   floor: Floor;
   walls: Wall[];
+  boxes: readonly Box[];
   areas: readonly RoomArea[];
   label: string;
 };
@@ -24,7 +26,7 @@ const isSameStatus = (a: ViewStatus, b: ViewStatus) =>
   a.isStart === b.isStart && a.canZoomIn === b.canZoomIn && a.canZoomOut === b.canZoomOut;
 
 /** three.js를 쓰는 3D 그림 본체와 보기 버튼. 무거워서 SceneView가 처음 열 때 따로 불러온다. */
-export function PreviewCanvas({ floor, walls, areas, label }: PreviewCanvasProps) {
+export function PreviewCanvas({ floor, walls, boxes, areas, label }: PreviewCanvasProps) {
   const camera = useRef<CameraCommands>(null);
   const [status, setStatus] = useState(NOT_READY);
   // 끄는 동안 매번 불리므로 바뀐 때만 다시 그린다
@@ -42,6 +44,7 @@ export function PreviewCanvas({ floor, walls, areas, label }: PreviewCanvasProps
           <FloorMesh floor={floor} />
           <RoomFloorMeshes areas={areas} />
           <WallMeshes walls={walls} />
+          <BoxMeshes boxes={boxes} />
         </Canvas>
       </div>
       <ViewButtons

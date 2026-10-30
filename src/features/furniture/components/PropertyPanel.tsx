@@ -13,16 +13,18 @@ const ROOM_ICON_SIZE = 16;
 /**
  * 속성 패널 (시안 04). 고른 가구의 이름·놓인 구역·크기와 [90° 회전]·[삭제]를 보인다 (이름·종류·크기 바꾸기는 T7·T26).
  * 데스크톱은 2D 평면도 오른쪽에 늘 있어(고른 가구가 없으면 안내) 가구를 골라도 2D 평면도 크기가 그대로이고,
- * 휴대폰은 고른 가구가 있을 때만 화면 아래에 겹쳐 뜬다.
+ * 휴대폰은 2D 평면도에서 고른 가구가 있을 때만 화면 아래에 겹쳐 뜬다 (3D 미리보기의 보기 버튼을 가리지 않게).
  */
 export function PropertyPanel() {
   const selection = useSelectedBox();
+  const isPreview = useAppStore((state) => state.ui.view === "preview");
   const panelRef = useRef<HTMLElement>(null);
+  const classNames = [styles.panel, !selection && styles.empty, isPreview && styles.onPreview];
   return (
     <aside
       ref={panelRef}
       tabIndex={-1} // 지운 뒤 초점을 둘 곳 (가구 버튼이 사라져서)
-      className={selection ? styles.panel : `${styles.panel} ${styles.empty}`}
+      className={classNames.filter(Boolean).join(" ")}
       aria-label="속성 패널"
     >
       {selection ? (

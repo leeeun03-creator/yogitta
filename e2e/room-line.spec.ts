@@ -151,7 +151,7 @@ test.describe("구역 선 도구", () => {
     await dragCm(page, CURVE, isMobile);
     await openPreview(page);
     await expect(preview(page)).toHaveAccessibleName(
-      "3D 미리보기, 바닥 6.0 × 4.5 m, 벽 0개, 선분 0개, 구역 0개",
+      "3D 미리보기, 바닥 6.0 × 4.5 m, 벽 0개, 선분 0개, 구역 0개, 가구 0개",
     );
   });
 

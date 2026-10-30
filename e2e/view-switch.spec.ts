@@ -25,7 +25,7 @@ test.describe("2D 평면도 / 3D 미리보기 전환", () => {
     await previewButton(page).click();
     await expect(previewButton(page)).toHaveAttribute("aria-pressed", "true");
     await expect(preview(page)).toHaveAccessibleName(
-      "3D 미리보기, 바닥 6.0 × 4.5 m, 벽 0개, 선분 0개, 구역 0개",
+      "3D 미리보기, 바닥 6.0 × 4.5 m, 벽 0개, 선분 0개, 구역 0개, 가구 0개",
     );
     await expect(plan(page)).toHaveCount(0);
     // 3D 그림판(canvas)이 영역을 채운다. 처음엔 기본 크기(300×150)였다가 영역을 잰 뒤 커지므로 다시 읽는다

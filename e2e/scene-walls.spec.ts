@@ -27,7 +27,7 @@ async function drawClosedPolyline(page: Page, points: Cm[], isMobile: boolean) {
 }
 const expectCounts = (page: Page, walls: number, segments: number) =>
   expect(preview(page)).toHaveAccessibleName(
-    `3D 미리보기, 바닥 6.0 × 4.5 m, 벽 ${walls}개, 선분 ${segments}개, 구역 0개`,
+    `3D 미리보기, 바닥 6.0 × 4.5 m, 벽 ${walls}개, 선분 ${segments}개, 구역 0개, 가구 0개`,
   );
 
 test.describe("3D 미리보기의 벽", () => {

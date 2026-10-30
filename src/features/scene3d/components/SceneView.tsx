@@ -21,9 +21,9 @@ type SceneViewProps = {
   fallback: string; // 3D를 못 그리는 브라우저에서 보일 안내 문구
 };
 
-/** 공간의 3D 그림(바닥·구역 색·벽)과 보기 버튼. 3D를 못 그리는 브라우저에서는 안내 문구를 보인다. */
+/** 공간의 3D 그림(바닥·구역 색·벽·가구)과 보기 버튼. 3D를 못 그리는 브라우저에서는 안내 문구를 보인다. */
 export function SceneView({ space, name, fallback }: SceneViewProps) {
-  const { floor, walls, rooms, roomLines, roomAnchors } = space;
+  const { floor, walls, boxes, rooms, roomLines, roomAnchors } = space;
   const [canDraw] = useState(canDraw3D);
   // 2D 평면도와 같은 계산으로 구역 모양을 얻는다 (구역 선은 3D에 서지 않고 구역 경계로만 쓴다)
   const areas = useMemo(
@@ -39,11 +39,11 @@ export function SceneView({ space, name, fallback }: SceneViewProps) {
   }
   // 벽 하나(예: 사각형)는 선분 여러 개로 서므로 둘 다 알린다
   const segments = walls.flatMap(wallToBoxes).length;
-  const label = `${name}, 바닥 ${formatMeters(floor.w)} × ${formatMeters(floor.h)} m, 벽 ${walls.length}개, 선분 ${segments}개, 구역 ${areas.length}개`;
+  const label = `${name}, 바닥 ${formatMeters(floor.w)} × ${formatMeters(floor.h)} m, 벽 ${walls.length}개, 선분 ${segments}개, 구역 ${areas.length}개, 가구 ${boxes.length}개`;
   return (
     <div className={styles.view}>
       <Suspense fallback={<p className={styles.message}>3D를 불러오고 있어요</p>}>
-        <PreviewCanvas floor={floor} walls={walls} areas={areas} label={label} />
+        <PreviewCanvas floor={floor} walls={walls} boxes={boxes} areas={areas} label={label} />
       </Suspense>
     </div>
   );

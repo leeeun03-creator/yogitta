@@ -4,7 +4,7 @@ import { makeRoom, splitAt } from "./rooms";
 
 const FLOOR = { w: 600, h: 450 };
 const nameWith = (rooms: number) =>
-  `3D 미리보기, 바닥 6.0 × 4.5 m, 벽 0개, 선분 0개, 구역 ${rooms}개`;
+  `3D 미리보기, 바닥 6.0 × 4.5 m, 벽 0개, 선분 0개, 구역 ${rooms}개, 가구 0개`;
 const backToPlan = (page: Page) =>
   page.getByRole("group", { name: "보기 전환" }).getByRole("button", { name: "2D 평면도" }).click();
 

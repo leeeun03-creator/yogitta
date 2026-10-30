@@ -10,7 +10,7 @@ const mainTitle = (page: Page) => page.getByRole("heading", { level: 1, name: "�
 const viewButton = (page: Page, name: "처음 보기" | "확대") =>
   page.getByRole("group", { name: "3D 보기" }).getByRole("button", { name });
 const nameWith = (walls: number, segments: number, rooms: number) =>
-  `3D 공간, 바닥 6.0 × 4.5 m, 벽 ${walls}개, 선분 ${segments}개, 구역 ${rooms}개`;
+  `3D 공간, 바닥 6.0 × 4.5 m, 벽 ${walls}개, 선분 ${segments}개, 구역 ${rooms}개, 가구 0개`;
 
 /** 편집 모드에서 [‹ 완료]를 눌러 메인 화면으로 간다. */
 async function finishEditing(page: Page) {
