@@ -32,7 +32,19 @@
   padding: 16px 32px 32px;
 }
 
+/* 3D 공간 + 가구 상세 패널: 넓으면 나란히, 휴대폰은 위아래 (yogitta-design 7장) */
+.stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 24px;
+}
+
 @media (max-width: 640px) {
+  .stage {
+    flex-direction: column;
+    gap: 12px;
+  }
   .header {
     padding: 16px 16px 8px;
   }

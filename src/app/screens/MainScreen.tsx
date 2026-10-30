@@ -1,5 +1,6 @@
 import { Pencil } from "lucide-react";
 import { useState } from "react";
+import { FurniturePanel } from "@/features/items";
 import { SpaceScene } from "@/features/scene3d";
 import { SpaceSwitcher } from "@/features/spaces";
 import { Button, Logo, SearchBar } from "@/shared/ui";
@@ -11,7 +12,7 @@ import { useFocusOnShow } from "./useFocusOnShow";
 const ICON_SIZE = 18;
 
 /**
- * 물건을 찾는 메인 화면 (시안 01·02): 머리(로고 · 공간 · [편집]) → 검색창 → 3D 공간. [편집]을 누르면 편집 모드로 간다.
+ * 물건을 찾는 메인 화면 (시안 01·02): 머리(로고 · 공간 · [편집]) → 검색창 → [3D 공간 + 가구 상세 패널]. [편집]을 누르면 편집 모드로 간다.
  * 휴대폰에서는 [편집]이 아이콘 버튼이 된다.
  */
 export function MainScreen() {
@@ -38,13 +39,15 @@ export function MainScreen() {
           <span className={styles.editText}>편집</span>
         </Button>
       </header>
-      {/* TODO(T9): 가구 상세 패널 */}
       <main className={styles.body}>
         <SearchBar value={query} onChange={setQuery} />
-        <section className={canvasStyles.canvas} aria-label="3D 공간 영역">
-          {/* 공간을 바꾸면 3D 공간을 새로 만들어 카메라도 그 공간의 처음 자리에서 시작한다 */}
-          <SpaceScene key={space.id} space={space} />
-        </section>
+        <div className={styles.stage}>
+          <section className={canvasStyles.canvas} aria-label="3D 공간 영역">
+            {/* 공간을 바꾸면 3D 공간을 새로 만들어 카메라도 그 공간의 처음 자리에서 시작한다 */}
+            <SpaceScene key={space.id} space={space} />
+          </section>
+          <FurniturePanel space={space} />
+        </div>
       </main>
     </div>
   );

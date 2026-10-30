@@ -1,0 +1,155 @@
+/* 가구 상세 패널. 값은 yogitta-design 4장 + 시안 01·08 (폭 340, 안쪽 여백 22, 칸 행 16px 모서리) */
+.panel {
+  flex: 0 0 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: var(--yg-surface);
+  border-radius: var(--yg-radius-panel);
+  box-shadow: var(--yg-shadow-panel);
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  overflow-wrap: anywhere;
+}
+.title:focus {
+  outline: none; /* 열릴 때 초점만 받아 두는 제목이라 테두리를 그리지 않는다 */
+}
+
+.guide {
+  margin: 0;
+  font-size: 14px;
+  color: var(--yg-text-sub);
+}
+
+/* 가구 목록 */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.boxButton {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: var(--yg-radius-row);
+  background: var(--yg-surface-2);
+  color: var(--yg-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.boxButton:hover {
+  background: var(--yg-chip);
+}
+.boxButton:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 2px;
+}
+.boxName {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+.count {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+/* 머리: 48px 아이콘 타일 + 이름·구역 + 닫기 */
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.tile {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--yg-found-bg);
+  color: var(--yg-accent);
+}
+.headText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--yg-text-sub);
+}
+
+/* 칸 행: 칸 이름 + 물건 칩 */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--yg-radius-row);
+  background: var(--yg-surface-2);
+}
+.slotName {
+  min-width: 72px;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+.empty {
+  font-size: 14px;
+  color: var(--yg-text-sub);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chip {
+  padding: 5px 12px;
+  border-radius: var(--yg-radius-pill);
+  background: var(--yg-surface);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+/* 휴대폰: 3D 공간 아래에 두고, 길어지면 패널 안에서 넘긴다 (3D 보기 버튼을 가리지 않게) */
+@media (max-width: 640px) {
+  .panel {
+    flex: 0 0 auto;
+    max-height: 40vh;
+    gap: 10px;
+    padding: 16px;
+  }
+}
