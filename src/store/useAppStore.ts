@@ -1,16 +1,12 @@
 import { create, type StoreApi } from "zustand";
 import { DATA_VERSION } from "@/shared/constants/storage";
 import { createId } from "@/shared/lib/createId";
-import type { AppData, Floor, Point, Wall } from "@/shared/types";
+import type { AppData, Point } from "@/shared/types";
 import { boxActions, type BoxActions } from "./boxActions";
 import { change } from "./change";
 import { addRoom, type RoomResult } from "./logic/addRoom";
 import { addRoomLine } from "./logic/addRoomLine";
 import { addSpace, type AddSpaceResult, type NewSpaceInput } from "./logic/addSpace";
-import { addWall } from "./logic/addWall";
-import { eraseSegment } from "./logic/eraseSegment";
-import { moveWallPoint, type WallMoveResult } from "./logic/moveWallPoint";
-import { resizeFloor, type FloorResizeResult } from "./logic/resizeFloor";
 import { keepSelection } from "./logic/keepSelection";
 import { moveHistory, type HistoryDirection } from "./logic/moveHistory";
 import { EMPTY_HISTORY, type History } from "./logic/recordHistory";
@@ -23,6 +19,7 @@ import type { SpaceResult } from "./logic/spaceNameError";
 import { switchSpace } from "./logic/switchSpace";
 import { switchMode } from "./logic/switchMode";
 import type { AppMode, DrawingTool, EditView, RoomFocus, UiState } from "./uiState";
+import { wallActions, type WallActions } from "./wallActions";
 
 export type { AppMode, DrawingTool, EditView, RoomFocus } from "./uiState";
 export { DRAWING_TOOLS } from "./uiState";
@@ -30,31 +27,28 @@ export type { HistoryDirection, RoomResult, SpaceResult };
 export type { RoomNameError } from "./logic/checkRoomName";
 export type { SpaceNameError } from "./logic/spaceNameError";
 
-type AppState = BoxActions & {
-  data: AppData; // 저장 대상 (T11에서 localStorage와 연결)
-  ui: UiState; // 화면 상태, 저장하지 않음
-  history: History; // 되돌리기 기록, 저장하지 않음
-  addSpace: (input: NewSpaceInput) => AddSpaceResult;
-  switchSpace: (id: string) => void;
-  renameSpace: (id: string, name: string) => SpaceResult;
-  removeSpace: (id: string) => void; // 벽·가구·물건 모두 지운다 (확인은 화면에서)
-  setMode: (mode: AppMode) => void;
-  setView: (view: EditView) => void;
-  setTool: (tool: DrawingTool) => void;
-  setSnap: (snap: boolean) => void;
-  setRoomFocus: (focus: RoomFocus | null) => void;
-  addWall: (wall: Omit<Wall, "id">) => void; // 현재 공간에 더한다
-  eraseSegment: (wallId: string, segment: number) => void;
-  moveWallPoint: (from: Point, to: Point) => WallMoveResult; // 붙은 벽 점도 같이, 막히면 그대로
-  resizeFloor: (floor: Floor) => FloorResizeResult; // 무언가 바닥 밖으로 나가면 그대로
-  addRoom: (name: string, at?: Point) => RoomResult; // 현재 공간에 구역을 더한다 (at = 구역 기준점)
-  renameRoom: (from: string, to: string) => RoomResult;
-  removeRoom: (name: string) => void;
-  addRoomLine: (points: Point[]) => void; // 현재 공간에 구역 선을 더한다
-  removeRoomLine: (id: string) => void;
-  undo: () => void;
-  redo: () => void;
-};
+type AppState = BoxActions &
+  WallActions & {
+    data: AppData; // 저장 대상 (T11에서 localStorage와 연결)
+    ui: UiState; // 화면 상태, 저장하지 않음
+    history: History; // 되돌리기 기록, 저장하지 않음
+    addSpace: (input: NewSpaceInput) => AddSpaceResult;
+    switchSpace: (id: string) => void;
+    renameSpace: (id: string, name: string) => SpaceResult;
+    removeSpace: (id: string) => void; // 벽·가구·물건 모두 지운다 (확인은 화면에서)
+    setMode: (mode: AppMode) => void;
+    setView: (view: EditView) => void;
+    setTool: (tool: DrawingTool) => void;
+    setSnap: (snap: boolean) => void;
+    setRoomFocus: (focus: RoomFocus | null) => void;
+    addRoom: (name: string, at?: Point) => RoomResult; // 현재 공간에 구역을 더한다 (at = 구역 기준점)
+    renameRoom: (from: string, to: string) => RoomResult;
+    removeRoom: (name: string) => void;
+    addRoomLine: (points: Point[]) => void; // 현재 공간에 구역 선을 더한다
+    removeRoomLine: (id: string) => void;
+    undo: () => void;
+    redo: () => void;
+  };
 
 const INITIAL_DATA: AppData = { version: DATA_VERSION, spaces: [], currentSpaceId: null };
 
@@ -136,20 +130,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
   ...spaceActions(set, get),
   ...uiActions(set),
   ...boxActions(set, get),
-  addWall: (wall) =>
-    set((state) => change(state, addWall(state.data, { ...wall, id: createId("wall") }))),
-  eraseSegment: (wallId, segment) =>
-    set((state) => change(state, eraseSegment(state.data, { wallId, segment }, createId("wall")))),
-  moveWallPoint: (from, to) => {
-    const result = moveWallPoint(get().data, from, to);
-    if (result.ok) set((state) => change(state, result.data));
-    return result;
-  },
-  resizeFloor: (floor) => {
-    const result = resizeFloor(get().data, floor);
-    if (result.ok) set((state) => change(state, result.data));
-    return result;
-  },
+  ...wallActions(set, get),
   addRoom: (name, at) => {
     const result = addRoom(get().data, name, at);
     if (result.ok) set((state) => change(state, result.data));

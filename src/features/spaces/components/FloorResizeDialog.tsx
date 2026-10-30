@@ -1,4 +1,4 @@
-import { useId, type SyntheticEvent } from "react";
+import { useId, type Ref, type SyntheticEvent } from "react";
 import type { Floor } from "@/shared/types";
 import { Button, TextField, useModalDialog } from "@/shared/ui";
 import { useFloorResizeForm } from "../hooks/useFloorResizeForm";
@@ -18,7 +18,7 @@ export function FloorResizeDialog({ floor, onClose }: FloorResizeDialogProps) {
     close();
     onClose();
   };
-  const { fields, setWidth, setDepth, errors, submit } = useFloorResizeForm(floor, done);
+  const form = useFloorResizeForm(floor, done);
   const cancelOnEscape = (event: SyntheticEvent) => {
     event.preventDefault(); // 브라우저가 닫기 전에 직접 닫고 초점을 돌린다
     done();
@@ -31,32 +31,11 @@ export function FloorResizeDialog({ floor, onClose }: FloorResizeDialogProps) {
       onCancel={cancelOnEscape}
       onClick={(event) => event.target === event.currentTarget && done()}
     >
-      <form className={styles.form} onSubmit={submit} noValidate>
+      <form className={styles.form} onSubmit={form.submit} noValidate>
         <h2 id={titleId} className={styles.title}>
           바닥 크기 바꾸기
         </h2>
-        <div className={styles.fields}>
-          <TextField
-            ref={firstRef}
-            label="가로 (m)"
-            value={fields.width}
-            onChange={setWidth}
-            inputMode="decimal"
-            error={errors.width && metersMessage(errors.width)}
-          />
-          <TextField
-            label="세로 (m)"
-            value={fields.depth}
-            onChange={setDepth}
-            inputMode="decimal"
-            error={errors.depth && metersMessage(errors.depth)}
-          />
-        </div>
-        {errors.isOutside && (
-          <p role="alert" className={styles.outside}>
-            벽·구역 선·가구가 바닥 밖으로 나가서 이 크기로 줄일 수 없어요
-          </p>
-        )}
+        <FloorFields form={form} firstRef={firstRef} />
         <div className={styles.actions}>
           <Button onClick={done}>취소</Button>
           <Button type="submit" variant="primary">
@@ -65,5 +44,41 @@ export function FloorResizeDialog({ floor, onClose }: FloorResizeDialogProps) {
         </div>
       </form>
     </dialog>
+  );
+}
+
+type FloorFieldsProps = {
+  form: ReturnType<typeof useFloorResizeForm>;
+  firstRef: Ref<HTMLInputElement>;
+};
+
+/** 가로·세로(m) 칸과 칸마다의 까닭, 바닥 밖으로 나가는 것이 있을 때의 까닭. */
+function FloorFields({ form, firstRef }: FloorFieldsProps) {
+  const { fields, setWidth, setDepth, errors } = form;
+  return (
+    <>
+      <div className={styles.fields}>
+        <TextField
+          ref={firstRef}
+          label="가로 (m)"
+          value={fields.width}
+          onChange={setWidth}
+          inputMode="decimal"
+          error={errors.width && metersMessage(errors.width)}
+        />
+        <TextField
+          label="세로 (m)"
+          value={fields.depth}
+          onChange={setDepth}
+          inputMode="decimal"
+          error={errors.depth && metersMessage(errors.depth)}
+        />
+      </div>
+      {errors.isOutside && (
+        <p role="alert" className={styles.outside}>
+          벽·구역 선·가구가 바닥 밖으로 나가서 이 크기로 줄일 수 없어요
+        </p>
+      )}
+    </>
   );
 }
