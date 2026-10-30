@@ -6,7 +6,7 @@ import { boxKeyAction, type BoxKeyAction } from "../logic/boxKeyAction";
 import { boxKeyMove } from "../logic/boxKeyMove";
 import { boxScreenRect } from "../logic/boxScreenRect";
 import type { ViewBox } from "../logic/fitViewBox";
-import styles from "./FloorPlan.module.css";
+import styles from "./BoxOverlay.module.css";
 
 type BoxButtonsProps = {
   boxes: readonly Box[];

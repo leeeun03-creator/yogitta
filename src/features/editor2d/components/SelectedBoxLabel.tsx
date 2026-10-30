@@ -2,7 +2,7 @@ import type { Box } from "@/shared/types";
 import { boxScreenRect } from "../logic/boxScreenRect";
 import type { ViewBox } from "../logic/fitViewBox";
 import { selectedLabelTop } from "../logic/selectedLabelTop";
-import styles from "./FloorPlan.module.css";
+import styles from "./BoxOverlay.module.css";
 
 type SelectedBoxLabelProps = { box: Box | undefined; view: ViewBox };
 

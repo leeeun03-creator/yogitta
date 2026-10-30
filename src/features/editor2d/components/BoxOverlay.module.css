@@ -1,0 +1,36 @@
+/* 2D 평면도 위에 겹치는 가구 버튼과 고른 가구 이름 알약 */
+/* 가구 버튼: 가구 자리에 투명하게 겹친다. 누르기·끌기는 2D 평면도가 받고, 키보드 초점만 받는다.
+   화면 밖 가구에 초점이 가도 캔버스가 스크롤되지 않게 clip으로 자른다 */
+.boxButtons {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+.boxButton {
+  position: absolute;
+  padding: 0;
+  border: none;
+  border-radius: var(--yg-radius-field);
+  background: transparent;
+  pointer-events: none;
+}
+.boxButton:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 3px;
+}
+
+/* 고른 가구 이름 알약 (시안 04: 높이 30 = SELECTED_LABEL_HEIGHT_PX, 강조색, 14px) */
+.selectedBoxLabel {
+  position: absolute;
+  transform: translateX(-50%);
+  height: 30px;
+  padding: 0 16px;
+  border-radius: var(--yg-radius-pill);
+  background: var(--yg-accent);
+  color: var(--yg-on-accent);
+  font-size: 14px;
+  line-height: 30px;
+  white-space: nowrap;
+  pointer-events: none;
+}
