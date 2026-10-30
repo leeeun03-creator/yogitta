@@ -45,6 +45,9 @@ export const BOX_CORNER_PX = 6;
 export const BOX_FRONT_PX = { width: 12, height: 7 } as const; // 정면 가장자리 밖 삼각형
 export const BOX_LABEL_MIN_PX = 12; // 이보다 작아야 들어가는 이름은 숨긴다 (최소 글자 크기)
 export const BOX_LABEL_PADDING_PX = 4; // 이름과 가구 가장자리 사이
+export const BOX_SELECTED_STROKE_PX = 2.5; // 고른 가구 테두리 (강조색, 실선)
+export const SELECTED_LABEL_HEIGHT_PX = 30; // 고른 가구 이름 알약 높이
+export const SELECTED_LABEL_GAP_PX = 50; // 가구 가장자리와 이름 알약 사이 (회전 핸들 자리를 둔다)
 export const HANGUL_CHAR_EM = 1; // 한글 글자 하나의 폭 어림 (글자 크기 배수)
 export const SPACE_CHAR_EM = 0.3; // 띄어쓰기 폭 어림
 

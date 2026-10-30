@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { formatMeters } from "@/shared/lib/formatMeters";
 import type { Space } from "@/shared/types";
 import { useFloorPlanInput } from "../hooks/useFloorPlanInput";
+import { BoxOverlay } from "./BoxOverlay";
 import { FloorDimensions } from "./FloorDimensions";
 import { FloorScene } from "./FloorScene";
 import { Loupe } from "./Loupe";
@@ -44,6 +45,7 @@ export function FloorPlan({ space }: FloorPlanProps) {
           <FloorScene floor={floor} walls={walls} scene={scene} cmPerPx={box.cmPerPx} />
           <FloorDimensions floor={floor} labels={labels} cmPerPx={box.cmPerPx} />
         </svg>
+        <BoxOverlay tool={tool} boxes={scene.boxes} selected={scene.selectedBox} view={box} />
         <Loupe finger={input.finger} box={box} floor={floor} walls={walls} scene={scene} />
       </div>
       <PlanRoomPopover box={box} onClose={() => wrapperRef.current?.focus()} />

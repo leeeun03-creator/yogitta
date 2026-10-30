@@ -102,8 +102,17 @@ type UiActions = Pick<AppState, "setMode" | "setView" | "setTool" | "setSnap" | 
 const uiActions = (set: SetState): UiActions => ({
   setMode: (mode) => set((state) => ({ ui: switchMode(state.ui, mode) })),
   setView: (view) => set((state) => ({ ui: { ...state.ui, view } })),
-  // 도구를 바꾸면 열려 있던 구역 입력칸은 닫는다 (다른 도구로 누른 자리와 헷갈리지 않게)
-  setTool: (tool) => set((state) => ({ ui: { ...state.ui, tool, roomFocus: null } })),
+  // 도구를 바꾸면 열려 있던 구역 입력칸은 닫는다 (다른 도구로 누른 자리와 헷갈리지 않게).
+  // 가구는 선택 도구로만 고르므로 다른 도구로 바꾸면 고른 가구도 비운다
+  setTool: (tool) =>
+    set((state) => ({
+      ui: {
+        ...state.ui,
+        tool,
+        roomFocus: null,
+        selectedBoxId: tool === "select" ? state.ui.selectedBoxId : null,
+      },
+    })),
   setSnap: (snap) => set((state) => ({ ui: { ...state.ui, snap } })),
   setRoomFocus: (roomFocus) => set((state) => ({ ui: { ...state.ui, roomFocus } })),
 });

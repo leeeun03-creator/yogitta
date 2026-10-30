@@ -22,23 +22,33 @@ type Drag = {
 const isOnFloor = (point: Point, floor: Floor) =>
   point.x >= 0 && point.x <= floor.w && point.y >= 0 && point.y <= floor.h;
 
+/** 뗀 자리(px)에 놓을 가구. 누르기 거리 안에서 뗐으면 누른 자리에 기본 크기, 끌었으면 끈 사각형이다. */
+function placementOf(drag: Drag, screen: Point, snapAt: SnapAt, gridStep: number | null) {
+  if (distance(screen, drag.screen) <= TAP_MOVE_PX) return defaultBoxAt(drag.raw, gridStep);
+  return boxFromDrag(drag.start, snapAt(screen).point);
+}
+
+/** 끄는 중인 미리보기. 누른 자리에서 아직 안 끌었으면(붙인 자리가 같음) 띄우지 않는다. */
+function draftOf(drag: Drag | null): BoxPlacement | null {
+  if (!drag || (drag.start.x === drag.end.x && drag.start.y === drag.end.y)) return null;
+  return boxFromDrag(drag.start, drag.end);
+}
+
 /**
  * 가구 도구: 끌어서 놓으면 그 크기의 보관함, 누르기만 하면 그 자리에 기본 크기 보관함.
+ * 놓은 가구는 바로 고쳐 쓸 수 있게 고르고 선택 도구로 바꾼다.
  * 끄는 동안 미리보기, 바닥 밖에서 누르기 시작하면 무시하고, 두 번째 손가락·Esc는 취소한다.
  */
 export function useBoxTool(tool: DrawingTool, box: ViewBox, floor: Floor, snapAt: SnapAt) {
-  const addBox = useAppStore((state) => state.addBox);
-  const snap = useAppStore((state) => state.ui.snap);
+  const { addBox, setTool, selectBox } = useBoxActions();
+  const gridStep = useAppStore((state) => (state.ui.snap ? GRID_SNAP_CM : null));
   const [drag, setDrag] = useState<Drag | null>(null);
   const isMine = (event: PointerEvent<HTMLElement>) => drag?.pointerId === event.pointerId;
-
-  const place = (current: Drag, screen: Point) => {
-    const isTap = distance(screen, current.screen) <= TAP_MOVE_PX;
-    addBox(
-      isTap
-        ? defaultBoxAt(current.raw, snap ? GRID_SNAP_CM : null)
-        : boxFromDrag(current.start, snapAt(screen).point),
-    );
+  const place = (placement: BoxPlacement) => {
+    const id = addBox(placement);
+    if (id === null) return;
+    setTool("select");
+    selectBox(id);
   };
 
   const handlers = {
@@ -46,20 +56,17 @@ export function useBoxTool(tool: DrawingTool, box: ViewBox, floor: Floor, snapAt
       if (tool !== "box") return;
       const screen = eventPoint(event);
       const raw = screenToCm(screen, box);
-      // 끄는 중에 다른 손가락이 닿으면 핀치 줌으로 보고 놓던 가구를 버린다
-      if (drag || !isOnFloor(raw, floor)) {
-        setDrag(null);
-        return;
-      }
       const start = snapAt(screen).point;
-      setDrag({ pointerId: event.pointerId, screen, raw, start, end: start });
+      // 끄는 중에 다른 손가락이 닿으면 핀치 줌으로 보고 놓던 가구를 버린다
+      const isNew = !drag && isOnFloor(raw, floor);
+      setDrag(isNew ? { pointerId: event.pointerId, screen, raw, start, end: start } : null);
     },
     onPointerMove: (event: PointerEvent<HTMLElement>) => {
       if (drag && isMine(event)) setDrag({ ...drag, end: snapAt(eventPoint(event)).point });
     },
     onPointerUp: (event: PointerEvent<HTMLElement>) => {
       if (!drag || !isMine(event)) return;
-      place(drag, eventPoint(event));
+      place(placementOf(drag, eventPoint(event), snapAt, gridStep));
       setDrag(null);
     },
     onPointerCancel: () => setDrag(null),
@@ -67,10 +74,13 @@ export function useBoxTool(tool: DrawingTool, box: ViewBox, floor: Floor, snapAt
       if (event.key === "Escape" && drag) setDrag(null);
     },
   };
+  return { draft: tool === "box" ? draftOf(drag) : null, handlers };
+}
 
-  // 누른 자리에서 아직 안 끌었으면(붙인 자리가 같음) 미리보기를 띄우지 않는다
-  const isDragging =
-    tool === "box" && drag && (drag.start.x !== drag.end.x || drag.start.y !== drag.end.y);
-  const draft: BoxPlacement | null = isDragging ? boxFromDrag(drag.start, drag.end) : null;
-  return { draft, handlers };
+/** 가구를 놓을 때 쓰는 store 액션. */
+function useBoxActions() {
+  const addBox = useAppStore((state) => state.addBox);
+  const setTool = useAppStore((state) => state.setTool);
+  const selectBox = useAppStore((state) => state.selectBox);
+  return { addBox, setTool, selectBox };
 }

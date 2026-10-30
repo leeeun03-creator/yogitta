@@ -3,6 +3,7 @@ import { FLOOR_PLAN_MARGIN_PX } from "@/shared/constants/floorPlan";
 import type { Floor, Point } from "@/shared/types";
 import { keyboardAction } from "../logic/keyboardAction";
 import { panBy } from "../logic/panBy";
+import { screenToCm } from "../logic/screenToCm";
 import { initialView, viewBoxOf } from "../logic/viewBoxOf";
 import { zoomAt } from "../logic/zoomAt";
 import { useElementSize } from "./useElementSize";
@@ -10,8 +11,33 @@ import { useLatest } from "./useLatest";
 import { usePointerGestures } from "./usePointerGestures";
 import { useWheelZoom } from "./useWheelZoom";
 
-/** 2D 평면도의 줌·이동: 휠, 끌기, 두 손가락 핀치, 키보드(+ - 0 방향키). */
-export function usePanZoom(ref: RefObject<HTMLElement | null>, floor: Floor, canPan: boolean) {
+type ViewMoves = {
+  zoomBy: (factor: number, anchor?: Point) => void;
+  panByPx: (delta: Point) => void;
+  reset: () => void;
+};
+
+/** 키보드로 줌(+ -)·이동(방향키)·처음 보기(0). 관계없는 키는 그대로 둔다. */
+const keyHandler =
+  ({ zoomBy, panByPx, reset }: ViewMoves) =>
+  (event: KeyboardEvent<HTMLElement>) => {
+    const action = keyboardAction(event.key);
+    if (!action) return;
+    event.preventDefault();
+    if (action.type === "zoom") zoomBy(action.factor);
+    else if (action.type === "pan") panByPx(action.delta);
+    else reset();
+  };
+
+/**
+ * 2D 평면도의 줌·이동: 휠, 끌기, 두 손가락 핀치, 키보드(+ - 0 방향키).
+ * canPanAt(누르기 시작한 자리, cm)이 참일 때만 손가락·마우스 하나로 끌어서 이동한다.
+ */
+export function usePanZoom(
+  ref: RefObject<HTMLElement | null>,
+  floor: Floor,
+  canPanAt: (point: Point) => boolean,
+) {
   const viewport = useElementSize(ref);
   const [view, setView] = useState(() => initialView(floor));
   const latest = useLatest({ viewport, floor });
@@ -32,20 +58,16 @@ export function usePanZoom(ref: RefObject<HTMLElement | null>, floor: Floor, can
       return panBy(previous, delta, cmPerPx, current);
     });
 
+  const box = viewBoxOf(floor, viewport, FLOOR_PLAN_MARGIN_PX, view);
   useWheelZoom(ref, zoomBy);
-  const pointerHandlers = usePointerGestures({ zoomBy, panByPx, canPan });
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    const action = keyboardAction(event.key);
-    if (!action) return;
-    event.preventDefault();
-    if (action.type === "zoom") zoomBy(action.factor);
-    else if (action.type === "pan") panByPx(action.delta);
-    else setView(initialView(floor));
-  };
-
+  const pointerHandlers = usePointerGestures({
+    zoomBy,
+    panByPx,
+    canPanFrom: (screen) => canPanAt(screenToCm(screen, box)),
+  });
+  const reset = () => setView(initialView(floor));
   return {
-    box: viewBoxOf(floor, viewport, FLOOR_PLAN_MARGIN_PX, view),
-    handlers: { ...pointerHandlers, onKeyDown: handleKeyDown },
+    box,
+    handlers: { ...pointerHandlers, onKeyDown: keyHandler({ zoomBy, panByPx, reset }) },
   };
 }

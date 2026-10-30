@@ -1,8 +1,7 @@
 import { BOX_DEFAULT_SIZE } from "@/shared/constants/furniture";
 import type { Point } from "@/shared/types";
 import type { BoxPlacement } from "./boxFromDrag";
-
-const roundTo = (value: number, step: number) => Math.round(value / step) * step;
+import { snapBoxCenter } from "./snapBoxCenter";
 
 /**
  * 가구 도구로 누르기만 했을 때의 가구: 누른 자리가 가운데인 기본 크기(60 × 50 cm).
@@ -10,7 +9,6 @@ const roundTo = (value: number, step: number) => Math.round(value / step) * step
  */
 export function defaultBoxAt(point: Point, gridStep: number | null): BoxPlacement {
   const { w, d } = BOX_DEFAULT_SIZE;
-  if (gridStep === null) return { center: point, w, d };
-  const corner = { x: roundTo(point.x - w / 2, gridStep), y: roundTo(point.y - d / 2, gridStep) };
-  return { center: { x: corner.x + w / 2, y: corner.y + d / 2 }, w, d };
+  const center = gridStep === null ? point : snapBoxCenter(point, { w, d }, gridStep);
+  return { center, w, d };
 }

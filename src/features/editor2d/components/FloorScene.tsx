@@ -26,6 +26,7 @@ export type SceneState = {
   partPreview: { rects: Rect[]; color: string } | null; // 누르면 새 구역이 될 구획 (옅게)
   boxes: readonly Box[];
   boxDraft: BoxPlacement | null; // 가구 도구로 끄는 중인 사각형
+  selectedBox: string | null; // 고른(또는 끄는 중인) 가구
 };
 
 type FloorSceneProps = { floor: Floor; walls: readonly Wall[]; scene: SceneState; cmPerPx: number };
@@ -54,7 +55,12 @@ export function FloorScene({ floor, walls, scene, cmPerPx }: FloorSceneProps) {
         cmPerPx={cmPerPx}
       />
       {/* 가구는 벽 위에 그려, 벽에 붙여 놓아도 테두리와 이름이 가려지지 않게 한다 */}
-      <BoxLayer boxes={scene.boxes} draft={scene.boxDraft} cmPerPx={cmPerPx} />
+      <BoxLayer
+        boxes={scene.boxes}
+        draft={scene.boxDraft}
+        selected={scene.selectedBox}
+        cmPerPx={cmPerPx}
+      />
       <RoomLabelLayer areas={scene.roomAreas} selected={scene.selectedRoom} cmPerPx={cmPerPx} />
       <SnapIndicator cursor={scene.cursor} cmPerPx={cmPerPx} />
       <LengthLabel measure={scene.measure} cmPerPx={cmPerPx} />

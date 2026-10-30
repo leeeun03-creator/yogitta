@@ -1,5 +1,6 @@
 import { clamp } from "@/shared/lib/clamp";
 import { distance } from "@/shared/lib/distance";
+import { roundTo } from "@/shared/lib/roundTo";
 import type { Floor, Point } from "@/shared/types";
 
 export type SnapKind = "endpoint" | "grid" | "none";
@@ -9,8 +10,6 @@ export type SnapOptions = {
   gridStep: number;
   floor: Floor;
 }; // cm
-
-const roundTo = (value: number, step: number) => Math.round(value / step) * step;
 
 /**
  * 누른 점(cm, 반올림 전)을 붙일 곳으로 옮긴다.

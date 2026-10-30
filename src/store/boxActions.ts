@@ -31,5 +31,13 @@ export const boxActions = (set: SetCore, get: GetCore): BoxActions => ({
       const data = removeBox(state.data, id);
       return { ...change(state, data), ui: keepSelection(state.ui, data) };
     }),
-  selectBox: (selectedBoxId) => set((state) => ({ ui: { ...state.ui, selectedBoxId } })),
+  // 가구를 고르면 열려 있던 구역 입력칸은 닫는다 (고른 것이 둘이 되지 않게)
+  selectBox: (selectedBoxId) =>
+    set((state) => ({
+      ui: {
+        ...state.ui,
+        selectedBoxId,
+        roomFocus: selectedBoxId === null ? state.ui.roomFocus : null,
+      },
+    })),
 });

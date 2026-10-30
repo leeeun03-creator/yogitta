@@ -19,6 +19,12 @@ const dragCm = (page: Page, from: Cm, to: Cm, isMobile: boolean, beforeUp?: () =
   dragFloorCm(page, FLOOR, from, to, isMobile, beforeUp);
 const draft = (page: Page) => plan(page).getByTestId("box-draft");
 
+/** 가구 도구를 다시 골라 끈다 (놓으면 선택 도구로 바뀐다). */
+async function placeBox(page: Page, from: Cm, to: Cm, isMobile: boolean) {
+  await chooseTool(page, "가구");
+  await dragCm(page, from, to, isMobile);
+}
+
 /** 놓인 가구들의 [가운데 x, 가운데 y, 가로, 깊이, 회전] (cm·도). */
 async function boxData(page: Page) {
   const boxes = await plan(page).getByTestId("box").all();
@@ -52,14 +58,14 @@ test.describe("가구 도구", () => {
   }) => {
     const errors = collectErrors(page);
     await dragCm(page, { x: 100, y: 50 }, { x: 300, y: 200 }, isMobile);
-    await dragCm(page, { x: 350, y: 250 }, { x: 550, y: 400 }, isMobile);
+    await placeBox(page, { x: 350, y: 250 }, { x: 550, y: 400 }, isMobile);
     const boxes = await boxData(page);
     expectBox(boxes[0], [200, 125, 200, 150, 0]);
     expectBox(boxes[1], [450, 325, 200, 150, 0]);
     await expect(plan(page).getByText("보관함 1", { exact: true })).toBeVisible();
     await expect(plan(page).getByText("보관함 2", { exact: true })).toBeVisible();
     await expect(plan(page)).toHaveAccessibleName(/가구 2개$/);
-    // 보관함은 점선 테두리, 정면(처음엔 아래쪽) 가장자리 밖에 삼각형
+    // 보관함은 점선 테두리(고르지 않은 첫 가구), 정면(처음엔 아래쪽) 가장자리 밖에 삼각형
     await expect(plan(page).getByTestId("box").first().locator("rect")).toHaveAttribute(
       "stroke-dasharray",
       /.+/,
@@ -162,8 +168,10 @@ test.describe("가구 도구", () => {
 
   test("스크린샷을 남긴다 (시안 04와 비교)", async ({ page, isMobile }, testInfo) => {
     await dragCm(page, { x: 20, y: 14 }, { x: 140, y: 74 }, isMobile);
-    await dragCm(page, { x: 150, y: 300 }, { x: 230, y: 360 }, isMobile);
+    await placeBox(page, { x: 150, y: 300 }, { x: 230, y: 360 }, isMobile);
+    await chooseTool(page, "가구");
     await pressCm(page, FLOOR, [{ x: 470, y: 200 }], isMobile);
+    await page.waitForTimeout(300); // 도구 막대 바탕색이 바뀌는 동안을 기다린다 (스크린샷용)
     await page.screenshot({ path: testInfo.outputPath("box-tool.png"), fullPage: true });
   });
 });
