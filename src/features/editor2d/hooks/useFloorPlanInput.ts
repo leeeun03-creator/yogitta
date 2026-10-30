@@ -24,7 +24,7 @@ export function useFloorPlanInput(ref: RefObject<HTMLElement | null>, space: Spa
   const wall = useWallTools(tool, box, snapAt);
   const room = useRoomInput(tool, box, space, isOnBox);
   const furniture = useBoxInput(tool, box, space, snapAt);
-  const eraser = useEraserTool(tool, box, space.walls, room.scene.roomLines);
+  const eraser = useEraserTool(tool, box, { ...space, roomLines: room.scene.roomLines });
   // 가구를 눌러 골랐으면 그 아래 구획은 누르지 않는다 (구역 입력칸이 뜨지 않게)
   const tap = useTap(callAll(wall.tap, eraser.tap, (at) => furniture.tap(at) || room.tap(at)));
   const loupe = useLoupe(tool);

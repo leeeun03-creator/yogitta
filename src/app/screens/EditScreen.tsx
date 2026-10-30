@@ -1,4 +1,5 @@
 import { FloorPlan, SnapToggle, ToolBar, useHistoryKeys } from "@/features/editor2d";
+import { PropertyPanel } from "@/features/furniture";
 import { ScenePreview } from "@/features/scene3d";
 import { RoomList } from "@/features/spaces";
 import { useAppStore } from "@/store/useAppStore";
@@ -6,7 +7,7 @@ import canvasStyles from "./CanvasArea.module.css";
 import styles from "./EditScreen.module.css";
 import { EditTopBar } from "./EditTopBar";
 
-/** 벽·가구를 만들고 고치는 편집 모드 (시안 04). 속성 패널은 T6부터 붙인다. */
+/** 벽·가구를 만들고 고치는 편집 모드 (시안 04): 그리기 도구 막대 · 2D 평면도(또는 3D 미리보기) · 속성 패널. */
 export function EditScreen() {
   useHistoryKeys();
   const space = useAppStore((state) =>
@@ -36,6 +37,7 @@ export function EditScreen() {
             <ScenePreview space={space} />
           </section>
         )}
+        <PropertyPanel />
       </main>
     </div>
   );

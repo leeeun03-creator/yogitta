@@ -89,6 +89,15 @@
 .selectedBoxFront {
   fill: var(--yg-accent);
 }
+.rotateHandle {
+  stroke: var(--yg-accent);
+  fill: var(--yg-surface);
+}
+/* 지우개로 지울 가구 (삭제 버튼 올림 색) */
+.erasingBox {
+  fill: var(--yg-danger-hover);
+  stroke: var(--yg-danger);
+}
 
 /* 가구 버튼: 가구 자리에 투명하게 겹친다. 누르기·끌기는 2D 평면도가 받고, 키보드 초점만 받는다.
    화면 밖 가구에 초점이 가도 캔버스가 스크롤되지 않게 clip으로 자른다 */

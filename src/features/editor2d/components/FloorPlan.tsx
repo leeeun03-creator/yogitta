@@ -20,6 +20,7 @@ export function FloorPlan({ space }: FloorPlanProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const input = useFloorPlanInput(wrapperRef, space);
   const { tool, box, scene } = input;
+  const focusPlan = () => wrapperRef.current?.focus();
   const labels = { width: `${formatMeters(floor.w)} m`, depth: `${formatMeters(floor.h)} m` };
 
   return (
@@ -45,10 +46,10 @@ export function FloorPlan({ space }: FloorPlanProps) {
           <FloorScene floor={floor} walls={walls} scene={scene} cmPerPx={box.cmPerPx} />
           <FloorDimensions floor={floor} labels={labels} cmPerPx={box.cmPerPx} />
         </svg>
-        <BoxOverlay tool={tool} boxes={scene.boxes} selected={scene.selectedBox} view={box} />
+        <BoxOverlay tool={tool} scene={scene} view={box} onRemoved={focusPlan} />
         <Loupe finger={input.finger} box={box} floor={floor} walls={walls} scene={scene} />
       </div>
-      <PlanRoomPopover box={box} onClose={() => wrapperRef.current?.focus()} />
+      <PlanRoomPopover box={box} onClose={focusPlan} />
     </div>
   );
 }

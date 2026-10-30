@@ -4,6 +4,7 @@ import {
   CAMERA_MIN_DISTANCE_CM,
   CAMERA_ZOOM_STEP,
 } from "@/shared/constants/scene";
+import { DEG_TO_RAD } from "@/shared/constants/units";
 import type { Floor } from "@/shared/types";
 import type { CameraStart, Vector } from "./startCamera";
 
@@ -20,7 +21,6 @@ export type ViewStatus = { isStart: boolean; canZoomIn: boolean; canZoomOut: boo
 export type ZoomDirection = "in" | "out";
 
 const SAME_CM = 1; // 1cm 안이면 같은 자리로 본다 (소수 오차)
-const DEG_TO_RAD = Math.PI / 180;
 
 const distanceBetween = (a: Vector, b: Vector) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 

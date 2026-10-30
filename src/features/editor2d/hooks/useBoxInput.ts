@@ -1,14 +1,12 @@
-import type { KeyboardEvent } from "react";
 import { formatSize } from "@/shared/lib/formatSize";
 import type { Box, Point, Space } from "@/shared/types";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
 import type { BoxPlacement } from "../logic/boxFromDrag";
 import type { Measure } from "../logic/draftMeasure";
-import { findBoxAt } from "../logic/findBoxAt";
 import type { ViewBox } from "../logic/fitViewBox";
-import { screenToCm } from "../logic/screenToCm";
 import { mergeHandlers } from "./mergeHandlers";
 import { useBoxDrag } from "./useBoxDrag";
+import { useBoxSelect } from "./useBoxSelect";
 import { useBoxTool } from "./useBoxTool";
 import type { SnapAt } from "./useSnapper";
 
@@ -25,35 +23,23 @@ const withMoving = (boxes: Box[], moving: { id: string; center: Point } | null) 
     : boxes;
 
 /**
- * 가구 입력: 가구 도구로 놓기, 선택 도구로 누르면 고르기(빈 곳은 풀기)·끌어 옮기기, Esc로 풀기.
- * tap은 가구를 눌러 골랐으면 true를 돌려준다 (그 아래 구획을 눌러 구역 입력칸이 뜨지 않게).
+ * 가구 입력: 가구 도구로 놓기, 선택 도구로 누르기(고르기·풀기·회전 핸들)·끌어 옮기기, 고른 가구 키보드(R·Delete·Esc).
+ * tap은 가구나 회전 핸들을 눌렀으면 true를 돌려준다 (그 아래 구획을 눌러 구역 입력칸이 뜨지 않게).
  */
 export function useBoxInput(tool: DrawingTool, view: ViewBox, space: Space, snapAt: SnapAt) {
   const selected = useAppStore((state) => state.ui.selectedBoxId);
-  const selectBox = useAppStore((state) => state.selectBox);
   const place = useBoxTool(tool, view, space.floor, snapAt);
   const drag = useBoxDrag(tool, view, space);
-
-  const tap = (screen: Point) => {
-    if (tool !== "select") return false;
-    const hit = findBoxAt(space.boxes, screenToCm(screen, view));
-    selectBox(hit?.id ?? null);
-    return hit !== null;
-  };
-  const deselect = {
-    onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
-      if (event.key === "Escape" && selected !== null) selectBox(null);
-    },
-  };
+  const choose = useBoxSelect(tool, view, space.boxes);
 
   return {
-    tap,
+    tap: choose.tap,
     scene: {
       boxes: withMoving(space.boxes, drag.moving),
       boxDraft: place.draft,
       selectedBox: drag.moving?.id ?? selected,
     },
     measure: draftMeasure(place.draft),
-    handlers: mergeHandlers(place.handlers, drag.handlers, deselect),
+    handlers: mergeHandlers(place.handlers, drag.handlers, choose.handlers),
   };
 }

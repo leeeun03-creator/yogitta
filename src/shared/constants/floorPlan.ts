@@ -48,6 +48,12 @@ export const BOX_LABEL_PADDING_PX = 4; // 이름과 가구 가장자리 사이
 export const BOX_SELECTED_STROKE_PX = 2.5; // 고른 가구 테두리 (강조색, 실선)
 export const SELECTED_LABEL_HEIGHT_PX = 30; // 고른 가구 이름 알약 높이
 export const SELECTED_LABEL_GAP_PX = 50; // 가구 가장자리와 이름 알약 사이 (회전 핸들 자리를 둔다)
+
+/** 고른 가구의 회전 핸들 (px, 시안 04): 정면 반대쪽 가장자리에서 선을 긋고 끝에 흰 원. 누르면 90도 돈다. */
+export const ROTATE_HANDLE_OFFSET_PX = 36; // 가구 가장자리에서 원 가운데까지
+export const ROTATE_HANDLE_RADIUS_PX = 7;
+export const ROTATE_HANDLE_STROKE_PX = 2;
+export const ROTATE_HANDLE_HIT_PX = 22; // 누른 것으로 보는 거리 (44px 터치 영역)
 export const HANGUL_CHAR_EM = 1; // 한글 글자 하나의 폭 어림 (글자 크기 배수)
 export const SPACE_CHAR_EM = 0.3; // 띄어쓰기 폭 어림
 

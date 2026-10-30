@@ -1,0 +1,82 @@
+/* 속성 패널. 값은 시안 04 + yogitta-design 4장 (폭 300~360, 안쪽 여백 22, 간격 16, 라벨 13px) */
+.panel {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: var(--yg-surface);
+  border-radius: var(--yg-radius-panel);
+  box-shadow: var(--yg-shadow-panel);
+}
+.panel:focus {
+  outline: none; /* 지운 뒤 초점만 받아 두는 곳이라 테두리를 그리지 않는다 */
+}
+
+/* 고른 가구가 없을 때: 가운데 안내 */
+.empty {
+  justify-content: center;
+}
+.guide {
+  margin: 0;
+  font-size: 14px;
+  color: var(--yg-text-sub);
+  text-align: center;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.label {
+  margin: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+/* 가구 이름은 패널 제목이라 Jua (global.css의 h2, yogitta-design 2장: Jua 22px~) */
+.name {
+  font-size: 22px;
+  overflow-wrap: anywhere; /* 긴 가구 이름이 패널 밖으로 나가지 않게 */
+}
+.value {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* [90° 회전] [삭제] 두 버튼이 폭을 나눠 갖는다 */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.actions > * {
+  flex: 1;
+}
+
+.notice,
+.hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+/* 좁은 화면: 고른 가구가 있을 때만 화면 아래에 겹쳐 뜬다 (하단 시트처럼, 2D 평면도 크기는 그대로) */
+@media (max-width: 640px) {
+  .panel {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    z-index: 1;
+    gap: 10px;
+    padding: 16px;
+    box-shadow: var(--yg-shadow-pop);
+  }
+  .empty,
+  .label,
+  .hint {
+    display: none; /* 휴대폰은 키보드가 없고, 이름·크기는 글자만으로 알아볼 수 있다 */
+  }
+}

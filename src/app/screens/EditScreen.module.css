@@ -6,6 +6,7 @@
 }
 
 .body {
+  position: relative; /* 휴대폰에서 속성 패널이 화면 아래에 겹쳐 뜬다 */
   flex: 1;
   min-height: 0;
   display: flex;

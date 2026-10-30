@@ -59,6 +59,7 @@ export function FloorScene({ floor, walls, scene, cmPerPx }: FloorSceneProps) {
         boxes={scene.boxes}
         draft={scene.boxDraft}
         selected={scene.selectedBox}
+        erasing={scene.erasing.box}
         cmPerPx={cmPerPx}
       />
       <RoomLabelLayer areas={scene.roomAreas} selected={scene.selectedRoom} cmPerPx={cmPerPx} />
