@@ -6,6 +6,14 @@ import { finishEditing } from "./spaces";
 export const detail = (page: Page) => page.getByRole("complementary", { name: "가구 상세 패널" });
 export const space3d = (page: Page) => page.getByRole("img", { name: /^3D 공간,/ });
 
+const EMPTY_INSET_PX = 12; // 3D 공간 왼쪽 위 구석: 바닥 밖 빈 곳
+
+/** 3D 공간 왼쪽 위 구석 (바닥 밖 빈 곳, 가구가 없다). */
+export async function cornerPoint(page: Page) {
+  const box = await space3d(page).boundingBox();
+  return { x: (box?.x ?? 0) + EMPTY_INSET_PX, y: (box?.y ?? 0) + EMPTY_INSET_PX };
+}
+
 /** 라벨이 멈출 때까지(연달아 잰 자리가 같을 때까지) 기다린 뒤 자리를 돌려준다. */
 export async function settledBox(label: Locator) {
   let last = "";

@@ -1,4 +1,4 @@
-import { TAP_MOVE_PX } from "@/shared/constants/floorPlan";
+import { TAP_MOVE_PX } from "@/shared/constants/pointer";
 
 /** 누르기 판정에 쓰는 포인터 이벤트 값 (PointerEvent와 같은 모양). */
 export type TapEvent = Pick<

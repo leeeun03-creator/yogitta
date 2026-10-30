@@ -13,9 +13,6 @@ export const KEYBOARD_PAN_PX = 40; // 방향키 한 번에 옮기는 화면 거�
 export const JOINT_RADIUS_PX = 4;
 export const JOINT_STROKE_PX = 2;
 
-/** 누른 뒤 이만큼(px) 안에서 떼면 끌기가 아니라 "누르기"로 본다. */
-export const TAP_MOVE_PX = 5;
-
 /** 점·선분을 누른 것으로 보는 화면 거리 (px). 연속선 닫기, 지우개(T3-6). */
 export const POINT_HIT_PX = 8;
 

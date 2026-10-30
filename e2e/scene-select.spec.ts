@@ -1,18 +1,19 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createSpace } from "./helpers";
 import { placeBox } from "./boxes";
-import { boxPoint, detail, openMainScene, pickBox, settledBox, space3d } from "./scene";
+import {
+  boxPoint,
+  cornerPoint,
+  detail,
+  openMainScene,
+  pickBox,
+  settledBox,
+  space3d,
+} from "./scene";
 
 const label = (page: Page, name: string) =>
   space3d(page).getByTestId("box-label").filter({ hasText: name });
 const selectedLabels = (page: Page) => space3d(page).locator("[data-selected]");
-const EMPTY_INSET_PX = 12; // 3D 공간 왼쪽 위 구석: 바닥 밖 빈 곳
-
-/** 3D 공간 왼쪽 위 구석 (가구가 없는 빈 곳). */
-async function cornerPoint(page: Page) {
-  const box = await space3d(page).boundingBox();
-  return { x: (box?.x ?? 0) + EMPTY_INSET_PX, y: (box?.y ?? 0) + EMPTY_INSET_PX };
-}
 
 test.describe("3D에서 마우스를 올린 가구와 고른 가구 표시", () => {
   test.skip(

@@ -1,5 +1,6 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
-import { POINT_HIT_PX, TAP_MOVE_PX } from "@/shared/constants/floorPlan";
+import { POINT_HIT_PX } from "@/shared/constants/floorPlan";
+import { TAP_MOVE_PX } from "@/shared/constants/pointer";
 import { distance } from "@/shared/lib/distance";
 import { moveWallPoints } from "@/shared/lib/moveWallPoints";
 import type { Point, Wall } from "@/shared/types";

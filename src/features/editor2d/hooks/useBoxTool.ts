@@ -1,5 +1,5 @@
 import { useState, type KeyboardEvent, type PointerEvent } from "react";
-import { TAP_MOVE_PX } from "@/shared/constants/floorPlan";
+import { TAP_MOVE_PX } from "@/shared/constants/pointer";
 import { GRID_SNAP_CM } from "@/shared/constants/grid";
 import { distance } from "@/shared/lib/distance";
 import type { BoxPlacement } from "@/shared/lib/fitBoxPlacement";

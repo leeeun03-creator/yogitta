@@ -1,5 +1,5 @@
 import { useRef, useState, type PointerEvent } from "react";
-import { TAP_MOVE_PX } from "@/shared/constants/floorPlan";
+import { TAP_MOVE_PX } from "@/shared/constants/pointer";
 import { distance } from "@/shared/lib/distance";
 import type { Point } from "@/shared/types";
 import { eventPoint } from "./eventPoint";

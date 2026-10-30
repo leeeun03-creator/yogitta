@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { TAP_MOVE_PX } from "@/shared/constants/floorPlan";
+import { TAP_MOVE_PX } from "@/shared/constants/pointer";
 import { tapTracker, type TapEvent } from "./tapTracker";
 
 const at = (x: number, y = 0, more: Partial<TapEvent> = {}): TapEvent => ({

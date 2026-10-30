@@ -1,7 +1,15 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createSpace, dragPath, pressScreen, touchSender } from "./helpers";
 import { placeBox } from "./boxes";
-import { boxPoint, detail, openMainScene, pickBox, settledBox, space3d } from "./scene";
+import {
+  boxPoint,
+  cornerPoint,
+  detail,
+  openMainScene,
+  pickBox,
+  settledBox,
+  space3d,
+} from "./scene";
 
 const listHeading = (page: Page) => detail(page).getByRole("heading", { name: "가구" });
 const boxHeading = (page: Page) => detail(page).getByRole("heading", { name: "보관함 1" });
@@ -9,17 +17,17 @@ const viewButton = (page: Page, name: string) => page.getByRole("button", { name
 
 const DRAG_PX = 60; // 3D를 돌리는 끌기
 const SMALL_MOVE_PX = 3; // 누르기로 치는 움직임 (TAP_MOVE_PX 5 안)
-const EMPTY_INSET_PX = 12; // 3D 공간 왼쪽 위 구석: 바닥 밖 빈 곳
 const FLOOR_RATIO = 0.7; // 3D 공간 앞 오른쪽(가로·세로 70%): 보관함 1(바닥 왼쪽 뒤)에서 먼 바닥
 
 /** 3D 공간 안의 자리: 왼쪽 위 구석(빈 곳)과 앞 오른쪽 바닥(가구 없음). */
 async function scenePoints(page: Page) {
   const box = await space3d(page).boundingBox();
-  const x = box?.x ?? 0;
-  const y = box?.y ?? 0;
   return {
-    corner: { x: x + EMPTY_INSET_PX, y: y + EMPTY_INSET_PX },
-    floor: { x: x + (box?.width ?? 0) * FLOOR_RATIO, y: y + (box?.height ?? 0) * FLOOR_RATIO },
+    corner: await cornerPoint(page),
+    floor: {
+      x: (box?.x ?? 0) + (box?.width ?? 0) * FLOOR_RATIO,
+      y: (box?.y ?? 0) + (box?.height ?? 0) * FLOOR_RATIO,
+    },
   };
 }
 
