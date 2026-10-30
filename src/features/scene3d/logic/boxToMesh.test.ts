@@ -33,7 +33,7 @@ const front2D = (rotation: number) => {
 describe("boxToMesh", () => {
   it("같은 자리(2D y = 3D z)·크기로 바닥 위에 세운다", () => {
     const mesh = boxToMesh(BOX);
-    expect(mesh).toMatchObject({ key: "box_1", x: 200, z: 125, base: 0, w: 60, h: 90, d: 50 });
+    expect(mesh).toMatchObject({ key: "box_1", x: 200, z: 125, base: 0 });
     expect(mesh.rotationY).toBeCloseTo(0);
   });
 
@@ -51,15 +51,9 @@ describe("boxToMesh", () => {
     }
   });
 
-  it("손잡이 홈은 정면(로컬 +z) 위쪽에 가로의 40% 폭으로 붙는다 (최대 20cm)", () => {
-    expect(boxToMesh(BOX).handle).toEqual({ width: 20, height: 3, y: 72, z: 25.5 });
-    expect(boxToMesh({ ...BOX, w: 30 }).handle.width).toBe(12);
-  });
-
-  it("엣지: 아주 낮은 가구(4cm)도 손잡이 홈이 가구 높이 안이다", () => {
-    const { handle } = boxToMesh({ ...BOX, h: 4 });
-    expect(handle.y + handle.height / 2).toBeLessThanOrEqual(4 + 1);
-    expect(handle.height).toBe(2);
+  it("종류에 맞는 가구 부품으로 세운다 (보관함은 상자 + 손잡이 홈)", () => {
+    expect(boxToMesh(BOX).parts.map((part) => part.key)).toEqual(["body", "handle"]);
+    expect(boxToMesh({ ...BOX, type: "drawer", rows: 3 }).parts).toHaveLength(7);
   });
 
   it("엣지: 설치 높이가 있으면 그만큼 떠서 선다", () => {
