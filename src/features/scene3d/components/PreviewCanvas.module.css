@@ -12,3 +12,8 @@
   min-width: 0;
   touch-action: none;
 }
+
+/* 마우스를 가구에 올리면 누를 수 있다는 손가락 모양 */
+.hovering {
+  cursor: pointer;
+}

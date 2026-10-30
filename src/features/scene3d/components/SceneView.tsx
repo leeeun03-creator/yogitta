@@ -2,6 +2,7 @@ import { lazy, Suspense, useMemo, useState } from "react";
 import { roomAreas } from "@/features/spaces";
 import { formatMeters } from "@/shared/lib/formatMeters";
 import type { Space } from "@/shared/types";
+import type { BoxPicking } from "./BoxPicker";
 import { wallToBoxes } from "../logic/wallToBoxes";
 import styles from "./SceneView.module.css";
 
@@ -19,11 +20,11 @@ type SceneViewProps = {
   space: Space;
   name: string; // 3D 그림 이름 앞머리: 편집 모드는 "3D 미리보기", 메인 화면은 "3D 공간"
   fallback: string; // 3D를 못 그리는 브라우저에서 보일 안내 문구
-  onPickBox?: (id: string | null) => void; // 가구를 누르면, 가구가 아닌 곳은 null (메인 화면만, 편집 모드 3D 미리보기는 누르지 않는다)
+  picking?: BoxPicking; // 가구 고르기 (메인 화면만, 편집 모드 3D 미리보기는 고르지 않는다)
 };
 
 /** 공간의 3D 그림(바닥·구역 색·벽·가구)과 보기 버튼. 3D를 못 그리는 브라우저에서는 안내 문구를 보인다. */
-export function SceneView({ space, name, fallback, onPickBox }: SceneViewProps) {
+export function SceneView({ space, name, fallback, picking }: SceneViewProps) {
   const { floor, walls, boxes, rooms, roomLines, roomAnchors } = space;
   const [canDraw] = useState(canDraw3D);
   // 2D 평면도와 같은 계산으로 구역 모양을 얻는다 (구역 선은 3D에 서지 않고 구역 경계로만 쓴다)
@@ -50,7 +51,7 @@ export function SceneView({ space, name, fallback, onPickBox }: SceneViewProps) 
           boxes={boxes}
           areas={areas}
           label={label}
-          onPickBox={onPickBox}
+          picking={picking}
         />
       </Suspense>
     </div>

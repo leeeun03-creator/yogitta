@@ -12,6 +12,16 @@
   user-select: none;
   pointer-events: none; /* 라벨 위에서 끌어도 3D가 돌게 누르기를 3D로 넘긴다 (라벨 누르기는 BoxPicker가 잰다) */
 }
+/* 마우스를 올린 가구: 테두리만 조금 진하게 */
+.label[data-hovered] {
+  border-color: var(--yg-text-sub);
+}
+/* 고른 가구: 진한 알약 (강조색은 찾은 가구에만 쓰므로 글자색으로 칠한다) */
+.label[data-selected] {
+  border-color: var(--yg-text);
+  background: var(--yg-text);
+  color: var(--yg-surface);
+}
 
 @media (max-width: 640px) {
   .label {

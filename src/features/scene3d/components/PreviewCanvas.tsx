@@ -5,7 +5,7 @@ import type { RoomArea } from "@/features/spaces";
 import type { Box, Floor, Wall } from "@/shared/types";
 import type { ViewStatus, ZoomDirection } from "../logic/cameraView";
 import { BoxMeshes } from "./BoxMeshes";
-import { BoxPicker } from "./BoxPicker";
+import { BoxPicker, type BoxPicking } from "./BoxPicker";
 import { FloorMesh } from "./FloorMesh";
 import styles from "./PreviewCanvas.module.css";
 import { PreviewCamera, type CameraCommands } from "./PreviewCamera";
@@ -19,7 +19,7 @@ type PreviewCanvasProps = {
   boxes: readonly Box[];
   areas: readonly RoomArea[];
   label: string;
-  onPickBox?: (id: string | null) => void; // 가구를 누르면, 가구가 아닌 곳(바닥·빈 곳·벽)은 null
+  picking?: BoxPicking; // 가구 고르기 (메인 화면만)
 };
 
 // 카메라가 준비되기 전에는 눌러도 아무 일이 없으므로 모두 막아 둔다
@@ -29,8 +29,9 @@ const isSameStatus = (a: ViewStatus, b: ViewStatus) =>
 
 /** three.js를 쓰는 3D 그림 본체와 보기 버튼. 무거워서 SceneView가 처음 열 때 따로 불러온다. */
 export function PreviewCanvas(props: PreviewCanvasProps) {
-  const { floor, walls, boxes, areas, label, onPickBox } = props;
+  const { floor, walls, boxes, areas, label, picking } = props;
   const camera = useRef<CameraCommands>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null); // 마우스를 올린 가구
   const [status, setStatus] = useState(NOT_READY);
   // 끄는 동안 매번 불리므로 바뀐 때만 다시 그린다
   const handleViewChange = useCallback(
@@ -39,7 +40,11 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
   );
   return (
     <div className={styles.wrap}>
-      <div className={styles.scene} role="img" aria-label={label}>
+      <div
+        className={hoveredId ? `${styles.scene} ${styles.hovering}` : styles.scene}
+        role="img"
+        aria-label={label}
+      >
         {/* flat: 색 보정(톤 매핑)을 끄고 yogitta-design 5장 색을 그대로 낸다
             frameloop demand: 매 프레임 다시 그리지 않고 바뀔 때만 그린다 (휴대폰 배터리·CPU) */}
         <Canvas flat frameloop="demand" camera={{ fov: PREVIEW_FOV_DEG }} aria-hidden="true">
@@ -47,8 +52,8 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
           <FloorMesh floor={floor} />
           <RoomFloorMeshes areas={areas} />
           <WallMeshes walls={walls} />
-          <BoxMeshes boxes={boxes} />
-          {onPickBox && <BoxPicker onPick={onPickBox} />}
+          <BoxMeshes boxes={boxes} selectedId={picking?.selectedId} hoveredId={hoveredId} />
+          {picking && <BoxPicker onPick={picking.onPick} onHover={setHoveredId} />}
         </Canvas>
       </div>
       <ViewButtons
