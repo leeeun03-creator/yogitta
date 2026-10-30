@@ -15,6 +15,9 @@ export const FULL_TURN = 360;
 /** 가구가 벽·다른 가구에 이만큼(cm)까지 파고든 것은 맞닿은 것으로 본다 (소수 오차). 면끼리 붙이는 것은 된다. */
 export const TOUCH_TOLERANCE_CM = 0.01;
 
+/** 침대 머리판 두께 (cm). 2D 평면도의 머리판 띠와 3D 머리판이 같은 두께다. */
+export const BED_HEADBOARD_CM = 10;
+
 /** 가구 종류마다 정한 기본 높이(cm)·칸 수·설치 높이(cm). */
 export type FurnitureDefaults = { h: number; rows: number; cols: number; elevation: number };
 

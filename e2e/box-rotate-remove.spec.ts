@@ -153,7 +153,7 @@ test.describe("가구 돌리기·지우기 (속성 패널)", () => {
     page,
     isMobile,
   }) => {
-    const guide = page.getByText("가구를 누르면 여기서 돌리거나 지울 수 있어요");
+    const guide = page.getByText("가구를 누르면 여기서 종류를 바꾸거나 돌리고 지울 수 있어요");
     if (isMobile) await expect(guide).toBeHidden();
     else await expect(guide).toBeVisible();
   });

@@ -44,13 +44,14 @@ test.describe("가구가 놓인 구역", () => {
     isMobile,
   }) => {
     await placeBox(page, { x: 100, y: 100 }, { x: 200, y: 200 }, isMobile);
-    // 빈 곳(구역 안방)을 누르면 가구는 풀리고 구역 이름 입력칸이 열린다
-    await pressCm(page, FLOOR, [{ x: 50, y: 400 }], isMobile);
+    // 빈 곳(구역 안방)을 누르면 가구는 풀리고 구역 이름 입력칸이 열린다.
+    // 휴대폰은 고른 가구의 속성 패널이 화면 아래(바닥 y 400cm 언저리)를 가려서 그 위를 누른다
+    await pressCm(page, FLOOR, [{ x: 50, y: 280 }], isMobile);
     await editInput(page).fill("큰방");
     await editInput(page).press("Enter");
     await pressCm(page, FLOOR, [{ x: 150, y: 150 }], isMobile);
     await expect(roomText(page)).toHaveText("구역 큰방");
-    await pressCm(page, FLOOR, [{ x: 50, y: 400 }], isMobile);
+    await pressCm(page, FLOOR, [{ x: 50, y: 280 }], isMobile);
     await page.getByRole("button", { name: "삭제" }).click();
     await pressCm(page, FLOOR, [{ x: 150, y: 150 }], isMobile);
     await expect(roomText(page)).toHaveText("구역 없음");

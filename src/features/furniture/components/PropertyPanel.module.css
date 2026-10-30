@@ -55,6 +55,17 @@
   margin: 0;
   font-size: 16px;
 }
+/* 크기 글자 + [기본 높이 …cm로]: 좁으면 버튼이 아랫줄로 */
+.sizeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+}
+.typeHeight {
+  font-size: 14px;
+}
 
 /* [90° 회전] [삭제] 두 버튼이 폭을 나눠 갖는다 */
 .actions {

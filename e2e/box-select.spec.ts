@@ -46,7 +46,8 @@ test.describe("선택 도구로 가구 고르기·옮기기", () => {
   });
 
   test("빈 곳을 누르면 풀리고, 가구를 누르면 다시 골라진다", async ({ page, isMobile }) => {
-    await pressCm(page, FLOOR, [{ x: 500, y: 400 }], isMobile);
+    // 휴대폰은 고른 가구의 속성 패널이 화면 아래(바닥 y 400cm 언저리까지)를 가려서 그 위의 빈 곳을 누른다
+    await pressCm(page, FLOOR, [{ x: 500, y: 300 }], isMobile);
     await expect(boxButton(page, "보관함 1")).toHaveAttribute("aria-pressed", "false");
     await expect(label(page)).toHaveCount(0);
     await pressCm(page, FLOOR, [{ x: 200, y: 125 }], isMobile);

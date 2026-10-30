@@ -1,0 +1,62 @@
+/* 종류 선택. 값은 시안 08 FurnitureTypePicker (4열, 간격 6, 높이 44, 모서리 12, 13px) */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.label {
+  margin: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.type {
+  min-height: 44px;
+  padding: 0 2px;
+  border: none;
+  border-radius: 12px;
+  background: var(--yg-surface-2);
+  color: var(--yg-text);
+  font: inherit;
+  font-size: 13px;
+  word-break: keep-all; /* "양문 수납장"이 좁으면 낱말 사이에서만 줄을 바꾼다 */
+  cursor: pointer;
+}
+.type:hover {
+  background: var(--yg-chip);
+}
+.type:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 2px;
+}
+/* 지금 종류 */
+.type[aria-pressed="true"] {
+  background: var(--yg-accent);
+  color: var(--yg-on-accent);
+  cursor: default;
+}
+
+/* 좁은 화면: 라벨을 숨기고(속성 패널과 같게) 8개를 한 줄로 놓아 옆으로 넘겨 본다.
+   4열 두 줄이면 화면 아래에 겹쳐 뜨는 속성 패널이 2D 평면도를 절반 가까이 가린다 */
+@media (max-width: 640px) {
+  .label {
+    display: none;
+  }
+  .grid {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -16px; /* 패널 가장자리까지 넘겨 보이게 (패널 안쪽 여백만큼) */
+    padding: 0 16px;
+  }
+  .type {
+    flex: 0 0 auto;
+    padding: 0 14px;
+    white-space: nowrap;
+  }
+}

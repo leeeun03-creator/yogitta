@@ -9,7 +9,7 @@ import {
   ROTATE_HANDLE_RADIUS_PX,
   ROTATE_HANDLE_STROKE_PX,
 } from "@/shared/constants/floorPlan";
-import { BOX_ROTATION_STEP, FULL_TURN } from "@/shared/constants/furniture";
+import { BED_HEADBOARD_CM, BOX_ROTATION_STEP, FULL_TURN } from "@/shared/constants/furniture";
 import type { Box } from "@/shared/types";
 import type { BoxDraft } from "../hooks/useBoxTool";
 import { boxLabelFont } from "../logic/boxLabelFont";
@@ -28,7 +28,7 @@ type BoxLayerProps = {
 type BoxLook = "normal" | "selected" | "erasing" | "overlapping";
 
 /**
- * 가구: 보관함은 연한 바탕 + 점선 테두리, 정면 가장자리 밖 삼각형, 가운데 이름.
+ * 가구: 연한 바탕 + 실선 테두리(보관함만 점선), 정면 가장자리 밖 삼각형, 가운데 이름. 침대는 정면 반대쪽에 머리판 띠.
  * 고른 가구는 찾은 칸 바탕 + 강조색 실선 테두리 + 정면 반대쪽 회전 핸들 (시안 04, yogitta-design 6장).
  */
 export function BoxLayer(props: BoxLayerProps) {
@@ -77,6 +77,7 @@ function BoxShape({ box, look, cmPerPx }: BoxShapeProps) {
     <g
       data-testid="box"
       data-box={`${box.x},${box.z},${box.w},${box.d},${box.rotation}`}
+      data-type={box.type}
       data-look={look}
       aria-label={box.name}
     >
@@ -86,10 +87,15 @@ function BoxShape({ box, look, cmPerPx }: BoxShapeProps) {
   );
 }
 
-/** 가구 몸통: 가운데를 원점으로 돌려 그리고, 정면(돌리기 전 +y 쪽) 가장자리 밖에 삼각형을 단다. */
+/**
+ * 가구 몸통: 가운데를 원점으로 돌려 그리고, 정면(돌리기 전 +y 쪽) 가장자리 밖에 삼각형을 단다.
+ * 점선 테두리는 종류를 아직 안 고른 보관함만이다 (종류를 고르면 실선).
+ */
 function BoxBody({ box, look, cmPerPx }: BoxShapeProps) {
   const front = { half: (BOX_FRONT_PX.width / 2) * cmPerPx, height: BOX_FRONT_PX.height * cmPerPx };
   const isPlain = look === "normal";
+  const stroke = (isPlain ? BOX_STROKE_PX : BOX_SELECTED_STROKE_PX) * cmPerPx;
+  const isDashed = isPlain && box.type === "box";
   return (
     <g transform={`translate(${box.x} ${box.z}) rotate(${box.rotation})`}>
       <rect
@@ -101,9 +107,10 @@ function BoxBody({ box, look, cmPerPx }: BoxShapeProps) {
         className={BODY_CLASS[look]}
         fill={BOX_PLAN_COLORS.fill}
         stroke={BOX_PLAN_COLORS.stroke}
-        strokeWidth={(isPlain ? BOX_STROKE_PX : BOX_SELECTED_STROKE_PX) * cmPerPx}
-        strokeDasharray={isPlain ? BOX_DASH_PX.map((px) => px * cmPerPx).join(" ") : undefined}
+        strokeWidth={stroke}
+        strokeDasharray={isDashed ? BOX_DASH_PX.map((px) => px * cmPerPx).join(" ") : undefined}
       />
+      {box.type === "bed" && <Headboard box={box} inset={stroke / 2} />}
       <path
         data-testid="box-front"
         d={`M ${-front.half} ${box.d / 2} h ${front.half * 2} l ${-front.half} ${front.height} Z`}
@@ -112,6 +119,23 @@ function BoxBody({ box, look, cmPerPx }: BoxShapeProps) {
       />
       {look === "selected" && <RotateHandle depth={box.d} cmPerPx={cmPerPx} />}
     </g>
+  );
+}
+
+/**
+ * 침대 머리판 띠: 정면 반대쪽(돌리기 전 -y) 가장자리를 따라 머리판 두께만큼 칠한다 (시안 04).
+ * 테두리 안쪽으로 inset만큼 들여 그려 고른 가구의 강조색 테두리를 덮지 않는다.
+ */
+function Headboard({ box, inset }: { box: Box; inset: number }) {
+  return (
+    <rect
+      data-testid="bed-headboard"
+      x={-box.w / 2 + inset}
+      y={-box.d / 2 + inset}
+      width={Math.max(box.w - inset * 2, 0)}
+      height={Math.max(Math.min(BED_HEADBOARD_CM, box.d) - inset, 0)}
+      fill={BOX_PLAN_COLORS.stroke}
+    />
   );
 }
 
