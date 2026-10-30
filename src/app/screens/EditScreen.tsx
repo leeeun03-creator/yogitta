@@ -1,5 +1,5 @@
 import { FloorPlan, SnapToggle, ToolBar, useHistoryKeys } from "@/features/editor2d";
-import { PropertyPanel } from "@/features/furniture";
+import { PropertyPanel, RemoveBoxDialog } from "@/features/furniture";
 import { ScenePreview } from "@/features/scene3d";
 import { FloorResizeButton, RoomList } from "@/features/spaces";
 import { useAppStore } from "@/store/useAppStore";
@@ -40,6 +40,7 @@ export function EditScreen() {
           </section>
         )}
         <PropertyPanel />
+        <RemoveBoxDialog />
       </main>
     </div>
   );

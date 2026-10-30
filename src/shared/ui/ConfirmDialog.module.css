@@ -25,6 +25,20 @@
   color: var(--yg-text-sub);
 }
 
+/* 다른 방법으로 하기: 입력과 버튼을 한 줄에, 좁으면 버튼이 아래로 */
+.alternative {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--yg-border-soft);
+}
+.alternative > :first-child {
+  flex: 1 1 160px;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;

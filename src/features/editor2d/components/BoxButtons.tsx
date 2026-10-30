@@ -22,7 +22,7 @@ function useBoxKeys(selected: string | null, onRemoved: () => void) {
   );
   const moveBox = useAppStore((state) => state.moveBox);
   const rotateBox = useAppStore((state) => state.rotateBox);
-  const removeBox = useAppStore((state) => state.removeBox);
+  const requestRemoveBox = useAppStore((state) => state.requestRemoveBox); // 물건이 든 가구는 먼저 묻는다
   const selectBox = useAppStore((state) => state.selectBox);
   const step = useAppStore((state) => (state.ui.snap ? GRID_SNAP_CM : 1));
   return (action: BoxKeyAction, box: Box) => {
@@ -31,7 +31,7 @@ function useBoxKeys(selected: string | null, onRemoved: () => void) {
       return;
     }
     if (action.type === "remove") {
-      removeBox(box.id);
+      requestRemoveBox(box.id);
       onRemoved();
       return;
     }

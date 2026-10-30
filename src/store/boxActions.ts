@@ -6,10 +6,8 @@ import { addBox, type NewBoxInput } from "./logic/addBox";
 import { applyTypeHeight } from "./logic/applyTypeHeight";
 import { changeBoxRows } from "./logic/changeBoxRows";
 import { changeBoxType } from "./logic/changeBoxType";
-import { keepSelection } from "./logic/keepSelection";
 import { moveBox } from "./logic/moveBox";
 import { movedToNoSlot } from "./logic/movedToNoSlot";
-import { removeBox } from "./logic/removeBox";
 import { renameBox, type BoxNameResult } from "./logic/renameBox";
 import { resizeBox, type ResizeBoxResult } from "./logic/resizeBox";
 import { rotateBox } from "./logic/rotateBox";
@@ -23,7 +21,6 @@ export type BoxActions = {
   renameBox: (id: string, name: string) => BoxNameResult; // 막히면 데이터는 그대로
   resizeBox: (id: string, size: BoxSize) => ResizeBoxResult; // 막히면 데이터는 그대로
   changeBoxRows: (id: string, rows: number) => number; // 1 ~ 8칸, 칸 수를 바꿀 수 있는 종류만. 칸 없음으로 옮긴 물건 수
-  removeBox: (id: string) => void;
   selectBox: (id: string | null) => void;
 };
 
@@ -35,7 +32,7 @@ function changeSlots(set: SetCore, get: GetCore, id: string, update: (data: AppD
   return movedToNoSlot(before, after, id);
 }
 
-/** 가구 액션 (현재 공간). 고르기 말고는 모두 되돌리기 한 번씩이고, 지우면 고른 가구도 비운다. */
+/** 가구 액션 (현재 공간). 고르기 말고는 모두 되돌리기 한 번씩이다. 지우기는 boxRemoveActions. */
 export const boxActions = (set: SetCore, get: GetCore): BoxActions => ({
   addBox: (input) => {
     const id = createId("box");
@@ -59,11 +56,6 @@ export const boxActions = (set: SetCore, get: GetCore): BoxActions => ({
     return result;
   },
   changeBoxRows: (id, rows) => changeSlots(set, get, id, (data) => changeBoxRows(data, id, rows)),
-  removeBox: (id) =>
-    set((state) => {
-      const data = removeBox(state.data, id);
-      return { ...change(state, data), ui: keepSelection(state.ui, data) };
-    }),
   // 가구를 고르면 열려 있던 구역 입력칸은 닫는다 (고른 것이 둘이 되지 않게)
   selectBox: (selectedBoxId) =>
     set((state) => ({

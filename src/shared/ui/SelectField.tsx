@@ -1,5 +1,5 @@
 import { useId } from "react";
-import styles from "./ItemForms.module.css";
+import styles from "./SelectField.module.css";
 
 /** 고르기 선택지 하나: 값 글자와 보이는 이름. */
 export type SelectOption = { value: string; label: string };
@@ -11,12 +11,12 @@ type SelectFieldProps = {
   onChange: (value: string) => void;
 };
 
-/** 물건 입력의 고르기 칸 (칸·가구): 위에 이름표, 아래 고르기. */
+/** 고르기 칸 (물건의 칸·가구, 옮길 가구): 위에 이름표, 아래 고르기. */
 export function SelectField({ label, value, options, onChange }: SelectFieldProps) {
   const id = useId();
   return (
-    <div className={styles.selectField}>
-      <label htmlFor={id} className={styles.selectLabel}>
+    <div className={styles.field}>
+      <label htmlFor={id} className={styles.label}>
         {label}
       </label>
       <select

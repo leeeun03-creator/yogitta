@@ -31,4 +31,5 @@ export type UiState = {
   snap: boolean;
   roomFocus: RoomFocus | null;
   selectedBoxId: string | null; // 고른 가구 (현재 공간)
+  removeAsk: string | null; // 삭제 확인을 연 가구 (물건이 든 가구를 지우려 할 때)
 };

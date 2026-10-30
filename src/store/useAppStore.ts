@@ -3,6 +3,7 @@ import { DATA_VERSION } from "@/shared/constants/storage";
 import { createId } from "@/shared/lib/createId";
 import type { AppData, Point } from "@/shared/types";
 import { boxActions, type BoxActions } from "./boxActions";
+import { boxRemoveActions, type BoxRemoveActions } from "./boxRemoveActions";
 import { change } from "./change";
 import { itemActions, type ItemActions } from "./itemActions";
 import { addRoom, type RoomResult } from "./logic/addRoom";
@@ -30,6 +31,7 @@ export type { RoomNameError } from "./logic/checkRoomName";
 export type { SpaceNameError } from "./logic/spaceNameError";
 
 type AppState = BoxActions &
+  BoxRemoveActions &
   WallActions &
   ItemActions & {
     data: AppData; // 저장 대상 (T11에서 localStorage와 연결)
@@ -128,11 +130,13 @@ export const useAppStore = create<AppState>()((set, get) => ({
     snap: true,
     roomFocus: null,
     selectedBoxId: null,
+    removeAsk: null,
   },
   history: EMPTY_HISTORY,
   ...spaceActions(set, get),
   ...uiActions(set),
   ...boxActions(set, get),
+  ...boxRemoveActions(set, get),
   ...wallActions(set, get),
   ...itemActions(set, get),
   addRoom: (name, at) => {

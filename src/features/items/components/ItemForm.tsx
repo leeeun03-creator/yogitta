@@ -1,12 +1,11 @@
 import type { KeyboardEvent } from "react";
 import { ITEM_MEMO_MAX_LENGTH, ITEM_NAME_MAX_LENGTH } from "@/shared/constants/item";
 import type { Box } from "@/shared/types";
-import { Button, TextField } from "@/shared/ui";
+import { Button, SelectField, TextField } from "@/shared/ui";
 import { useItemForm, type ItemFields } from "../hooks/useItemForm";
 import { itemMessage } from "../logic/itemMessage";
 import { slotOptions } from "../logic/slotOptions";
 import styles from "./ItemForms.module.css";
-import { SelectField } from "./SelectField";
 
 /** 입력 종류마다 입력 이름과 보내기 버튼 글자. */
 const KINDS = {

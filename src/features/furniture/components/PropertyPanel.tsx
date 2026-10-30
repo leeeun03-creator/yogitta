@@ -99,7 +99,7 @@ function BoxProperties(props: BoxPropertiesProps) {
 /** [90° 회전]·[삭제]. 돌린 모양이 바닥보다 길거나 벽·다른 가구에 걸리면 [90° 회전]을 막고 까닭을 알린다. */
 function BoxActionButtons({ box, space, onRemoved }: BoxPropertiesProps) {
   const rotateBox = useAppStore((state) => state.rotateBox);
-  const removeBox = useAppStore((state) => state.removeBox);
+  const requestRemoveBox = useAppStore((state) => state.requestRemoveBox); // 물건이 든 가구는 먼저 묻는다
   const noticeId = useId();
   const rotation = rotatedBox(box, space);
   const canRotate = rotation.ok;
@@ -118,7 +118,7 @@ function BoxActionButtons({ box, space, onRemoved }: BoxPropertiesProps) {
           variant="danger"
           icon={<Trash2 size={ICON_SIZE} aria-hidden="true" />}
           onClick={() => {
-            removeBox(box.id);
+            requestRemoveBox(box.id);
             onRemoved();
           }}
         >

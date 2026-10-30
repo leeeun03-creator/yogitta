@@ -9,10 +9,11 @@ const EDITING: UiState = {
   snap: false,
   roomFocus: { type: "new", at: { x: 10, y: 20 } },
   selectedBoxId: "box_1",
+  removeAsk: "box_1",
 };
 
 describe("switchMode", () => {
-  it("모드를 바꾸고, 보기는 2D 평면도·도구는 선택으로 돌리고 구역 입력칸·고른 가구를 비운다", () => {
+  it("모드를 바꾸고, 보기는 2D 평면도·도구는 선택으로 돌리고 구역 입력칸·고른 가구·삭제 확인을 비운다", () => {
     expect(switchMode(EDITING, "main")).toEqual({
       mode: "main",
       view: "plan",
@@ -20,6 +21,7 @@ describe("switchMode", () => {
       snap: false,
       roomFocus: null,
       selectedBoxId: null,
+      removeAsk: null,
     });
   });
 

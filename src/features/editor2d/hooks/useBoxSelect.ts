@@ -22,7 +22,7 @@ export function useBoxSelect(tool: DrawingTool, view: ViewBox, boxes: readonly B
   const selected = useAppStore((state) => state.ui.selectedBoxId);
   const selectBox = useAppStore((state) => state.selectBox);
   const rotateBox = useAppStore((state) => state.rotateBox);
-  const removeBox = useAppStore((state) => state.removeBox);
+  const requestRemoveBox = useAppStore((state) => state.requestRemoveBox); // 물건이 든 가구는 먼저 묻는다
   const current = boxes.find((box) => box.id === selected);
 
   const tap = (screen: Point) => {
@@ -42,7 +42,7 @@ export function useBoxSelect(tool: DrawingTool, view: ViewBox, boxes: readonly B
     if (!current || !action || action.type === "move") return;
     event.preventDefault();
     if (action.type === "rotate") rotateBox(current.id);
-    else if (action.type === "remove") removeBox(current.id);
+    else if (action.type === "remove") requestRemoveBox(current.id);
     else selectBox(null);
   };
   return { tap, handlers: { onKeyDown } };

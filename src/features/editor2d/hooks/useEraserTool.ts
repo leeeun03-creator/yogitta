@@ -44,7 +44,7 @@ export function useEraserTool(
   box: ViewBox,
   { boxes, walls, roomLines }: Erasable,
 ) {
-  const removeBox = useAppStore((state) => state.removeBox);
+  const requestRemoveBox = useAppStore((state) => state.requestRemoveBox); // 물건이 든 가구는 먼저 묻는다
   const eraseSegment = useAppStore((state) => state.eraseSegment);
   const removeRoomLine = useAppStore((state) => state.removeRoomLine);
   const [hover, setHover] = useState<EraserHit | null>(null);
@@ -64,7 +64,7 @@ export function useEraserTool(
   const tap = (screen: Point) => {
     if (!isActive) return;
     const target = hitAt(screen);
-    if (target?.kind === "box") removeBox(target.id);
+    if (target?.kind === "box") requestRemoveBox(target.id);
     if (target?.kind === "wall") eraseSegment(target.hit.lineId, target.hit.segment);
     if (target?.kind === "roomLine") removeRoomLine(target.hit.lineId);
     setHover(null);

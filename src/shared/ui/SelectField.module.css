@@ -1,0 +1,24 @@
+/* 고르기 칸: 위에 이름표, 아래 고르기 (입력칸과 같은 모양, yogitta-design 4장) */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.label {
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+.select {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--yg-border);
+  border-radius: var(--yg-radius-field);
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  font: inherit;
+  font-size: 15px;
+}
+.select:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 0;
+}
