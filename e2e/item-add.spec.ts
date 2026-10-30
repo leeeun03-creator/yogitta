@@ -1,31 +1,7 @@
-import { expect, test, type Page } from "@playwright/test";
-import { collectErrors, createSpace } from "./helpers";
-import { openDetails, placeBox, typeButton } from "./boxes";
-import { finishEditing } from "./spaces";
-
-const detail = (page: Page) => page.getByRole("complementary", { name: "가구 상세 패널" });
-const form = (page: Page) => detail(page).getByRole("form", { name: "물건 넣기" });
-const row = (page: Page, label: string) =>
-  detail(page)
-    .getByRole("list", { name: "칸별 물건" })
-    .locator(":scope > li")
-    .filter({ hasText: label });
-const chips = (page: Page, label: string) =>
-  detail(page)
-    .getByRole("list", { name: `${label} 물건` })
-    .getByRole("button");
-
-type NewItem = { name: string; slot?: string; memo?: string };
-
-/** [+ 물건 넣기]로 물건 하나를 넣는다 (slot은 칸 이름, 안 주면 열린 채의 칸). */
-async function addItem(page: Page, item: NewItem, opener?: () => Promise<void>) {
-  if (opener) await opener();
-  else await detail(page).getByRole("button", { name: "물건 넣기" }).click();
-  await form(page).getByLabel("물건 이름").fill(item.name);
-  if (item.slot) await form(page).getByLabel("칸").selectOption({ label: item.slot });
-  if (item.memo) await form(page).getByLabel("메모 (선택)").fill(item.memo);
-  await form(page).getByRole("button", { name: "넣기" }).click();
-}
+import { expect, test } from "@playwright/test";
+import { collectErrors } from "./helpers";
+import { addItem, chips, form, openDrawer, row } from "./items";
+import { detail } from "./scene";
 
 test.describe("가구 상세 패널에서 칸에 물건 넣고 빼기", () => {
   test.skip(
@@ -34,14 +10,7 @@ test.describe("가구 상세 패널에서 칸에 물건 넣고 빼기", () => {
   );
 
   test.beforeEach(async ({ page, isMobile }) => {
-    await createSpace(page, { width: "6.0", depth: "4.5" });
-    await placeBox(page, { x: 100, y: 50 }, { x: 300, y: 200 }, isMobile);
-    await openDetails(page);
-    await typeButton(page, "서랍장").click(); // 1 ~ 3번째 서랍
-    await finishEditing(page);
-    await detail(page)
-      .getByRole("button", { name: /^서랍장 1 물건/ })
-      .click();
+    await openDrawer(page, isMobile);
   });
 
   test("이름·칸·메모를 넣으면 그 칸에 칩이 생기고, 칩을 눌러 메모를 보고 [빼기]로 뺀다", async ({

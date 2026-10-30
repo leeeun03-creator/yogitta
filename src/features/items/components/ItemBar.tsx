@@ -8,10 +8,10 @@ import styles from "./ItemForms.module.css";
 
 const MEMO_ICON_SIZE = 16;
 
-type ItemBarProps = { box: Box; item: Item; onClose: () => void };
+type ItemBarProps = { box: Box; item: Item; onEdit: () => void; onClose: () => void };
 
-/** 누른 물건 칩의 자세한 내용: 이름·칸·메모와 [빼기]·[닫기]. 빼면 닫힌다 (물건 옮기기는 T16). */
-export function ItemBar({ box, item, onClose }: ItemBarProps) {
+/** 누른 물건 칩의 자세한 내용: 이름·칸·메모와 [닫기]·[고치기]·[빼기]. 빼면 닫힌다. */
+export function ItemBar({ box, item, onEdit, onClose }: ItemBarProps) {
   const removeItem = useAppStore((state) => state.removeItem);
   const slot =
     item.slot === undefined ? NO_SLOT_LABEL : (slotLabels(box)[item.slot] ?? NO_SLOT_LABEL);
@@ -28,6 +28,7 @@ export function ItemBar({ box, item, onClose }: ItemBarProps) {
       )}
       <div className={styles.formActions}>
         <Button onClick={onClose}>닫기</Button>
+        <Button onClick={onEdit}>고치기</Button>
         <Button
           variant="danger"
           onClick={() => {

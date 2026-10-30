@@ -25,7 +25,7 @@ import { wallActions, type WallActions } from "./wallActions";
 export type { AppMode, DrawingTool, EditView, RoomFocus } from "./uiState";
 export { DRAWING_TOOLS } from "./uiState";
 export type { HistoryDirection, RoomResult, SpaceResult };
-export type { ItemError } from "./logic/addItem";
+export type { ItemError } from "./logic/itemOf";
 export type { RoomNameError } from "./logic/checkRoomName";
 export type { SpaceNameError } from "./logic/spaceNameError";
 

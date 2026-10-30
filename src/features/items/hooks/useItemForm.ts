@@ -1,22 +1,27 @@
 import { useState, type FormEvent } from "react";
-import { useAppStore, type ItemError } from "@/store/useAppStore";
+import type { ItemError } from "@/store/useAppStore";
+
+/** 물건 입력 값: 이름·칸 번호(없으면 칸 없음)·메모. */
+export type ItemFields = { name: string; slot?: number; memo?: string };
+type ItemSave = (fields: ItemFields) => { ok: true } | { ok: false; reason: ItemError };
 
 /** 칸 고르기 값: 칸 번호 글자, 빈 글자는 칸 없음. */
 const slotOf = (value: string) => (value === "" ? undefined : Number(value));
 
 /**
- * 물건 넣기 입력(이름·칸·메모)과 막힌 까닭. slot은 처음 골라 둘 칸(빈 칸의 [+ 추가]), 없으면 칸 없음이다.
- * submit은 넣고 onDone을 부르고, 막히면 까닭만 남긴다. 글자를 고치면 까닭은 지운다.
+ * 물건 입력(이름·칸·메모)과 막힌 까닭. initial로 채워 열고(넣기는 빈 이름, 고치기는 그 물건),
+ * submit은 save(넣기·고치기)가 되면 onDone을 부르고, 막히면 까닭만 남긴다. 글자를 고치면 까닭은 지운다.
  */
-export function useItemForm(boxId: string, slot: number | undefined, onDone: () => void) {
-  const addItem = useAppStore((state) => state.addItem);
-  const [name, setName] = useState("");
-  const [slotValue, setSlotValue] = useState(slot === undefined ? "" : String(slot));
-  const [memo, setMemo] = useState("");
+export function useItemForm(initial: ItemFields, save: ItemSave, onDone: () => void) {
+  const [name, setName] = useState(initial.name);
+  const [slotValue, setSlotValue] = useState(
+    initial.slot === undefined ? "" : String(initial.slot),
+  );
+  const [memo, setMemo] = useState(initial.memo ?? "");
   const [error, setError] = useState<ItemError | null>(null);
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    const result = addItem(boxId, { name, slot: slotOf(slotValue), memo });
+    const result = save({ name, slot: slotOf(slotValue), memo });
     if (result.ok) onDone();
     else setError(result.reason);
   };

@@ -17,8 +17,8 @@ import type { SelectedBox } from "@/features/furniture";
 import type { FurnitureType } from "@/shared/types";
 import { Button, IconButton } from "@/shared/ui";
 import { ItemAddForm } from "./ItemAddForm";
-import { ItemBar } from "./ItemBar";
 import styles from "./FurniturePanel.module.css";
+import { PickedItem } from "./PickedItem";
 import { SlotRowList } from "./SlotRowList";
 
 const TILE_ICON_SIZE = 24;
@@ -42,7 +42,7 @@ type FurnitureDetailProps = { selection: SelectedBox; onClose: () => void };
 
 /**
  * 가구 하나의 칸별 물건 (시안 08 가구 상세 패널): 머리(아이콘 타일·이름·구역과 물건 수·닫기)와 칸마다 행,
- * 누른 물건의 자세한 내용([빼기]), [+ 물건 넣기] 입력. 열리면 이름(제목)에 초점을 둬 어느 가구인지 먼저 읽게 한다.
+ * 누른 물건의 자세한 내용([고치기]·[빼기]), [+ 물건 넣기] 입력. 열리면 이름(제목)에 초점을 둬 어느 가구인지 먼저 읽게 한다.
  */
 export function FurnitureDetail({ selection, onClose }: FurnitureDetailProps) {
   const { box } = selection;
@@ -60,7 +60,9 @@ export function FurnitureDetail({ selection, onClose }: FurnitureDetailProps) {
         onPick={setPickedId}
         onAdd={(slot) => setAdding({ slot })}
       />
-      {picked && <ItemBar box={box} item={picked} onClose={() => setPickedId(null)} />}
+      {picked && (
+        <PickedItem key={picked.id} box={box} item={picked} onClose={() => setPickedId(null)} />
+      )}
       {adding ? (
         <ItemAddForm box={box} slot={adding.slot} onClose={() => setAdding(null)} />
       ) : (
