@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { chooseTool, collectErrors, createSpace, plan, pressScreen } from "./helpers";
-import { boxButton, expectBox, nameField, panel, placeBox } from "./boxes";
+import { boxButton, expectBox, nameField, openDetails, panel, placeBox, sizeField } from "./boxes";
 
 const rotateButton = (page: Page) => panel(page).getByRole("button", { name: "90° 회전" });
 const removeButton = (page: Page) => panel(page).getByRole("button", { name: "삭제" });
@@ -23,7 +23,10 @@ test.describe("가구 돌리기·지우기 (속성 패널)", () => {
     const errors = collectErrors(page);
     await placeBox(page, { x: 100, y: 50 }, { x: 300, y: 200 }, isMobile);
     await expect(nameField(page)).toHaveValue("보관함 1");
-    await expect(panel(page).getByText("200 × 150 × 90 cm")).toBeVisible();
+    await openDetails(page); // 휴대폰은 크기가 접혀 있다
+    await expect(sizeField(page, "가로")).toHaveValue("200");
+    await expect(sizeField(page, "깊이")).toHaveValue("150");
+    await expect(sizeField(page, "높이")).toHaveValue("90");
     await expect(rotateButton(page)).toBeEnabled();
     await expect(removeButton(page)).toBeVisible();
     expect(errors).toEqual([]);

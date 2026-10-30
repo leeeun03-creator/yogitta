@@ -6,6 +6,13 @@ export const BOX_DEFAULT_SIZE = { w: 60, d: 50, h: 90 } as const;
 /** 가구 가로·깊이의 최소값 (cm). 스냅 격자 한 칸이다. */
 export const BOX_MIN_SIZE_CM = 10;
 
+/** 가구 높이 최대값 (cm). 실제 벽 높이(240cm)를 넘는 가구는 없다고 본다. */
+export const BOX_MAX_HEIGHT_CM = 240;
+
+/** 칸 수를 바꿀 수 있는 가구 종류와 칸 수 범위. 책상·테이블·침대·보관함은 칸이 정해져 있다. */
+export const ROW_TYPES: readonly FurnitureType[] = ["cabinet", "drawer", "shelf", "wall"];
+export const BOX_ROWS_RANGE = { min: 1, max: 8 } as const;
+
 /** 가구는 정면을 이만큼씩 시계 방향으로 돌린다 (도). */
 export const BOX_ROTATION_STEP = 90;
 

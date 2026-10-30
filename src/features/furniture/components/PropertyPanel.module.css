@@ -63,22 +63,6 @@
   color: var(--yg-text-sub);
 }
 
-.value {
-  margin: 0;
-  font-size: 16px;
-}
-/* 크기 글자 + [기본 높이 …cm로]: 좁으면 버튼이 아랫줄로 */
-.sizeRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px 8px;
-}
-.typeHeight {
-  font-size: 14px;
-}
-
 /* [90° 회전] [삭제] 두 버튼이 폭을 나눠 갖는다 */
 .actions {
   display: flex;
@@ -111,6 +95,7 @@
     bottom: 16px;
     z-index: 1;
     gap: 10px;
+    max-height: 55%; /* 펼쳐도 2D 평면도 위쪽은 보이고 눌리게, 넘치면 패널 안에서 넘긴다 */
     padding: 16px;
     box-shadow: var(--yg-shadow-pop);
   }

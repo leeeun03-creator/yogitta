@@ -1,22 +1,9 @@
 import { FURNITURE_DEFAULTS, FURNITURE_LABELS } from "@/shared/constants/furniture";
-import type { AppData, Box, FurnitureType, Item, Space } from "@/shared/types";
+import type { AppData, Box, FurnitureType, Space } from "@/shared/types";
 import { isAutoName } from "./isAutoName";
+import { itemsWithinSlots } from "./itemsWithinSlots";
 import { nextBoxName } from "./nextBoxName";
 import { updateBox } from "./updateBox";
-
-/** 칸 없음으로 옮긴 물건 (칸 번호를 뺀 복사본). */
-function withoutSlot(item: Item): Item {
-  const next = { ...item };
-  delete next.slot;
-  return next;
-}
-
-/** 새 칸 수(slotCount)보다 뒤 칸에 있던 물건은 칸 없음으로 옮기고, 나머지 물건은 그대로 둔다. */
-function keepItems(items: readonly Item[], slotCount: number): Item[] {
-  return items.map((item) =>
-    item.slot !== undefined && item.slot >= slotCount ? withoutSlot(item) : item,
-  );
-}
 
 /**
  * 옛 종류의 자동 이름이면 새 종류의 자동 이름으로, 사용자가 지은 이름이면 그대로.
@@ -46,7 +33,7 @@ export function changeBoxType(data: AppData, id: string, type: FurnitureType): A
       rows,
       cols,
       elevation,
-      items: keepItems(box.items, rows * cols),
+      items: itemsWithinSlots(box.items, rows * cols),
     };
     delete next.rowHeights;
     return next;

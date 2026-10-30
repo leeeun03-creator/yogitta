@@ -1,13 +1,16 @@
 import { createId } from "@/shared/lib/createId";
+import type { BoxSize } from "@/shared/lib/resizedBox";
 import type { FurnitureType, Point } from "@/shared/types";
 import { change, type GetCore, type SetCore } from "./change";
 import { addBox, type NewBoxInput } from "./logic/addBox";
 import { applyTypeHeight } from "./logic/applyTypeHeight";
+import { changeBoxRows } from "./logic/changeBoxRows";
 import { changeBoxType } from "./logic/changeBoxType";
 import { keepSelection } from "./logic/keepSelection";
 import { moveBox } from "./logic/moveBox";
 import { removeBox } from "./logic/removeBox";
 import { renameBox, type BoxNameResult } from "./logic/renameBox";
+import { resizeBox, type ResizeBoxResult } from "./logic/resizeBox";
 import { rotateBox } from "./logic/rotateBox";
 
 export type BoxActions = {
@@ -17,6 +20,8 @@ export type BoxActions = {
   changeBoxType: (id: string, type: FurnitureType) => void; // 크기는 그대로, 칸 수·설치 높이는 종류 기본값
   applyTypeHeight: (id: string) => void; // 그 종류의 기본 높이로
   renameBox: (id: string, name: string) => BoxNameResult; // 막히면 데이터는 그대로
+  resizeBox: (id: string, size: BoxSize) => ResizeBoxResult; // 막히면 데이터는 그대로
+  changeBoxRows: (id: string, rows: number) => void; // 1 ~ 8칸, 칸 수를 바꿀 수 있는 종류만
   removeBox: (id: string) => void;
   selectBox: (id: string | null) => void;
 };
@@ -39,6 +44,12 @@ export const boxActions = (set: SetCore, get: GetCore): BoxActions => ({
     if (result.ok) set((state) => change(state, result.data));
     return result;
   },
+  resizeBox: (id, size) => {
+    const result = resizeBox(get().data, id, size);
+    if (result.ok) set((state) => change(state, result.data));
+    return result;
+  },
+  changeBoxRows: (id, rows) => set((state) => change(state, changeBoxRows(state.data, id, rows))),
   removeBox: (id) =>
     set((state) => {
       const data = removeBox(state.data, id);

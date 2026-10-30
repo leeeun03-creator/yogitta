@@ -1,6 +1,15 @@
 import { expect, test, type Page } from "@playwright/test";
 import { chooseTool, collectErrors, createSpace, plan, pressCm } from "./helpers";
-import { FLOOR, boxButton, nameField, openDetails, panel, placeBox, typeButton } from "./boxes";
+import {
+  FLOOR,
+  boxButton,
+  nameField,
+  openDetails,
+  panel,
+  placeBox,
+  sizeField,
+  typeButton,
+} from "./boxes";
 
 const typeButtons = (page: Page) =>
   panel(page).getByRole("group", { name: "종류" }).getByRole("button");
@@ -82,7 +91,7 @@ test.describe("속성 패널 종류 선택으로 가구 종류 바꾸기", () =>
   test("높이가 기본 높이와 다르면 [기본 높이 …cm로]가 보이고, 누르면 그 높이가 된다", async ({
     page,
   }) => {
-    const sizeText = panel(page).getByText(/^200 × 150 × \d+ cm$/);
+    const height = sizeField(page, "높이");
     const typeHeight = (cm: number) =>
       panel(page).getByRole("button", { name: `기본 높이 ${cm}cm로` });
     await expect(typeHeight(40)).toBeVisible(); // 처음 놓은 가구는 90cm, 보관함 기본 높이는 40cm
@@ -90,10 +99,10 @@ test.describe("속성 패널 종류 선택으로 가구 종류 바꾸기", () =>
     await expect(panel(page).getByRole("button", { name: /^기본 높이/ })).toHaveCount(0); // 90cm 그대로
     await typeButton(page, "양문 수납장").click();
     await typeHeight(180).click();
-    await expect(sizeText).toHaveText("200 × 150 × 180 cm");
+    await expect(height).toHaveValue("180");
     await expect(panel(page).getByRole("button", { name: /^기본 높이/ })).toHaveCount(0);
     await undo(page);
-    await expect(sizeText).toHaveText("200 × 150 × 90 cm");
+    await expect(height).toHaveValue("90");
   });
 
   test("엣지: 지금 종류를 다시 누르면 그대로다 (되돌리기 기록이 남지 않는다)", async ({ page }) => {

@@ -21,6 +21,10 @@ export async function openDetails(page: Page) {
   if ((await toggle.getAttribute("aria-expanded")) === "false") await toggle.click();
 }
 
+/** 속성 패널 크기 입력칸 하나 (가로·깊이·높이, cm). */
+export const sizeField = (page: Page, label: "가로" | "깊이" | "높이") =>
+  panel(page).getByRole("group", { name: "크기 (cm)" }).getByRole("textbox", { name: label });
+
 /** 속성 패널 종류 선택의 종류 버튼 (양문 수납장 … 보관함). */
 export const typeButton = (page: Page, name: string) =>
   panel(page).getByRole("group", { name: "종류" }).getByRole("button", { name, exact: true });

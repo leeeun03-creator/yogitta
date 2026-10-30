@@ -1,15 +1,16 @@
 import { MapPin, RotateCw, Trash2 } from "lucide-react";
 import { useId, useRef, useState } from "react";
-import { FURNITURE_DEFAULTS } from "@/shared/constants/furniture";
-import { formatSize } from "@/shared/lib/formatSize";
+import { ROW_TYPES } from "@/shared/constants/furniture";
 import { rotatedBox, type RotateBlock } from "@/shared/lib/rotatedBox";
 import { Button } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
 import { useSelectedBox, type SelectedBox } from "../hooks/useSelectedBox";
 import { BoxNameField } from "./BoxNameField";
+import { BoxSizeFields } from "./BoxSizeFields";
 import { DetailsToggle } from "./DetailsToggle";
 import { FurnitureTypePicker } from "./FurnitureTypePicker";
 import styles from "./PropertyPanel.module.css";
+import { RowStepper } from "./RowStepper";
 
 const ICON_SIZE = 18;
 const ROOM_ICON_SIZE = 16;
@@ -19,7 +20,7 @@ const ROTATE_BLOCK_MESSAGES: Record<RotateBlock, string> = {
 };
 
 /**
- * 속성 패널 (시안 04). 고른 가구의 이름(바꾸기)·놓인 구역·종류·크기와 [90° 회전]·[삭제]를 보인다 (크기 바꾸기는 T26).
+ * 속성 패널 (시안 04). 고른 가구의 이름·놓인 구역·종류·크기·칸 수를 바꾸고 [90° 회전]·[삭제]를 한다.
  * 데스크톱은 2D 평면도 오른쪽에 늘 있어(고른 가구가 없으면 안내) 가구를 골라도 2D 평면도 크기가 그대로이고,
  * 휴대폰은 2D 평면도에서 고른 가구가 있을 때만 화면 아래에 겹쳐 뜬다 (3D 미리보기의 보기 버튼을 가리지 않게).
  * 휴대폰에서는 2D 평면도를 덜 가리게 종류·크기를 접어 두고, 펼친 상태는 다른 가구를 골라도 이어진다.
@@ -55,7 +56,7 @@ type BoxPropertiesProps = SelectedBox & {
   onRemoved: () => void;
 };
 
-/** 고른 가구 하나의 속성: 이름·놓인 구역·종류·크기와 돌리기·지우기. */
+/** 고른 가구 하나의 속성: 이름·놓인 구역·종류·크기·칸 수와 돌리기·지우기. */
 function BoxProperties(props: BoxPropertiesProps) {
   const { box, room, isOverlapping, details } = props;
   const changeBoxType = useAppStore((state) => state.changeBoxType);
@@ -80,31 +81,14 @@ function BoxProperties(props: BoxPropertiesProps) {
           value={box.type}
           onChange={(type) => changeBoxType(box.id, type)}
         />
-        <BoxSize box={box} />
+        {/* 크기가 바뀌면(되돌리기·기본 높이 등) 입력 중이던 글자를 버리고 새로 그린다 */}
+        <BoxSizeFields key={`${box.id}:${box.w}:${box.d}:${box.h}`} box={box} />
+        {ROW_TYPES.includes(box.type) && <RowStepper box={box} />}
       </div>
       {isOverlapping && <p className={styles.warning}>벽이나 다른 가구와 겹쳐 있어요</p>}
       <BoxActionButtons {...props} />
       <p className={styles.hint}>2D 평면도에서 R 키로 돌리고, Delete 키로 지울 수 있어요</p>
     </>
-  );
-}
-
-/** 크기. 높이가 그 종류의 기본 높이와 다르면 기본 높이로 바꾸는 버튼을 단다 (종류를 바꿔도 크기는 그대로라서). */
-function BoxSize({ box }: Pick<SelectedBox, "box">) {
-  const applyTypeHeight = useAppStore((state) => state.applyTypeHeight);
-  const typeHeight = FURNITURE_DEFAULTS[box.type].h;
-  return (
-    <div className={styles.field}>
-      <p className={styles.label}>크기 (cm)</p>
-      <div className={styles.sizeRow}>
-        <p className={styles.value}>{formatSize(box.w, box.d, box.h)}</p>
-        {box.h !== typeHeight && (
-          <Button className={styles.typeHeight} onClick={() => applyTypeHeight(box.id)}>
-            기본 높이 {typeHeight}cm로
-          </Button>
-        )}
-      </div>
-    </div>
   );
 }
 

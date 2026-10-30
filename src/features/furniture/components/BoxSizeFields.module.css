@@ -1,0 +1,47 @@
+/* 크기 입력칸·칸 수 스테퍼 (시안 04 속성 패널) */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.label {
+  margin: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
+/* 가로·깊이·높이 세 칸을 한 줄에 */
+.inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.error {
+  margin: 0;
+  font-size: 13px;
+  color: var(--yg-danger);
+}
+
+.typeHeight {
+  align-self: flex-start;
+  font-size: 14px;
+}
+
+/* 칸 수: 라벨 왼쪽, "− 3칸 +" 오른쪽 */
+.stepperRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.rows {
+  min-width: 40px;
+  text-align: center;
+  font-size: 16px;
+}

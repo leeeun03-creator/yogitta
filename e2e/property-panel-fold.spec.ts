@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { createSpace, floorBox, pressCm } from "./helpers";
-import { FLOOR, detailsToggle, nameField, panel, placeBox, typeButton } from "./boxes";
+import { FLOOR, detailsToggle, nameField, panel, placeBox, sizeField, typeButton } from "./boxes";
 
 test.describe("휴대폰 속성 패널 접었다 펴기", () => {
   test.skip(
@@ -38,7 +38,7 @@ test.describe("휴대폰 속성 패널 접었다 펴기", () => {
     await expect(detailsToggle(page)).toHaveAttribute("aria-expanded", "true");
     await typeButton(page, "서랍장").click();
     await expect(nameField(page)).toHaveValue("서랍장 1");
-    await expect(panel(page).getByText(/^200 × 150 × 90 cm$/)).toBeVisible();
+    await expect(sizeField(page, "가로")).toHaveValue("200");
     await page.screenshot({ path: testInfo.outputPath("panel-expanded.png"), fullPage: true });
     await detailsToggle(page).click();
     await expect(detailsToggle(page)).toHaveAttribute("aria-expanded", "false");
@@ -59,6 +59,6 @@ test.describe("휴대폰 속성 패널 접었다 펴기", () => {
     test.skip(isMobile, "데스크톱에서만");
     await expect(detailsToggle(page)).toBeHidden();
     await expect(typeButton(page, "서랍장")).toBeVisible();
-    await expect(panel(page).getByText(/^200 × 150 × 90 cm$/)).toBeVisible();
+    await expect(sizeField(page, "가로")).toHaveValue("200");
   });
 });
