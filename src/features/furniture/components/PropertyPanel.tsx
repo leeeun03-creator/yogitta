@@ -6,6 +6,7 @@ import { rotatedBox, type RotateBlock } from "@/shared/lib/rotatedBox";
 import { Button } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
 import { useSelectedBox, type SelectedBox } from "../hooks/useSelectedBox";
+import { BoxNameField } from "./BoxNameField";
 import { FurnitureTypePicker } from "./FurnitureTypePicker";
 import styles from "./PropertyPanel.module.css";
 
@@ -17,7 +18,7 @@ const ROTATE_BLOCK_MESSAGES: Record<RotateBlock, string> = {
 };
 
 /**
- * 속성 패널 (시안 04). 고른 가구의 이름·놓인 구역·종류·크기와 [90° 회전]·[삭제]를 보인다 (이름·크기 바꾸기는 T7-3·T26).
+ * 속성 패널 (시안 04). 고른 가구의 이름(바꾸기)·놓인 구역·종류·크기와 [90° 회전]·[삭제]를 보인다 (크기 바꾸기는 T26).
  * 데스크톱은 2D 평면도 오른쪽에 늘 있어(고른 가구가 없으면 안내) 가구를 골라도 2D 평면도 크기가 그대로이고,
  * 휴대폰은 2D 평면도에서 고른 가구가 있을 때만 화면 아래에 겹쳐 뜬다 (3D 미리보기의 보기 버튼을 가리지 않게).
  */
@@ -50,9 +51,9 @@ function BoxProperties(props: BoxPropertiesProps) {
   const changeBoxType = useAppStore((state) => state.changeBoxType);
   return (
     <>
-      <div className={styles.field}>
-        <p className={styles.label}>가구 이름</p>
-        <h2 className={styles.name}>{box.name}</h2>
+      <div className={`${styles.field} ${styles.nameArea}`}>
+        {/* 고른 가구·저장된 이름이 바뀌면(되돌리기 등) 입력 중이던 글자를 버리고 새로 그린다 */}
+        <BoxNameField key={`${box.id}:${box.name}`} box={box} />
         <p className={styles.room}>
           <MapPin size={ROOM_ICON_SIZE} aria-hidden="true" />
           {room === null ? "구역 없음" : `구역 ${room}`}

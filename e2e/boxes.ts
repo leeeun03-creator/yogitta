@@ -8,6 +8,9 @@ export const FLOOR = { w: 600, h: 450 };
 
 /** 가구를 고르면 뜨는 속성 패널. */
 export const panel = (page: Page) => page.getByRole("complementary", { name: "속성 패널" });
+/** 속성 패널의 가구 이름 입력칸. */
+export const nameField = (page: Page) =>
+  panel(page).getByRole("textbox", { name: "가구 이름", exact: true });
 /** 가구 자리에 겹친 투명 버튼 (키보드·화면 읽기용, 이름 = 가구 이름). */
 export const boxButton = (page: Page, name: string) =>
   page.getByRole("button", { name, exact: true });

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { chooseTool, collectErrors, createSpace, plan, pressScreen } from "./helpers";
-import { boxButton, expectBox, panel, placeBox } from "./boxes";
+import { boxButton, expectBox, nameField, panel, placeBox } from "./boxes";
 
 const rotateButton = (page: Page) => panel(page).getByRole("button", { name: "90° 회전" });
 const removeButton = (page: Page) => panel(page).getByRole("button", { name: "삭제" });
@@ -22,7 +22,7 @@ test.describe("가구 돌리기·지우기 (속성 패널)", () => {
   }) => {
     const errors = collectErrors(page);
     await placeBox(page, { x: 100, y: 50 }, { x: 300, y: 200 }, isMobile);
-    await expect(panel(page).getByRole("heading", { name: "보관함 1" })).toBeVisible();
+    await expect(nameField(page)).toHaveValue("보관함 1");
     await expect(panel(page).getByText("200 × 150 × 90 cm")).toBeVisible();
     await expect(rotateButton(page)).toBeEnabled();
     await expect(removeButton(page)).toBeVisible();
@@ -61,7 +61,7 @@ test.describe("가구 돌리기·지우기 (속성 패널)", () => {
     await placeBox(page, { x: 100, y: 50 }, { x: 300, y: 200 }, isMobile);
     await removeButton(page).click();
     await expect(plan(page)).toHaveAccessibleName(/가구 0개$/);
-    await expect(page.getByRole("heading", { name: "보관함 1" })).toHaveCount(0);
+    await expect(nameField(page)).toHaveCount(0);
     await page.getByRole("button", { name: "되돌리기" }).click();
     await expect(plan(page)).toHaveAccessibleName(/가구 1개$/);
     await expect(plan(page).getByText("보관함 1", { exact: true })).toBeVisible();
@@ -145,7 +145,7 @@ test.describe("가구 돌리기·지우기 (속성 패널)", () => {
   }) => {
     const before = await planRegion(page).boundingBox();
     await placeBox(page, { x: 100, y: 50 }, { x: 300, y: 200 }, isMobile);
-    await expect(panel(page).getByRole("heading", { name: "보관함 1" })).toBeVisible();
+    await expect(nameField(page)).toHaveValue("보관함 1");
     expect(await planRegion(page).boundingBox()).toEqual(before);
   });
 

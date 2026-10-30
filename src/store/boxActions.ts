@@ -7,6 +7,7 @@ import { changeBoxType } from "./logic/changeBoxType";
 import { keepSelection } from "./logic/keepSelection";
 import { moveBox } from "./logic/moveBox";
 import { removeBox } from "./logic/removeBox";
+import { renameBox, type BoxNameResult } from "./logic/renameBox";
 import { rotateBox } from "./logic/rotateBox";
 
 export type BoxActions = {
@@ -15,6 +16,7 @@ export type BoxActions = {
   rotateBox: (id: string) => void; // 시계 방향 90도
   changeBoxType: (id: string, type: FurnitureType) => void; // 크기는 그대로, 칸 수·설치 높이는 종류 기본값
   applyTypeHeight: (id: string) => void; // 그 종류의 기본 높이로
+  renameBox: (id: string, name: string) => BoxNameResult; // 막히면 데이터는 그대로
   removeBox: (id: string) => void;
   selectBox: (id: string | null) => void;
 };
@@ -32,6 +34,11 @@ export const boxActions = (set: SetCore, get: GetCore): BoxActions => ({
   rotateBox: (id) => set((state) => change(state, rotateBox(state.data, id))),
   changeBoxType: (id, type) => set((state) => change(state, changeBoxType(state.data, id, type))),
   applyTypeHeight: (id) => set((state) => change(state, applyTypeHeight(state.data, id))),
+  renameBox: (id, name) => {
+    const result = renameBox(get().data, id, name);
+    if (result.ok) set((state) => change(state, result.data));
+    return result;
+  },
   removeBox: (id) =>
     set((state) => {
       const data = removeBox(state.data, id);

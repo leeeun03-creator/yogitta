@@ -36,11 +36,6 @@
   font-size: 13px;
   color: var(--yg-text-sub);
 }
-/* 가구 이름은 패널 제목이라 Jua (global.css의 h2, yogitta-design 2장: Jua 22px~) */
-.name {
-  font-size: 22px;
-  overflow-wrap: anywhere; /* 긴 가구 이름이 패널 밖으로 나가지 않게 */
-}
 /* 놓인 구역 (위치 핀 + "구역 안방"): 놓인 구획에서 계산해서 옮기거나 구역을 고치면 따라간다 */
 .room {
   display: flex;
@@ -106,6 +101,15 @@
   .label,
   .hint {
     display: none; /* 휴대폰은 키보드가 없고, 이름·크기는 글자만으로 알아볼 수 있다 */
+  }
+  /* 가구 이름 라벨은 입력칸 이름이라 화면에서만 숨긴다 (화면 읽기는 그대로 "가구 이름"을 읽는다) */
+  .nameArea label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   /* 3D 미리보기에서는 왼쪽 아래 보기 버튼(처음 보기·확대·축소)을 가리지 않게 숨긴다 */
   .onPreview {

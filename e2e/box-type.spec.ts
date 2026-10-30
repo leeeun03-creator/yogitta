@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { chooseTool, collectErrors, createSpace, plan, pressCm } from "./helpers";
-import { FLOOR, boxButton, panel, placeBox } from "./boxes";
+import { FLOOR, boxButton, nameField, panel, placeBox } from "./boxes";
 
 const typeButtons = (page: Page) =>
   panel(page).getByRole("group", { name: "종류" }).getByRole("button");
@@ -69,7 +69,7 @@ test.describe("속성 패널 종류 선택으로 가구 종류 바꾸기", () =>
     await pressCm(page, FLOOR, [{ x: 200, y: 125 }], isMobile); // 다시 고른다
     await typeButton(page, "서랍장").click();
     await expect(typeButton(page, "서랍장")).toHaveAttribute("aria-pressed", "true");
-    await expect(panel(page).getByRole("heading", { name: "서랍장 1" })).toBeVisible();
+    await expect(nameField(page)).toHaveValue("서랍장 1");
     await expect(boxButton(page, "서랍장 1")).toHaveCount(1);
     await expect(firstBox(page)).toHaveAttribute("data-type", "drawer");
     await deselect(page);
@@ -112,7 +112,7 @@ test.describe("속성 패널 종류 선택으로 가구 종류 바꾸기", () =>
     await page.keyboard.press("Shift+Tab");
     await expect(typeButton(page, "양문 수납장")).toBeFocused();
     await page.keyboard.press("Space");
-    await expect(panel(page).getByRole("heading", { name: "양문 수납장 1" })).toBeVisible();
+    await expect(nameField(page)).toHaveValue("양문 수납장 1");
   });
 
   test("엣지: 침대는 정면 반대쪽에 머리판 띠가 있고, 돌리면 따라 돈다", async ({ page }) => {

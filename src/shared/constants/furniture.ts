@@ -15,6 +15,9 @@ export const FULL_TURN = 360;
 /** 가구가 벽·다른 가구에 이만큼(cm)까지 파고든 것은 맞닿은 것으로 본다 (소수 오차). 면끼리 붙이는 것은 된다. */
 export const TOUCH_TOLERANCE_CM = 0.01;
 
+/** 가구 이름 최대 글자 수. "작은방 양문 수납장 2"(12자)가 넉넉히 들어가게 둔다. */
+export const BOX_NAME_MAX_LENGTH = 15;
+
 /** 침대 머리판 두께 (cm). 2D 평면도의 머리판 띠와 3D 머리판이 같은 두께다. */
 export const BED_HEADBOARD_CM = 10;
 

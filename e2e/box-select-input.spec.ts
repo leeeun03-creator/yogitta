@@ -34,7 +34,8 @@ test.describe("선택 도구로 가구 고르기·옮기기 (두 손가락·키�
     isMobile,
   }) => {
     test.skip(!isMobile, "터치는 모바일에서만");
-    const a = await cmToScreen(page, FLOOR, { x: 450, y: 350 }); // 빈 곳
+    // 휴대폰은 고른 가구의 속성 패널이 화면 아래(바닥 y 250cm 언저리부터)를 가려서 그 위를 누른다
+    const a = await cmToScreen(page, FLOOR, { x: 450, y: 230 }); // 빈 곳
     const b = await cmToScreen(page, FLOOR, { x: 200, y: 125 }); // 가구
     // 손가락 번호를 정해 보낸다 (CDP touchEnd는 적은 손가락을 뗀다)
     const cdp = await page.context().newCDPSession(page);

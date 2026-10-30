@@ -31,7 +31,7 @@ test.describe("3D에 가구 세우기", () => {
     // 휴대폰은 속성 패널이 3D 보기 버튼을 가리지 않게 숨고, 데스크톱은 옆에 그대로다
     const panel = page.getByRole("complementary", { name: "속성 패널" });
     if (isMobile) await expect(panel).toBeHidden();
-    else await expect(panel.getByRole("heading", { name: "보관함 3" })).toBeVisible();
+    else await expect(panel.getByRole("textbox", { name: "가구 이름" })).toHaveValue("보관함 3");
     await page.getByRole("button", { name: "확대" }).click(); // 가려져 있으면 누를 수 없다
     await page.waitForTimeout(300); // 3D가 그려질 때까지 (스크린샷용)
     await page.screenshot({ path: testInfo.outputPath("scene-boxes.png"), fullPage: true });
