@@ -14,8 +14,9 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import type { SelectedBox } from "@/features/furniture";
-import type { FurnitureType } from "@/shared/types";
+import type { Box, FurnitureType } from "@/shared/types";
 import { Button, IconButton } from "@/shared/ui";
+import { usePickedItem } from "../hooks/usePickedItem";
 import { ItemAddForm } from "./ItemAddForm";
 import styles from "./FurniturePanel.module.css";
 import { PickedItem } from "./PickedItem";
@@ -46,9 +47,8 @@ type FurnitureDetailProps = { selection: SelectedBox; onClose: () => void };
  */
 export function FurnitureDetail({ selection, onClose }: FurnitureDetailProps) {
   const { box } = selection;
-  const [adding, setAdding] = useState<{ slot?: number } | null>(null); // 열린 물건 넣기 입력
-  const [pickedId, setPickedId] = useState<string | null>(null);
-  const picked = box.items.find((item) => item.id === pickedId);
+  const [adding, setAdding] = useState<Adding | null>(null);
+  const picking = usePickedItem(box.items);
   const titleRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => titleRef.current?.focus(), [box.id]);
   return (
@@ -56,25 +56,46 @@ export function FurnitureDetail({ selection, onClose }: FurnitureDetailProps) {
       <DetailHead selection={selection} titleRef={titleRef} onClose={onClose} />
       <SlotRowList
         box={box}
-        pickedId={pickedId}
-        onPick={setPickedId}
+        pickedId={picking.pickedId}
+        onPick={picking.pick}
         onAdd={(slot) => setAdding({ slot })}
       />
-      {picked && (
-        <PickedItem key={picked.id} box={box} item={picked} onClose={() => setPickedId(null)} />
+      {picking.picked && (
+        <PickedItem
+          key={picking.picked.id}
+          box={box}
+          boxes={selection.space.boxes}
+          item={picking.picked}
+          onClose={picking.close}
+          onMoved={picking.moved}
+        />
       )}
-      {adding ? (
-        <ItemAddForm box={box} slot={adding.slot} onClose={() => setAdding(null)} />
-      ) : (
-        <Button
-          variant="primary"
-          icon={<Plus size={ADD_ICON_SIZE} aria-hidden="true" />}
-          onClick={() => setAdding({})}
-        >
-          물건 넣기
-        </Button>
-      )}
+      <p className={styles.notice} role="status">
+        {picking.notice}
+      </p>
+      <AddItemArea box={box} adding={adding} onChange={setAdding} />
     </>
+  );
+}
+
+type Adding = { slot?: number }; // 열린 물건 넣기 입력 (처음 골라 둘 칸)
+type AddItemAreaProps = {
+  box: Box;
+  adding: Adding | null;
+  onChange: (adding: Adding | null) => void;
+};
+
+/** 맨 아래 [+ 물건 넣기] 버튼. 누르면(또는 빈 칸의 [+ 추가]) 그 자리에 물건 넣기 입력이 열린다. */
+function AddItemArea({ box, adding, onChange }: AddItemAreaProps) {
+  if (adding) return <ItemAddForm box={box} slot={adding.slot} onClose={() => onChange(null)} />;
+  return (
+    <Button
+      variant="primary"
+      icon={<Plus size={ADD_ICON_SIZE} aria-hidden="true" />}
+      onClick={() => onChange({})}
+    >
+      물건 넣기
+    </Button>
   );
 }
 

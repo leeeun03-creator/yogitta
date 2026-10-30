@@ -41,3 +41,23 @@ export async function openDrawer(page: Page, isMobile: boolean) {
     .click();
   await expect(detail(page).getByRole("heading", { name: "서랍장 1" })).toBeVisible();
 }
+
+export const bar = (page: Page, name: string) =>
+  detail(page).getByRole("region", { name: `${name} 물건` });
+export const editForm = (page: Page) => form(page, "물건 고치기");
+
+/** 칩을 눌러 자세한 내용을 열고 [고치기]를 누른다. */
+export async function openEdit(page: Page, slot: string, name: string) {
+  await chips(page, slot).filter({ hasText: name }).click();
+  await bar(page, name).getByRole("button", { name: "고치기" }).click();
+}
+
+/** 편집 모드에서 [되돌리기]를 한 번 누르고 메인 화면으로 와 그 가구를 다시 연다 (메인 화면에는 되돌리기가 없다). */
+export async function undoOnce(page: Page, boxName: string) {
+  await page.getByRole("button", { name: "편집" }).click();
+  await page.getByRole("button", { name: "되돌리기" }).click();
+  await finishEditing(page);
+  await detail(page)
+    .getByRole("button", { name: new RegExp(`^${boxName} 물건`) })
+    .click();
+}

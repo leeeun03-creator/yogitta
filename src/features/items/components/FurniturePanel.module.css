@@ -26,6 +26,14 @@
   font-size: 14px;
   color: var(--yg-text-sub);
 }
+/* 다른 가구로 옮긴 뒤 안내. 비어 있으면 자리를 차지하지 않는다 */
+.notice {
+  margin: 0;
+  font-size: 14px;
+}
+.notice:empty {
+  display: none;
+}
 
 /* 가구 목록 */
 .list {

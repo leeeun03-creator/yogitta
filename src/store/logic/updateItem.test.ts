@@ -7,18 +7,21 @@ import { updateItem } from "./updateItem";
 const PASSPORT: Item = { id: "item_1", name: "여권", slot: 0, memo: "파란 파우치" };
 const SOCKS: Item = { id: "item_2", name: "양말", slot: 0 };
 
-/** 서랍장(칸 0 ~ 2)의 1번째 서랍에 여권·양말이 든 데이터. */
+const BOOK: Item = { id: "item_3", name: "책" };
+
+/** 서랍장 box_1(칸 0 ~ 2)의 1번째 서랍에 여권·양말, 보관함 box_2(칸 하나)에 책이 든 데이터. */
 function drawer(): AppData {
-  const data = createBoxTestData([{ type: "drawer", rows: 3 }]);
-  const space = data.spaces[0];
-  const box = space?.boxes[0];
-  if (!space || !box) throw new Error("테스트 데이터가 없다");
-  return deepFreeze({
-    ...data,
-    spaces: [{ ...space, boxes: [{ ...box, items: [PASSPORT, SOCKS] }] }],
-  });
+  const data = createBoxTestData([{ type: "drawer", rows: 3 }, { type: "box" }]);
+  const [mine, ...others] = data.spaces;
+  const [first, second] = mine?.boxes ?? [];
+  if (!mine || !first || !second) throw new Error("테스트 데이터가 없다");
+  const boxes = [
+    { ...first, items: [PASSPORT, SOCKS] },
+    { ...second, items: [BOOK] },
+  ];
+  return deepFreeze({ ...data, spaces: [{ ...mine, boxes }, ...others] });
 }
-const itemsOf = (data: AppData) => data.spaces[0]?.boxes[0]?.items;
+const itemsOf = (data: AppData, index = 0) => data.spaces[0]?.boxes[index]?.items;
 
 describe("updateItem", () => {
   it("이름·메모를 고친다 (앞뒤 공백을 지우고, 넣은 순서는 그대로)", () => {
@@ -62,9 +65,36 @@ describe("updateItem", () => {
     ).toEqual({ ok: false, reason: "memoTooLong" });
   });
 
-  it("엣지: 없는 가구·없는 물건이면 그대로 둔다", () => {
+  it("엣지: 없는 가구·없는 물건·없는 가구로 옮기기면 그대로 둔다", () => {
     const data = drawer();
     expect(updateItem(data, "box_9", { id: "item_1", name: "여권" })).toEqual({ ok: true, data });
     expect(updateItem(data, "box_1", { id: "item_9", name: "여권" })).toEqual({ ok: true, data });
+    expect(updateItem(data, "box_1", PASSPORT, "box_9")).toEqual({ ok: true, data });
+  });
+
+  it("다른 가구로 옮기면 원래 가구에서 빼고 그 가구의 칸으로 맨 뒤에 넣는다 (고친 이름·메모도 함께)", () => {
+    const result = updateItem(
+      drawer(),
+      "box_1",
+      { ...PASSPORT, name: "여권 지갑", slot: 0 },
+      "box_2",
+    );
+    expect(result.ok && itemsOf(result.data)).toEqual([SOCKS]);
+    expect(result.ok && itemsOf(result.data, 1)).toEqual([
+      BOOK,
+      { id: "item_1", name: "여권 지갑", slot: 0, memo: "파란 파우치" },
+    ]);
+  });
+
+  it("엣지: 옮길 가구의 칸 수 밖 칸이면 그 가구의 칸 없음에 넣는다", () => {
+    const result = updateItem(drawer(), "box_1", { ...SOCKS, slot: 2 }, "box_2");
+    expect(result.ok && itemsOf(result.data, 1)).toEqual([BOOK, { id: "item_2", name: "양말" }]);
+  });
+
+  it("엣지: 옮길 때도 빈 이름은 막는다", () => {
+    expect(updateItem(drawer(), "box_1", { id: "item_1", name: "" }, "box_2")).toEqual({
+      ok: false,
+      reason: "emptyName",
+    });
   });
 });

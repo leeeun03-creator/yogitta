@@ -1,28 +1,7 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { collectErrors } from "./helpers";
-import { addItem, chips, form, openDrawer, row } from "./items";
+import { addItem, bar, chips, editForm, openDrawer, openEdit, row, undoOnce } from "./items";
 import { detail } from "./scene";
-import { finishEditing } from "./spaces";
-
-const bar = (page: Page, name: string) =>
-  detail(page).getByRole("region", { name: `${name} 물건` });
-const editForm = (page: Page) => form(page, "물건 고치기");
-
-/** 칩을 눌러 자세한 내용을 열고 [고치기]를 누른다. */
-async function openEdit(page: Page, slot: string, name: string) {
-  await chips(page, slot).filter({ hasText: name }).click();
-  await bar(page, name).getByRole("button", { name: "고치기" }).click();
-}
-
-/** 편집 모드에서 [되돌리기]를 한 번 누르고 메인 화면으로 와 서랍장 1을 다시 연다 (메인 화면에는 되돌리기가 없다). */
-async function undoOnce(page: Page) {
-  await page.getByRole("button", { name: "편집" }).click();
-  await page.getByRole("button", { name: "되돌리기" }).click();
-  await finishEditing(page);
-  await detail(page)
-    .getByRole("button", { name: /^서랍장 1 물건/ })
-    .click();
-}
 
 test.describe("가구 상세 패널에서 물건의 이름·칸·메모 고치기", () => {
   test.skip(
@@ -46,6 +25,7 @@ test.describe("가구 상세 패널에서 물건의 이름·칸·메모 고치�
     await expect(name).toBeFocused();
     await expect(editForm(page).getByLabel("칸")).toHaveValue("0");
     await expect(editForm(page).getByLabel("메모 (선택)")).toHaveValue("파란 파우치");
+    await expect(editForm(page).getByLabel("가구")).toHaveCount(0); // 가구가 하나뿐이면 옮길 곳이 없다
     await name.fill("여권 지갑");
     await editForm(page).getByLabel("메모 (선택)").fill("서랍 안쪽");
     await editForm(page).getByRole("button", { name: "저장" }).click();
@@ -65,7 +45,7 @@ test.describe("가구 상세 패널에서 물건의 이름·칸·메모 고치�
     await editForm(page).getByRole("button", { name: "저장" }).click();
     await expect(chips(page, "3번째 서랍")).toHaveText(["여권"]);
     await expect(chips(page, "1번째 서랍")).toHaveText(["양말"]);
-    await undoOnce(page);
+    await undoOnce(page, "서랍장 1");
     await expect(chips(page, "1번째 서랍")).toHaveText(["여권", "양말"]);
     await expect(row(page, "3번째 서랍")).toContainText("비어 있어요");
   });
@@ -110,7 +90,7 @@ test.describe("가구 상세 패널에서 물건의 이름·칸·메모 고치�
     await openEdit(page, "1번째 서랍", "여권");
     await editForm(page).getByRole("button", { name: "저장" }).click();
     await expect(editForm(page)).toHaveCount(0);
-    await undoOnce(page);
+    await undoOnce(page, "서랍장 1");
     await expect(chips(page, "1번째 서랍")).toHaveText(["여권"]); // 양말 넣기가 되돌려졌다
   });
 });

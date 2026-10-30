@@ -7,7 +7,7 @@ import { updateItem } from "./logic/updateItem";
 
 export type ItemActions = {
   addItem: (boxId: string, input: Omit<NewItemInput, "id">) => ItemResult; // 막히면 데이터는 그대로
-  updateItem: (boxId: string, input: NewItemInput) => ItemResult; // input.id인 물건을 고친다
+  updateItem: (boxId: string, input: NewItemInput, toBoxId?: string) => ItemResult; // input.id인 물건을 고친다(toBoxId면 그 가구로 옮긴다)
   removeItem: (boxId: string, itemId: string) => void;
 };
 
@@ -18,8 +18,8 @@ export const itemActions = (set: SetCore, get: GetCore): ItemActions => ({
     if (result.ok) set((state) => change(state, result.data));
     return result;
   },
-  updateItem: (boxId, input) => {
-    const result = updateItem(get().data, boxId, input);
+  updateItem: (boxId, input, toBoxId) => {
+    const result = updateItem(get().data, boxId, input, toBoxId);
     if (result.ok) set((state) => change(state, result.data));
     return result;
   },

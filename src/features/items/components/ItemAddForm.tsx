@@ -16,8 +16,7 @@ export function ItemAddForm({
   return (
     <ItemForm
       box={box}
-      label="물건 넣기"
-      submitLabel="넣기"
+      kind="add"
       initial={{ name: "", slot }}
       save={(fields) => addItem(box.id, fields)}
       onClose={onClose}
