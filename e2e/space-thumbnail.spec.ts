@@ -52,16 +52,20 @@ test.describe("공간 썸네일", () => {
     await dialog.getByRole("button", { name: "벽 그리러 가기" }).click();
     await finishEditing(page);
     await pill(page, "복도").click();
-    const frame = await thumbnail(page, "복도").boundingBox();
-    const floor = await thumbnail(page, "복도").locator("polygon").first().boundingBox();
-    expect(floor?.x ?? -1).toBeGreaterThanOrEqual(frame?.x ?? 0);
-    expect((floor?.x ?? 0) + (floor?.width ?? 0)).toBeLessThanOrEqual(
-      (frame?.x ?? 0) + (frame?.width ?? 0),
-    );
-    expect(floor?.y ?? -1).toBeGreaterThanOrEqual(frame?.y ?? 0);
-    expect((floor?.y ?? 0) + (floor?.height ?? 0)).toBeLessThanOrEqual(
-      (frame?.y ?? 0) + (frame?.height ?? 0),
-    );
+    // 썸네일 틀과 바닥을 한 번에 잰다 (따로 재면 바쁠 때 그 사이 목록이 움직여 어긋난다)
+    const { frame, floor } = await thumbnail(page, "복도").evaluate((svg) => {
+      const edges = (element: Element) => {
+        const { left, right, top, bottom } = element.getBoundingClientRect();
+        return { left, right, top, bottom };
+      };
+      const polygon = svg.querySelector("polygon");
+      return { frame: edges(svg), floor: polygon ? edges(polygon) : null };
+    });
+    expect(floor).not.toBeNull();
+    expect(floor?.left ?? -1).toBeGreaterThanOrEqual(frame.left);
+    expect(floor?.right ?? Infinity).toBeLessThanOrEqual(frame.right);
+    expect(floor?.top ?? -1).toBeGreaterThanOrEqual(frame.top);
+    expect(floor?.bottom ?? Infinity).toBeLessThanOrEqual(frame.bottom);
   });
 
   test("스크린샷을 남긴다 (시안 01과 비교)", async ({ page, isMobile }, testInfo) => {

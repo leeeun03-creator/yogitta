@@ -8,6 +8,7 @@ const BASE_URL = DEPLOYED_URL ?? `http://localhost:${PREVIEW_PORT}/yogitta/`;
 export default defineConfig({
   testDir: "e2e",
   fullyParallel: true,
+  workers: process.env.CI ? undefined : 7, // 로컬은 코어 8개 중 7개로 (CI는 기본값)
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "github" : "list",
