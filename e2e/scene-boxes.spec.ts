@@ -1,27 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
-import {
-  chooseTool,
-  collectErrors,
-  createSpace,
-  dragFloorCm,
-  openPreview,
-  preview,
-  pressCm,
-} from "./helpers";
+import { chooseTool, collectErrors, createSpace, openPreview, preview, pressCm } from "./helpers";
+import { FLOOR, panel, placeBox } from "./boxes";
 
-const FLOOR = { w: 600, h: 450 };
 const MANY_BOXES = 50;
 const GRID = { cols: 10, rows: 5 }; // 가구 50개를 놓을 자리 (10 × 5)
-type Cm = { x: number; y: number };
 
-const rotateButton = (page: Page) =>
-  page.getByRole("complementary", { name: "속성 패널" }).getByRole("button", { name: "90° 회전" });
-
-/** 가구 도구로 끌어 놓는다 (놓으면 그 가구가 골라진다). */
-async function placeBox(page: Page, from: Cm, to: Cm, isMobile: boolean) {
-  await chooseTool(page, "가구");
-  await dragFloorCm(page, FLOOR, from, to, isMobile);
-}
+const rotateButton = (page: Page) => panel(page).getByRole("button", { name: "90° 회전" });
 
 test.describe("3D에 가구 세우기", () => {
   test.skip(

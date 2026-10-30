@@ -1,19 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 import { chooseTool, collectErrors, createSpace, dragFloorCm, pressCm } from "./helpers";
+import { FLOOR, panel, placeBox } from "./boxes";
 import { makeRoom, splitAt } from "./rooms";
 
-const FLOOR = { w: 600, h: 450 };
-type Cm = { x: number; y: number };
-
-const panel = (page: Page) => page.getByRole("complementary", { name: "속성 패널" });
 const roomText = (page: Page) => panel(page).getByText(/^구역 /);
 const editInput = (page: Page) => page.getByRole("textbox", { name: "구역 이름", exact: true });
-
-/** 가구 도구로 끌어 놓는다 (놓으면 그 가구가 골라진다). */
-async function placeBox(page: Page, from: Cm, to: Cm, isMobile: boolean) {
-  await chooseTool(page, "가구");
-  await dragFloorCm(page, FLOOR, from, to, isMobile);
-}
 
 test.describe("가구가 놓인 구역", () => {
   test.skip(

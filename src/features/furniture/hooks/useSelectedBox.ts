@@ -1,8 +1,6 @@
 import { useMemo } from "react";
 import { boxRooms } from "@/features/spaces";
-import { boxFootprint } from "@/shared/lib/boxFootprint";
-import { boxObstacles } from "@/shared/lib/boxObstacles";
-import { isBoxBlocked } from "@/shared/lib/isBoxBlocked";
+import { overlappingBoxes } from "@/shared/lib/overlappingBoxes";
 import type { Box, Space } from "@/shared/types";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -14,7 +12,7 @@ export type SelectedBox = { box: Box; space: Space; room: string | null; isOverl
 
 /**
  * 현재 공간에서 고른 가구와 그 공간·구역. 고른 가구가 없으면 null.
- * 구역은 구획 계산이 바닥 격자를 모두 훑어서, 현재 공간이 바뀔 때만 다시 계산한다.
+ * 구역은 구획 계산이 바닥 격자를 모두 훑어서, 겹친 가구와 함께 현재 공간이 바뀔 때만 다시 계산한다.
  */
 export function useSelectedBox(): SelectedBox | null {
   const space = useAppStore((state) =>
@@ -22,12 +20,9 @@ export function useSelectedBox(): SelectedBox | null {
   );
   const selectedId = useAppStore((state) => state.ui.selectedBoxId);
   const rooms = useMemo(() => (space ? boxRooms(space) : null), [space]);
+  const overlapping = useMemo(() => (space ? overlappingBoxes(space) : null), [space]);
   const box = space?.boxes.find((candidate) => candidate.id === selectedId);
   if (!space || !box) return null;
-  const isOverlapping = isBoxBlocked(
-    { x: box.x, y: box.z }, // 2D y = 3D z
-    boxFootprint(box),
-    boxObstacles(space, box.id),
-  );
+  const isOverlapping = overlapping?.has(box.id) ?? false;
   return { box, space, room: rooms?.get(box.id) ?? null, isOverlapping };
 }

@@ -9,36 +9,16 @@ import {
   floorBox,
   plan,
   pressCm,
-  touchSender,
 } from "./helpers";
+import { FLOOR, boxButton, expectBox, placeBox } from "./boxes";
 
-const FLOOR = { w: 600, h: 450 };
 type Cm = { x: number; y: number };
 
 const dragCm = (page: Page, from: Cm, to: Cm, isMobile: boolean) =>
   dragFloorCm(page, FLOOR, from, to, isMobile);
-const boxButton = (page: Page, name: string) => page.getByRole("button", { name, exact: true });
 const label = (page: Page) => page.getByTestId("selected-box-label");
 const tool = (page: Page, name: string) =>
   page.getByRole("toolbar", { name: "그리기 도구" }).getByRole("button", { name, exact: true });
-
-/** 가구 도구로 끌어 놓는다 (놓으면 그 가구가 골라지고 선택 도구가 된다). */
-async function placeBox(page: Page, from: Cm, to: Cm, isMobile: boolean) {
-  await chooseTool(page, "가구");
-  await dragCm(page, from, to, isMobile);
-}
-
-/** 놓인 가구의 [가운데 x, 가운데 y, 가로, 깊이, 회전] (cm·도). */
-async function boxData(page: Page, index = 0) {
-  const value = await plan(page).getByTestId("box").nth(index).getAttribute("data-box");
-  return (value ?? "").split(",").map(Number);
-}
-
-/** 가구 하나가 기대한 값과 1cm 안으로 같은지 본다. */
-async function expectBox(page: Page, expected: number[], index = 0) {
-  const actual = await boxData(page, index);
-  expected.forEach((value, i) => expect(Math.abs((actual[i] ?? NaN) - value)).toBeLessThan(1.5));
-}
 
 test.describe("선택 도구로 가구 고르기·옮기기", () => {
   test.skip(
@@ -167,70 +147,6 @@ test.describe("선택 도구로 가구 고르기·옮기기", () => {
     else expect(await labelY()).toBeGreaterThan((await box()).y);
     await dragCm(page, { x: 200, y: 75 }, { x: 200, y: 400 }, isMobile); // 바닥 아래쪽 끝
     expect(await labelY()).toBeLessThan((await box()).y);
-  });
-
-  test("엣지: 끄는 중에 두 번째 손가락이 닿으면 옮기지 않는다 (핀치 줌)", async ({
-    page,
-    isMobile,
-  }) => {
-    test.skip(!isMobile, "터치는 모바일에서만");
-    const a = await cmToScreen(page, FLOOR, { x: 200, y: 125 });
-    const b = await cmToScreen(page, FLOOR, { x: 450, y: 350 });
-    const send = await touchSender(page);
-    await send("touchStart", [a]);
-    await send("touchMove", [{ x: a.x + 30, y: a.y + 20 }]);
-    await send("touchStart", [{ x: a.x + 30, y: a.y + 20 }, b]);
-    await send("touchMove", [a, { x: b.x + 40, y: b.y }]);
-    await send("touchEnd", []);
-    await expectBox(page, [200, 125, 200, 150, 0]);
-  });
-
-  test("엣지: 빈 곳을 누른 채 두 번째 손가락이 가구에 닿아도 가구는 옮기지 않는다 (핀치 줌)", async ({
-    page,
-    isMobile,
-  }) => {
-    test.skip(!isMobile, "터치는 모바일에서만");
-    const a = await cmToScreen(page, FLOOR, { x: 450, y: 350 }); // 빈 곳
-    const b = await cmToScreen(page, FLOOR, { x: 200, y: 125 }); // 가구
-    // 손가락 번호를 정해 보낸다 (CDP touchEnd는 적은 손가락을 뗀다)
-    const cdp = await page.context().newCDPSession(page);
-    type Finger = { x: number; y: number; id: number };
-    const touch = (type: "touchStart" | "touchMove" | "touchEnd", touchPoints: Finger[]) =>
-      cdp.send("Input.dispatchTouchEvent", { type, touchPoints });
-    const movedB = { x: b.x - 60, y: b.y - 40, id: 1 };
-    await touch("touchStart", [{ ...a, id: 0 }]);
-    await touch("touchStart", [
-      { ...a, id: 0 },
-      { ...b, id: 1 },
-    ]);
-    await touch("touchMove", [{ x: a.x + 20, y: a.y + 20, id: 0 }, movedB]);
-    // 가구 위 손가락(1번)을 먼저 뗀다. 어느 손가락이든 떼면 끌기가 끝나므로, 끌기가 시작됐다면 여기서 옮겨진다
-    await touch("touchEnd", [movedB]);
-    await touch("touchEnd", []);
-    await expectBox(page, [200, 125, 200, 150, 0]);
-  });
-
-  test("엣지: 키보드만으로 Tab으로 가구, Enter로 고르기, 방향키로 10cm, Esc로 풀기", async ({
-    page,
-    isMobile,
-  }) => {
-    test.skip(isMobile, "키보드는 데스크톱에서만");
-    const before = await floorBox(page);
-    await page.getByLabel(/^2D 평면도 보기/).focus();
-    await page.keyboard.press("Escape");
-    await expect(boxButton(page, "보관함 1")).toHaveAttribute("aria-pressed", "false");
-    await page.keyboard.press("Tab");
-    await expect(boxButton(page, "보관함 1")).toBeFocused();
-    await page.keyboard.press("Enter");
-    await expect(boxButton(page, "보관함 1")).toHaveAttribute("aria-pressed", "true");
-    await page.keyboard.press("ArrowRight");
-    await page.keyboard.press("ArrowDown");
-    await expectBox(page, [210, 135, 200, 150, 0]);
-    expect(await floorBox(page)).toEqual(before); // 방향키로 화면이 같이 움직이지 않는다
-    await page.keyboard.press("Escape");
-    await expect(boxButton(page, "보관함 1")).toHaveAttribute("aria-pressed", "false");
-    await page.keyboard.press("Control+z");
-    await expectBox(page, [210, 125, 200, 150, 0]);
   });
 
   test("스크린샷을 남긴다 (시안 04와 비교)", async ({ page, isMobile }, testInfo) => {

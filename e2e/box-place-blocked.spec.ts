@@ -1,31 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, collectErrors, createSpace, dragFloorCm, plan, pressCm } from "./helpers";
+import { chooseTool, collectErrors, createSpace, plan, pressCm } from "./helpers";
+import { FLOOR, drawWall, placeBox } from "./boxes";
 
-const FLOOR = { w: 600, h: 450 };
 const DANGER = "rgb(155, 44, 31)"; // --yg-danger
-type Cm = { x: number; y: number };
 
 const notice = (page: Page) =>
   page.getByRole("region", { name: "2D 평면도 영역" }).getByRole("status");
-
-/** 직선 도구로 벽 하나를 긋는다 (두 점을 차례로 누른다). */
-async function drawWall(page: Page, from: Cm, to: Cm, isMobile: boolean) {
-  await chooseTool(page, "직선");
-  await pressCm(page, FLOOR, [from, to], isMobile);
-  await chooseTool(page, "선택");
-}
-
-/** 가구 도구로 끈다 (놓이면 그 가구가 골라지고 선택 도구가 된다). */
-async function placeBox(
-  page: Page,
-  from: Cm,
-  to: Cm,
-  isMobile: boolean,
-  beforeUp?: () => Promise<void>,
-) {
-  await chooseTool(page, "가구");
-  await dragFloorCm(page, FLOOR, from, to, isMobile, beforeUp);
-}
 
 test.describe("겹치는 자리에 가구 놓기 막기", () => {
   test.skip(

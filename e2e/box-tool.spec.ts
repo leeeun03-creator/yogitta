@@ -11,19 +11,13 @@ import {
   pressCm,
   touchSender,
 } from "./helpers";
+import { FLOOR, placeBox } from "./boxes";
 
-const FLOOR = { w: 600, h: 450 };
 type Cm = { x: number; y: number };
 
 const dragCm = (page: Page, from: Cm, to: Cm, isMobile: boolean, beforeUp?: () => Promise<void>) =>
   dragFloorCm(page, FLOOR, from, to, isMobile, beforeUp);
 const draft = (page: Page) => plan(page).getByTestId("box-draft");
-
-/** 가구 도구를 다시 골라 끈다 (놓으면 선택 도구로 바뀐다). */
-async function placeBox(page: Page, from: Cm, to: Cm, isMobile: boolean) {
-  await chooseTool(page, "가구");
-  await dragCm(page, from, to, isMobile);
-}
 
 /** 놓인 가구들의 [가운데 x, 가운데 y, 가로, 깊이, 회전] (cm·도). */
 async function boxData(page: Page) {

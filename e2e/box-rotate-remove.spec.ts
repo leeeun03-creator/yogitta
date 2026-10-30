@@ -1,35 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
-import { chooseTool, collectErrors, createSpace, dragFloorCm, plan, pressScreen } from "./helpers";
+import { chooseTool, collectErrors, createSpace, plan, pressScreen } from "./helpers";
+import { boxButton, expectBox, panel, placeBox } from "./boxes";
 
-const FLOOR = { w: 600, h: 450 };
-type Cm = { x: number; y: number };
-
-const panel = (page: Page) => page.getByRole("complementary", { name: "속성 패널" });
 const rotateButton = (page: Page) => panel(page).getByRole("button", { name: "90° 회전" });
 const removeButton = (page: Page) => panel(page).getByRole("button", { name: "삭제" });
-const boxButton = (page: Page) => page.getByRole("button", { name: "보관함 1", exact: true });
 const planRegion = (page: Page) => page.getByRole("region", { name: "2D 평면도 영역" });
-
-/** 가구 도구로 끌어 놓는다 (놓으면 그 가구가 골라지고 선택 도구가 된다). */
-async function placeBox(page: Page, from: Cm, to: Cm, isMobile: boolean) {
-  await chooseTool(page, "가구");
-  await dragFloorCm(page, FLOOR, from, to, isMobile);
-}
-
-/** 놓인 가구의 [가운데 x, 가운데 y, 가로, 깊이, 회전] (cm·도). */
-async function boxData(page: Page) {
-  const value = await plan(page).getByTestId("box").first().getAttribute("data-box");
-  return (value ?? "").split(",").map(Number);
-}
-
-/** 가구가 기대한 값과 1cm 안으로 같아질 때까지 기다린다 (화면 px → cm 반올림 오차). */
-async function expectBox(page: Page, expected: number[]) {
-  const isNear = (actual: number[]) =>
-    expected.every((value, i) => Math.abs((actual[i] ?? NaN) - value) < 1.5);
-  await expect
-    .poll(async () => isNear(await boxData(page)), { message: `가구 ${expected}` })
-    .toBe(true);
-}
 
 test.describe("가구 돌리기·지우기 (속성 패널)", () => {
   test.skip(
@@ -62,7 +37,7 @@ test.describe("가구 돌리기·지우기 (속성 패널)", () => {
     await rotateButton(page).click();
     await expectBox(page, [200, 125, 200, 150, 90]);
     const front = await plan(page).getByTestId("box-front").boundingBox();
-    const body = await boxButton(page).boundingBox();
+    const body = await boxButton(page, "보관함 1").boundingBox();
     expect((front?.x ?? 0) + (front?.width ?? 0)).toBeLessThanOrEqual((body?.x ?? 0) + 1);
     // 돌린 모양(세로로 긴 150 × 200)대로 가구 버튼도 바뀐다
     expect(body?.height ?? 0).toBeGreaterThan(body?.width ?? 0);
@@ -103,7 +78,7 @@ test.describe("가구 돌리기·지우기 (속성 패널)", () => {
     await expectBox(page, [200, 125, 200, 150, 90]);
     await pressScreen(page, await handle(), isMobile); // 90도: 오른쪽
     await expectBox(page, [200, 125, 200, 150, 180]);
-    await expect(boxButton(page)).toHaveAttribute("aria-pressed", "true");
+    await expect(boxButton(page, "보관함 1")).toHaveAttribute("aria-pressed", "true");
   });
 
   test("엣지: 바닥 경계에 붙은 가구를 돌리면 바닥 안으로 밀린다", async ({ page, isMobile }) => {
@@ -136,7 +111,7 @@ test.describe("가구 돌리기·지우기 (속성 패널)", () => {
     await page.keyboard.press("r"); // 2D 평면도에 초점: 고른 가구를 돌린다
     await expectBox(page, [200, 125, 200, 150, 90]);
     await page.keyboard.press("Tab");
-    await expect(boxButton(page)).toBeFocused();
+    await expect(boxButton(page, "보관함 1")).toBeFocused();
     await page.keyboard.press("r"); // 가구 버튼에 초점: 그 가구를 돌린다
     await expectBox(page, [200, 125, 200, 150, 180]);
     await page.keyboard.press("Delete");

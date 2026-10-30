@@ -9,8 +9,8 @@ import {
   pressCm,
   wallPoints,
 } from "./helpers";
+import { FLOOR, placeBox } from "./boxes";
 
-const FLOOR = { w: 600, h: 450 };
 const DANGER = "rgb(155, 44, 31)"; // --yg-danger
 const MESSAGE = "가구와 겹치는 자리에는 벽을 그을 수 없어요";
 
@@ -26,9 +26,8 @@ test.describe("가구를 지나가는 벽 긋기 막기", () => {
 
   test.beforeEach(async ({ page, isMobile }) => {
     await createSpace(page, { width: "6.0", depth: "4.5" });
-    await chooseTool(page, "가구");
     // 보관함 1: x 100 ~ 200, y 100 ~ 200 (놓으면 선택 도구가 된다)
-    await dragFloorCm(page, FLOOR, { x: 100, y: 100 }, { x: 200, y: 200 }, isMobile);
+    await placeBox(page, { x: 100, y: 100 }, { x: 200, y: 200 }, isMobile);
   });
 
   test("직선: 가구를 지나가게 둘째 점을 누르면 그어지지 않고 안내가 뜨며, 첫 점은 남는다", async ({
