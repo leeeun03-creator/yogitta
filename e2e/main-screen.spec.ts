@@ -122,7 +122,8 @@ test.describe("메인 화면 엣지", () => {
     });
     await createSpace(page, { width: "6.0", depth: "4.5" });
     await finishEditing(page);
-    await expect(page.getByRole("status")).toHaveText(
+    // 화면 아래 저장 안내 자리도 status라 3D 공간 영역 안에서 찾는다
+    await expect(page.getByRole("region", { name: "3D 공간 영역" }).getByRole("status")).toHaveText(
       "이 브라우저에서는 3D를 볼 수 없어요. [편집]을 누르면 2D 평면도로 볼 수 있어요.",
     );
     await expect(page.locator("canvas")).toHaveCount(0);

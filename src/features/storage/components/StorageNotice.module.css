@@ -1,0 +1,29 @@
+/* 저장 안내: 화면 아래 가운데에 뜨는 카드 (yogitta-design 4장 카드 모양). 비어 있으면 아무것도 가리지 않는다 */
+.area {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.notice {
+  max-width: 460px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px 12px 18px;
+  background: var(--yg-surface);
+  border-radius: var(--yg-radius-card);
+  box-shadow: var(--yg-shadow-pop);
+  pointer-events: auto;
+}
+
+.message {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}

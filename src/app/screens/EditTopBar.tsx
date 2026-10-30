@@ -1,5 +1,6 @@
 import { ChevronLeft } from "lucide-react";
 import { HistoryButtons } from "@/features/editor2d";
+import { useStorageStatus } from "@/features/storage";
 import { formatMeters } from "@/shared/lib/formatMeters";
 import type { Space } from "@/shared/types";
 import { Button, Segmented } from "@/shared/ui";
@@ -15,13 +16,15 @@ const VIEW_OPTIONS: readonly { value: EditView; label: string }[] = [
 ];
 
 /**
- * 편집 모드 상단 바: [‹ 완료] · 제목 · 공간 이름과 바닥 크기 · "자동 저장됨" · [2D 평면도 | 3D 미리보기] · 되돌리기·다시하기.
+ * 편집 모드 상단 바: [‹ 완료] · 제목 · 공간 이름과 바닥 크기 · "자동 저장됨"(실패하면 "저장하지 못했어요")
+ * · [2D 평면도 | 3D 미리보기] · 되돌리기·다시하기.
  */
 export function EditTopBar({ space }: { space: Space }) {
   const view = useAppStore((state) => state.ui.view);
   const setView = useAppStore((state) => state.setView);
   const setMode = useAppStore((state) => state.setMode);
   const titleRef = useFocusOnShow<HTMLHeadingElement>();
+  const saveFailed = useStorageStatus((state) => state.saveFailed);
   return (
     <header className={styles.topBar}>
       <div className={styles.heading}>
@@ -39,7 +42,7 @@ export function EditTopBar({ space }: { space: Space }) {
           <span className={styles.spaceInfo}>
             {space.name} · {formatMeters(space.floor.w)} × {formatMeters(space.floor.h)} m
           </span>
-          <span className={styles.saved}>자동 저장됨</span>
+          <span className={styles.saved}>{saveFailed ? "저장하지 못했어요" : "자동 저장됨"}</span>
         </div>
       </div>
       <div className={styles.controls}>
