@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { chooseTool, collectErrors, createSpace, plan, pressCm } from "./helpers";
-import { FLOOR, boxButton, nameField, panel, placeBox, typeButton } from "./boxes";
+import { FLOOR, boxButton, nameField, openDetails, panel, placeBox, typeButton } from "./boxes";
 
 const typeButtons = (page: Page) =>
   panel(page).getByRole("group", { name: "종류" }).getByRole("button");
@@ -36,6 +36,7 @@ test.describe("속성 패널 종류 선택으로 가구 종류 바꾸기", () =>
   test.beforeEach(async ({ page, isMobile }) => {
     await createSpace(page, { width: "6.0", depth: "4.5" });
     await placeBox(page, { x: 100, y: 50 }, { x: 300, y: 200 }, isMobile); // 200 × 150, 가운데 (200, 125)
+    await openDetails(page); // 휴대폰은 종류·크기가 접혀 있다
   });
 
   test("종류 8개가 4열로 놓이고(휴대폰은 한 줄) 지금 종류(보관함)가 눌려 있다", async ({

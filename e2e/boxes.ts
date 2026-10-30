@@ -11,6 +11,16 @@ export const panel = (page: Page) => page.getByRole("complementary", { name: "�
 /** 속성 패널의 가구 이름 입력칸. */
 export const nameField = (page: Page) =>
   panel(page).getByRole("textbox", { name: "가구 이름", exact: true });
+/** 휴대폰 속성 패널의 [종류·크기 ▾] (데스크톱은 숨어 있다). */
+export const detailsToggle = (page: Page) => panel(page).getByRole("button", { name: "종류·크기" });
+
+/** 휴대폰에서 접혀 있는 종류·크기를 편다. 데스크톱은 늘 펼쳐 있어 아무것도 하지 않는다. */
+export async function openDetails(page: Page) {
+  const toggle = detailsToggle(page);
+  if (!(await toggle.isVisible())) return;
+  if ((await toggle.getAttribute("aria-expanded")) === "false") await toggle.click();
+}
+
 /** 속성 패널 종류 선택의 종류 버튼 (양문 수납장 … 보관함). */
 export const typeButton = (page: Page, name: string) =>
   panel(page).getByRole("group", { name: "종류" }).getByRole("button", { name, exact: true });
