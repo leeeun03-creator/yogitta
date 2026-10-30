@@ -56,6 +56,16 @@ describe("boxToMesh", () => {
     expect(boxToMesh({ ...BOX, type: "drawer", rows: 3 }).parts).toHaveLength(7);
   });
 
+  it("이름 라벨은 가구 이름이고, 가장 높은 부품의 윗면(top) 위에 띄운다", () => {
+    expect(boxToMesh(BOX)).toMatchObject({ name: "보관함 1", top: 90 });
+    expect(boxToMesh({ ...BOX, type: "bed", h: 45 }).top).toBeCloseTo(85); // 머리판이 40cm 더 높다
+  });
+
+  it("엣지: 벽걸이는 설치 높이(base)에서 잰 top이라 라벨이 벽걸이 위에 뜬다", () => {
+    const mesh = boxToMesh({ ...BOX, type: "wall", h: 60, elevation: 150 });
+    expect(mesh.base + mesh.top).toBeCloseTo(210);
+  });
+
   it("엣지: 설치 높이가 있으면 그만큼 떠서 선다", () => {
     expect(boxToMesh({ ...BOX, elevation: 120 }).base).toBe(120);
   });

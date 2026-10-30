@@ -1,0 +1,19 @@
+/* 3D 이름 라벨: 가구 위에 뜨는 바탕색 알약. 강조색은 찾은 가구에만 쓰므로(yogitta-design 5장) 쓰지 않는다 */
+.label {
+  display: block;
+  padding: 2px 8px;
+  border: 1px solid var(--yg-border);
+  border-radius: var(--yg-radius-pill);
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .label {
+    font-size: 12px; /* 최소 글자 크기 (yogitta-design 2장) */
+  }
+}

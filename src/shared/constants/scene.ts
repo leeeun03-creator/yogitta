@@ -31,5 +31,12 @@ export const BOX_HANDLE_3D = {
   heightRatio: 0.8,
   depth: 1,
 } as const;
+/** 3D 이름 라벨을 가구 맨 위(침대는 머리판 위)에서 띄우는 높이 (cm). */
+export const BOX_LABEL_GAP_CM = 12;
+/**
+ * 3D 이름 라벨이 쓰는 z-index 범위 [가까운 쪽, 먼 쪽]. 카메라에 가까운 라벨이 위에 오고,
+ * 모두 보기 버튼(z-index 2)보다 아래라 버튼을 가리지 않는다.
+ */
+export const BOX_LABEL_Z_RANGE: [number, number] = [1, 0];
 /** 3D 점 목록(Float32Array)에서 점 하나가 차지하는 칸 수: x, y, z. */
 export const XYZ_PER_POINT = 3;

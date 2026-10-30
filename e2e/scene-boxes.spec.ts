@@ -56,6 +56,7 @@ test.describe("3D에 가구 세우기", () => {
     }
     await openPreview(page);
     await expect(preview(page)).toHaveAccessibleName(/가구 50개$/);
+    await expect(preview(page).getByTestId("box-label")).toHaveCount(MANY_BOXES); // 이름 라벨도 50개
     expect(errors).toEqual([]);
   });
 });
