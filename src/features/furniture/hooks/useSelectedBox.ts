@@ -1,17 +1,22 @@
-import type { AppData, Box, Floor } from "@/shared/types";
+import { useMemo } from "react";
+import { boxRooms } from "@/features/spaces";
+import type { Box, Floor } from "@/shared/types";
 import { useAppStore } from "@/store/useAppStore";
 
-const currentSpace = (data: AppData) =>
-  data.spaces.find((space) => space.id === data.currentSpaceId);
+/** 고른 가구, 바닥, 가구가 놓인 구역(없으면 null). */
+export type SelectedBox = { box: Box; floor: Floor; room: string | null };
 
 /**
- * 현재 공간에서 고른 가구와 바닥. 고른 가구가 없으면 null.
- * store에 있는 객체를 그대로 골라 와서(새 객체를 만들지 않아) 바뀔 때만 다시 그린다.
+ * 현재 공간에서 고른 가구와 그 바닥·구역. 고른 가구가 없으면 null.
+ * 구역은 구획 계산이 바닥 격자를 모두 훑어서, 현재 공간이 바뀔 때만 다시 계산한다.
  */
-export function useSelectedBox(): { box: Box; floor: Floor } | null {
-  const box = useAppStore((state) =>
-    currentSpace(state.data)?.boxes.find((candidate) => candidate.id === state.ui.selectedBoxId),
+export function useSelectedBox(): SelectedBox | null {
+  const space = useAppStore((state) =>
+    state.data.spaces.find((candidate) => candidate.id === state.data.currentSpaceId),
   );
-  const floor = useAppStore((state) => currentSpace(state.data)?.floor);
-  return box && floor ? { box, floor } : null;
+  const selectedId = useAppStore((state) => state.ui.selectedBoxId);
+  const rooms = useMemo(() => (space ? boxRooms(space) : null), [space]);
+  const box = space?.boxes.find((candidate) => candidate.id === selectedId);
+  if (!space || !box) return null;
+  return { box, floor: space.floor, room: rooms?.get(box.id) ?? null };
 }

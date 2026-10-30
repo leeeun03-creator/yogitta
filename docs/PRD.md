@@ -317,7 +317,7 @@ type Wall = { id: string; tool: "line" | "polyline" | "rect" | "circle" | "curve
 type FurnitureType = "cabinet" | "drawer" | "shelf" | "wall" | "desk" | "table" | "bed" | "box";
 
 type Box = {
-  id: string; name: string; type: FurnitureType; room?: string;
+  id: string; name: string; type: FurnitureType; // 구역은 저장하지 않고 놓인 구획에서 계산한다
   x: number; z: number; rotation: number;   // 바닥 위 중심, 정면 방향
   w: number; d: number; h: number;          // cm
   elevation: number; parentId?: string;     // 벽걸이·가구 위 가구

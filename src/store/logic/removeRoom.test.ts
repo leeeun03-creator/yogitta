@@ -1,17 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { removeRoom } from "./removeRoom";
-import { createRoomTestData, createTestBox } from "./roomFixtures";
+import { createRoomTestData } from "./roomFixtures";
+import { deepFreeze } from "./spaceFixtures";
 
 describe("removeRoom", () => {
-  it("구역을 지우고, 그 구역 가구는 구역 없음이 된다", () => {
-    const data = createRoomTestData(
-      ["안방", "거실"],
-      [createTestBox("1", "안방"), createTestBox("2", "거실")],
-    );
+  it("구역을 지우고, 가구는 건드리지 않는다 (가구 구역은 놓인 자리에서 계산한다)", () => {
+    const data = createRoomTestData(["안방", "거실"]);
     const space = removeRoom(data, "안방").spaces[0];
     expect(space?.rooms).toEqual(["거실"]);
-    expect(space?.boxes[0]).not.toHaveProperty("room");
-    expect(space?.boxes[1]?.room).toBe("거실");
+    expect(space?.boxes).toBe(data.spaces[0]?.boxes);
   });
 
   it("다른 공간의 같은 이름 구역은 그대로다", () => {
@@ -29,9 +26,8 @@ describe("removeRoom", () => {
   });
 
   it("엣지: 원본을 바꾸지 않는다", () => {
-    const data = createRoomTestData(["안방"], [createTestBox("1", "안방")]);
-    Object.freeze(data.spaces[0]?.boxes[0]);
+    const data = deepFreeze(createRoomTestData(["안방"]));
     removeRoom(data, "안방");
-    expect(data.spaces[0]?.boxes[0]?.room).toBe("안방");
+    expect(data.spaces[0]?.rooms).toEqual(["안방"]);
   });
 });

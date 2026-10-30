@@ -3,6 +3,7 @@ export { RoomList } from "./components/RoomList";
 export { RoomNamePopover } from "./components/RoomNamePopover";
 export { SpaceSwitcher } from "./components/SpaceSwitcher";
 export type { FloorLine } from "./logic/blockFloorCells";
+export { boxRooms } from "./logic/boxRooms";
 export { findRoomAt } from "./logic/findRoomAt";
 export { roomAreas, type RoomArea } from "./logic/roomAreas";
 export { roomColor } from "./logic/roomColor";

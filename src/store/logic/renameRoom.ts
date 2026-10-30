@@ -10,7 +10,10 @@ function renameKey<T>(record: Record<string, T>, from: string, to: string): Reco
   );
 }
 
-/** 현재 공간의 구역 이름을 바꾸고, 그 구역에 있던 가구의 구역과 구역 기준점도 같이 옮긴다. 자리(순서)는 그대로다. */
+/**
+ * 현재 공간의 구역 이름을 바꾸고 구역 기준점도 같이 옮긴다. 자리(순서)는 그대로다.
+ * 가구 구역은 놓인 자리에서 계산하므로(boxRooms) 가구는 건드리지 않는다.
+ */
 export function renameRoom(data: AppData, from: string, input: string): RoomResult {
   const current = data.spaces.find((space) => space.id === data.currentSpaceId);
   if (!current?.rooms.includes(from)) return { ok: true, data };
@@ -23,7 +26,6 @@ export function renameRoom(data: AppData, from: string, input: string): RoomResu
     data: updateCurrentSpace(data, (space) => ({
       ...space,
       rooms: space.rooms.map((room) => (room === from ? to : room)),
-      boxes: space.boxes.map((box) => (box.room === from ? { ...box, room: to } : box)),
       ...(space.roomAnchors && { roomAnchors: renameKey(space.roomAnchors, from, to) }),
     })),
   };

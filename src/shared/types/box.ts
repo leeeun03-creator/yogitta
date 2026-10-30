@@ -1,12 +1,14 @@
 import type { FurnitureType } from "./furniture";
 import type { Item } from "./item";
 
-/** 공간에 배치한 가구 하나. 위치·크기는 모두 cm, 바닥 위 중심 기준이다. */
+/**
+ * 공간에 배치한 가구 하나. 위치·크기는 모두 cm, 바닥 위 중심 기준이다.
+ * 구역은 저장하지 않고 놓인 구획에서 계산한다 (features/spaces의 boxRooms).
+ */
 export type Box = {
   id: string;
   name: string; // 공간 안에서 중복 불가
   type: FurnitureType;
-  room?: string; // 구역 (선택)
   x: number; // 3D x = 2D x
   z: number; // 3D z = 2D y
   rotation: number; // 정면 방향 (도)

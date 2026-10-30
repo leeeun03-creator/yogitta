@@ -1,17 +1,17 @@
-import { RotateCw, Trash2 } from "lucide-react";
+import { MapPin, RotateCw, Trash2 } from "lucide-react";
 import { useId, useRef } from "react";
 import { formatSize } from "@/shared/lib/formatSize";
 import { rotatedBox } from "@/shared/lib/rotatedBox";
-import type { Box, Floor } from "@/shared/types";
 import { Button } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
-import { useSelectedBox } from "../hooks/useSelectedBox";
+import { useSelectedBox, type SelectedBox } from "../hooks/useSelectedBox";
 import styles from "./PropertyPanel.module.css";
 
 const ICON_SIZE = 18;
+const ROOM_ICON_SIZE = 16;
 
 /**
- * 속성 패널 (시안 04). 고른 가구의 이름·크기와 [90° 회전]·[삭제]를 보인다 (이름·종류·크기 바꾸기는 T7·T26).
+ * 속성 패널 (시안 04). 고른 가구의 이름·놓인 구역·크기와 [90° 회전]·[삭제]를 보인다 (이름·종류·크기 바꾸기는 T7·T26).
  * 데스크톱은 2D 평면도 오른쪽에 늘 있어(고른 가구가 없으면 안내) 가구를 골라도 2D 평면도 크기가 그대로이고,
  * 휴대폰은 고른 가구가 있을 때만 화면 아래에 겹쳐 뜬다.
  */
@@ -34,16 +34,20 @@ export function PropertyPanel() {
   );
 }
 
-type BoxPropertiesProps = { box: Box; floor: Floor; onRemoved: () => void };
+type BoxPropertiesProps = SelectedBox & { onRemoved: () => void };
 
-/** 고른 가구 하나의 속성: 이름·크기와 돌리기·지우기. */
+/** 고른 가구 하나의 속성: 이름·놓인 구역·크기와 돌리기·지우기. */
 function BoxProperties(props: BoxPropertiesProps) {
-  const { box } = props;
+  const { box, room } = props;
   return (
     <>
       <div className={styles.field}>
         <p className={styles.label}>가구 이름</p>
         <h2 className={styles.name}>{box.name}</h2>
+        <p className={styles.room}>
+          <MapPin size={ROOM_ICON_SIZE} aria-hidden="true" />
+          {room === null ? "구역 없음" : `구역 ${room}`}
+        </p>
       </div>
       <div className={styles.field}>
         <p className={styles.label}>크기 (cm)</p>

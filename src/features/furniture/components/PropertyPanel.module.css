@@ -41,6 +41,16 @@
   font-size: 22px;
   overflow-wrap: anywhere; /* 긴 가구 이름이 패널 밖으로 나가지 않게 */
 }
+/* 놓인 구역 (위치 핀 + "구역 안방"): 놓인 구획에서 계산해서 옮기거나 구역을 고치면 따라간다 */
+.room {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--yg-text-sub);
+}
+
 .value {
   margin: 0;
   font-size: 16px;

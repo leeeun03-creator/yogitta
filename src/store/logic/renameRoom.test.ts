@@ -1,18 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { renameRoom } from "./renameRoom";
-import { createRoomTestData, createTestBox } from "./roomFixtures";
+import { createRoomTestData } from "./roomFixtures";
+import { deepFreeze } from "./spaceFixtures";
 
 describe("renameRoom", () => {
-  it("자리를 지키며 이름을 바꾸고, 그 구역 가구도 따라 바뀐다", () => {
-    const data = createRoomTestData(
-      ["안방", "거실"],
-      [createTestBox("1", "안방"), createTestBox("2", "거실"), createTestBox("3")],
-    );
+  it("자리를 지키며 이름을 바꾸고, 가구는 건드리지 않는다 (가구 구역은 놓인 자리에서 계산한다)", () => {
+    const data = createRoomTestData(["안방", "거실"]);
     const result = renameRoom(data, "안방", "큰방");
     if (!result.ok) throw new Error("바뀌어야 한다");
     const space = result.data.spaces[0];
     expect(space?.rooms).toEqual(["큰방", "거실"]);
-    expect(space?.boxes.map((box) => box.room)).toEqual(["큰방", "거실", undefined]);
+    expect(space?.boxes).toBe(data.spaces[0]?.boxes);
   });
 
   it("엣지: 다른 구역과 같은 이름·빈 이름은 막는다", () => {
@@ -37,10 +35,8 @@ describe("renameRoom", () => {
   });
 
   it("엣지: 원본을 바꾸지 않는다", () => {
-    const data = createRoomTestData(["안방"], [createTestBox("1", "안방")]);
-    Object.freeze(data.spaces[0]?.boxes[0]);
+    const data = deepFreeze(createRoomTestData(["안방"]));
     renameRoom(data, "안방", "큰방");
     expect(data.spaces[0]?.rooms).toEqual(["안방"]);
-    expect(data.spaces[0]?.boxes[0]?.room).toBe("안방");
   });
 });
