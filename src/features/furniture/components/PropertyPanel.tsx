@@ -1,10 +1,11 @@
 import { MapPin, RotateCw, Trash2 } from "lucide-react";
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ROW_TYPES } from "@/shared/constants/furniture";
 import { rotatedBox, type RotateBlock } from "@/shared/lib/rotatedBox";
 import { Button } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
 import { useSelectedBox, type SelectedBox } from "../hooks/useSelectedBox";
+import { useSlotNotice } from "../hooks/useSlotNotice";
 import { BoxNameField } from "./BoxNameField";
 import { BoxSizeFields } from "./BoxSizeFields";
 import { DetailsToggle } from "./DetailsToggle";
@@ -21,6 +22,7 @@ const ROTATE_BLOCK_MESSAGES: Record<RotateBlock, string> = {
 
 /**
  * 속성 패널 (시안 04). 고른 가구의 이름·놓인 구역·종류·크기·칸 수를 바꾸고 [90° 회전]·[삭제]를 한다.
+ * 칸이 줄어 물건이 칸 없음으로 가면 알린다.
  * 데스크톱은 2D 평면도 오른쪽에 늘 있어(고른 가구가 없으면 안내) 가구를 골라도 2D 평면도 크기가 그대로이고,
  * 휴대폰은 2D 평면도에서 고른 가구가 있을 때만 화면 아래에 겹쳐 뜬다 (3D 미리보기의 보기 버튼을 가리지 않게).
  * 휴대폰에서는 2D 평면도를 덜 가리게 종류·크기를 접어 두고, 펼친 상태는 다른 가구를 골라도 이어진다.
@@ -60,6 +62,7 @@ type BoxPropertiesProps = SelectedBox & {
 function BoxProperties(props: BoxPropertiesProps) {
   const { box, room, isOverlapping, details } = props;
   const changeBoxType = useAppStore((state) => state.changeBoxType);
+  const notice = useSlotNotice(box.id);
   const detailsId = useId();
   return (
     <>
@@ -79,12 +82,13 @@ function BoxProperties(props: BoxPropertiesProps) {
         <FurnitureTypePicker
           key={String(details.isExpanded)}
           value={box.type}
-          onChange={(type) => changeBoxType(box.id, type)}
+          onChange={(type) => notice.report(changeBoxType(box.id, type))}
         />
         {/* 크기가 바뀌면(되돌리기·기본 높이 등) 입력 중이던 글자를 버리고 새로 그린다 */}
         <BoxSizeFields key={`${box.id}:${box.w}:${box.d}:${box.h}`} box={box} />
-        {ROW_TYPES.includes(box.type) && <RowStepper box={box} />}
+        {ROW_TYPES.includes(box.type) && <RowStepper box={box} onMoved={notice.report} />}
       </div>
+      {notice.text && <SlotNotice text={notice.text} />}
       {isOverlapping && <p className={styles.warning}>벽이나 다른 가구와 겹쳐 있어요</p>}
       <BoxActionButtons {...props} />
       <p className={styles.hint}>2D 평면도에서 R 키로 돌리고, Delete 키로 지울 수 있어요</p>
@@ -127,5 +131,18 @@ function BoxActionButtons({ box, space, onRemoved }: BoxPropertiesProps) {
         </p>
       )}
     </>
+  );
+}
+
+/** 칸 없음으로 옮긴 물건 알림. 휴대폰 속성 패널은 스크롤되므로 뜨면 보이는 곳까지 끌어온다. */
+function SlotNotice({ text }: { text: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    ref.current?.scrollIntoView({ block: "nearest" }); // 돌려주는 값을 정리 함수로 넘기지 않게 블록으로 쓴다
+  }, [text]);
+  return (
+    <p ref={ref} className={styles.notice} role="status">
+      {text}
+    </p>
   );
 }
