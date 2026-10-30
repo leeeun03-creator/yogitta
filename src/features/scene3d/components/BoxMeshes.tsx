@@ -11,11 +11,17 @@ import styles from "./BoxMeshes.module.css";
 /**
  * 가구를 종류별 모양(가구 부품들)으로 세운다 (yogitta-design 5장: 종류별 나무 톤, 면 음영 + 모서리 선, 단색 재질).
  * 가구마다 묶음을 바닥 자리·설치 높이로 옮기고 정면 방향으로 돌리며, 맨 위에 이름 라벨을 띄운다.
+ * 묶음과 이름 라벨에 가구 id를 달아 누르기(BoxPicker)가 어느 가구인지 알게 한다.
  */
 export function BoxMeshes({ boxes }: { boxes: readonly Box[] }) {
   const meshes = useMemo(() => boxes.map(boxToMesh), [boxes]);
   return meshes.map((mesh) => (
-    <group key={mesh.key} position={[mesh.x, mesh.base, mesh.z]} rotation-y={mesh.rotationY}>
+    <group
+      key={mesh.key}
+      position={[mesh.x, mesh.base, mesh.z]}
+      rotation-y={mesh.rotationY}
+      userData={{ boxId: mesh.key }}
+    >
       {mesh.parts.map((part) => (
         <PartMesh key={part.key} part={part} />
       ))}
@@ -25,7 +31,7 @@ export function BoxMeshes({ boxes }: { boxes: readonly Box[] }) {
         zIndexRange={BOX_LABEL_Z_RANGE}
         pointerEvents="none"
       >
-        <span data-testid="box-label" className={styles.label}>
+        <span data-testid="box-label" data-box-id={mesh.key} className={styles.label}>
           {mesh.name}
         </span>
       </Html>

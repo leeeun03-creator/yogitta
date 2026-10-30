@@ -10,6 +10,7 @@
   line-height: 1.4;
   white-space: nowrap;
   user-select: none;
+  pointer-events: none; /* 라벨 위에서 끌어도 3D가 돌게 누르기를 3D로 넘긴다 (라벨 누르기는 BoxPicker가 잰다) */
 }
 
 @media (max-width: 640px) {

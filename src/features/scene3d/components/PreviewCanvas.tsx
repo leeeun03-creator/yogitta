@@ -5,6 +5,7 @@ import type { RoomArea } from "@/features/spaces";
 import type { Box, Floor, Wall } from "@/shared/types";
 import type { ViewStatus, ZoomDirection } from "../logic/cameraView";
 import { BoxMeshes } from "./BoxMeshes";
+import { BoxPicker } from "./BoxPicker";
 import { FloorMesh } from "./FloorMesh";
 import styles from "./PreviewCanvas.module.css";
 import { PreviewCamera, type CameraCommands } from "./PreviewCamera";
@@ -18,6 +19,7 @@ type PreviewCanvasProps = {
   boxes: readonly Box[];
   areas: readonly RoomArea[];
   label: string;
+  onPickBox?: (id: string) => void; // 가구를 누르면
 };
 
 // 카메라가 준비되기 전에는 눌러도 아무 일이 없으므로 모두 막아 둔다
@@ -26,7 +28,8 @@ const isSameStatus = (a: ViewStatus, b: ViewStatus) =>
   a.isStart === b.isStart && a.canZoomIn === b.canZoomIn && a.canZoomOut === b.canZoomOut;
 
 /** three.js를 쓰는 3D 그림 본체와 보기 버튼. 무거워서 SceneView가 처음 열 때 따로 불러온다. */
-export function PreviewCanvas({ floor, walls, boxes, areas, label }: PreviewCanvasProps) {
+export function PreviewCanvas(props: PreviewCanvasProps) {
+  const { floor, walls, boxes, areas, label, onPickBox } = props;
   const camera = useRef<CameraCommands>(null);
   const [status, setStatus] = useState(NOT_READY);
   // 끄는 동안 매번 불리므로 바뀐 때만 다시 그린다
@@ -45,6 +48,7 @@ export function PreviewCanvas({ floor, walls, boxes, areas, label }: PreviewCanv
           <RoomFloorMeshes areas={areas} />
           <WallMeshes walls={walls} />
           <BoxMeshes boxes={boxes} />
+          {onPickBox && <BoxPicker onPick={onPickBox} />}
         </Canvas>
       </div>
       <ViewButtons
