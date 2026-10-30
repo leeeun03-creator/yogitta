@@ -1,12 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 import { chooseTool, collectErrors, createSpace, pressCm } from "./helpers";
 import { boxButton, FLOOR, panel, placeBox } from "./boxes";
-import { addItem, chips } from "./items";
-import { detail } from "./scene";
+import { addItem, chips, listButton } from "./items";
 import { finishEditing } from "./spaces";
 
-const listButton = (page: Page, name: string) =>
-  detail(page).getByRole("button", { name: new RegExp(`^${name} 물건`) });
 const dialog = (page: Page) => page.getByRole("alertdialog", { name: "보관함 1을 지울까요?" });
 const removeButton = (page: Page) => panel(page).getByRole("button", { name: "삭제" });
 const BOX1 = { x: 425, y: 100 }; // 보관함 1 가운데 (cm), 여권·양말이 든다

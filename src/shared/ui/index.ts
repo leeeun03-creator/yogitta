@@ -3,7 +3,7 @@ export { ConfirmDialog } from "./ConfirmDialog";
 export { IconButton } from "./IconButton";
 export { Logo } from "./Logo";
 export { SearchBar } from "./SearchBar";
-export { SelectField, type SelectOption } from "./SelectField";
+export { SelectField } from "./SelectField";
 export { Segmented } from "./Segmented";
 export { TextField } from "./TextField";
 export { Toggle } from "./Toggle";

@@ -5,6 +5,9 @@ import { detail } from "./scene";
 import { finishEditing } from "./spaces";
 
 /** 가구 상세 패널에서 물건을 넣고 고치는 실제 테스트 도우미. */
+/** 가구 목록의 가구 버튼 (이름 = "서랍장 1 물건 2개"). */
+export const listButton = (page: Page, name: string) =>
+  detail(page).getByRole("button", { name: new RegExp(`^${name} 물건`) });
 export const form = (page: Page, name: "물건 넣기" | "물건 고치기" = "물건 넣기") =>
   detail(page).getByRole("form", { name });
 export const row = (page: Page, label: string) =>
@@ -36,9 +39,7 @@ export async function openDrawer(page: Page, isMobile: boolean) {
   await openDetails(page);
   await typeButton(page, "서랍장").click();
   await finishEditing(page);
-  await detail(page)
-    .getByRole("button", { name: /^서랍장 1 물건/ })
-    .click();
+  await listButton(page, "서랍장 1").click();
   await expect(detail(page).getByRole("heading", { name: "서랍장 1" })).toBeVisible();
 }
 
@@ -57,7 +58,5 @@ export async function undoOnce(page: Page, boxName: string) {
   await page.getByRole("button", { name: "편집" }).click();
   await page.getByRole("button", { name: "되돌리기" }).click();
   await finishEditing(page);
-  await detail(page)
-    .getByRole("button", { name: new RegExp(`^${boxName} 물건`) })
-    .click();
+  await listButton(page, boxName).click();
 }

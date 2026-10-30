@@ -1,12 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 import { collectErrors, createSpace } from "./helpers";
 import { openDetails, placeBox, typeButton } from "./boxes";
-import { addItem, chips, editForm, openEdit, row, undoOnce } from "./items";
+import { addItem, chips, editForm, listButton, openEdit, row, undoOnce } from "./items";
 import { detail } from "./scene";
 import { finishEditing } from "./spaces";
 
-const listButton = (page: Page, name: string) =>
-  detail(page).getByRole("button", { name: new RegExp(`^${name} 물건`) });
 const notice = (page: Page) => detail(page).getByRole("status");
 const checked = (page: Page, label: "가구" | "칸") =>
   editForm(page).getByLabel(label).locator("option:checked");

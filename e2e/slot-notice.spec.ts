@@ -1,12 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createSpace, pressCm } from "./helpers";
 import { FLOOR, openDetails, panel, placeBox, typeButton } from "./boxes";
-import { addItem, chips } from "./items";
-import { detail } from "./scene";
+import { addItem, chips, listButton } from "./items";
 import { finishEditing } from "./spaces";
 
-const listButton = (page: Page, name: string) =>
-  detail(page).getByRole("button", { name: new RegExp(`^${name} 물건`) });
 // 칸 수 표시(output)도 status라 알림 문구로 고른다
 const notice = (page: Page) => panel(page).getByRole("status").filter({ hasText: "옮겼어요" });
 const fewer = (page: Page) => panel(page).getByRole("button", { name: "칸 줄이기" });
