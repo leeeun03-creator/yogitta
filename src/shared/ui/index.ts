@@ -6,3 +6,4 @@ export { SearchBar } from "./SearchBar";
 export { Segmented } from "./Segmented";
 export { TextField } from "./TextField";
 export { Toggle } from "./Toggle";
+export { useModalDialog } from "./useModalDialog";

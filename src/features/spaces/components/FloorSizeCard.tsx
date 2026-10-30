@@ -1,17 +1,10 @@
 import type { Ref } from "react";
 import { Button, TextField } from "@/shared/ui";
 import { useFloorSizeForm } from "../hooks/useFloorSizeForm";
-import type { MetersError } from "../logic/parseMeters";
+import { metersMessage } from "../logic/metersMessage";
 import { spaceNameMessage } from "../logic/spaceNameMessage";
 import { FloorPresets } from "./FloorPresets";
 import styles from "./FloorSizeCard.module.css";
-
-const METERS_MESSAGES: Record<MetersError, string> = {
-  empty: "크기를 적어 주세요",
-  notNumber: "숫자로 적어 주세요 (예: 6.0)",
-  tooSmall: "1m 이상으로 적어 주세요",
-  tooLarge: "30m 이하로 적어 주세요",
-};
 
 type FloorSizeCardProps = { nameInputRef?: Ref<HTMLInputElement> };
 
@@ -36,14 +29,14 @@ export function FloorSizeCard({ nameInputRef }: FloorSizeCardProps) {
             inputMode="decimal"
             value={fields.width}
             onChange={setters.setWidth}
-            error={errors.width && METERS_MESSAGES[errors.width]}
+            error={errors.width && metersMessage(errors.width)}
           />
           <TextField
             label="세로 (m)"
             inputMode="decimal"
             value={fields.depth}
             onChange={setters.setDepth}
-            error={errors.depth && METERS_MESSAGES[errors.depth]}
+            error={errors.depth && metersMessage(errors.depth)}
           />
         </div>
         <FloorPresets width={fields.width} depth={fields.depth} onSelect={selectFloor} />

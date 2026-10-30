@@ -1,0 +1,44 @@
+/* 바닥 크기 바꾸기 대화상자. 카드 모양 (yogitta-design 4장, 확인 대화상자와 같은 틀) */
+.dialog {
+  width: min(380px, calc(100vw - 32px));
+  padding: 24px;
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  border: none;
+  border-radius: var(--yg-radius-card);
+  box-shadow: var(--yg-shadow-pop);
+}
+.dialog::backdrop {
+  background: color-mix(in srgb, var(--yg-text) 35%, transparent);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+}
+
+/* 가로·세로 두 칸을 한 줄에 */
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.outside {
+  margin: 0;
+  font-size: 14px;
+  color: var(--yg-danger);
+  word-break: keep-all;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

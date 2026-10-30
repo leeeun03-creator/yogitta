@@ -1,7 +1,7 @@
 import { create, type StoreApi } from "zustand";
 import { DATA_VERSION } from "@/shared/constants/storage";
 import { createId } from "@/shared/lib/createId";
-import type { AppData, Point, Wall } from "@/shared/types";
+import type { AppData, Floor, Point, Wall } from "@/shared/types";
 import { boxActions, type BoxActions } from "./boxActions";
 import { change } from "./change";
 import { addRoom, type RoomResult } from "./logic/addRoom";
@@ -10,6 +10,7 @@ import { addSpace, type AddSpaceResult, type NewSpaceInput } from "./logic/addSp
 import { addWall } from "./logic/addWall";
 import { eraseSegment } from "./logic/eraseSegment";
 import { moveWallPoint, type WallMoveResult } from "./logic/moveWallPoint";
+import { resizeFloor, type FloorResizeResult } from "./logic/resizeFloor";
 import { keepSelection } from "./logic/keepSelection";
 import { moveHistory, type HistoryDirection } from "./logic/moveHistory";
 import { EMPTY_HISTORY, type History } from "./logic/recordHistory";
@@ -45,6 +46,7 @@ type AppState = BoxActions & {
   addWall: (wall: Omit<Wall, "id">) => void; // 현재 공간에 더한다
   eraseSegment: (wallId: string, segment: number) => void;
   moveWallPoint: (from: Point, to: Point) => WallMoveResult; // 붙은 벽 점도 같이, 막히면 그대로
+  resizeFloor: (floor: Floor) => FloorResizeResult; // 무언가 바닥 밖으로 나가면 그대로
   addRoom: (name: string, at?: Point) => RoomResult; // 현재 공간에 구역을 더한다 (at = 구역 기준점)
   renameRoom: (from: string, to: string) => RoomResult;
   removeRoom: (name: string) => void;
@@ -140,6 +142,11 @@ export const useAppStore = create<AppState>()((set, get) => ({
     set((state) => change(state, eraseSegment(state.data, { wallId, segment }, createId("wall")))),
   moveWallPoint: (from, to) => {
     const result = moveWallPoint(get().data, from, to);
+    if (result.ok) set((state) => change(state, result.data));
+    return result;
+  },
+  resizeFloor: (floor) => {
+    const result = resizeFloor(get().data, floor);
     if (result.ok) set((state) => change(state, result.data));
     return result;
   },

@@ -29,7 +29,21 @@
   padding: 8px 20px 16px;
 }
 
+/* 격자 스냅 + 바닥 크기 */
+.barControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 @media (max-width: 640px) {
+  /* 휴대폰은 구역 목록 아래 한 줄에 둘을 양 끝으로 둔다. 글꼴이 늦게 와도 줄바꿈이 바뀌지 않게
+     (줄바꿈이 바뀌면 2D 평면도 높이가 바뀌어 끄는 중이던 자리가 어긋난다) */
+  .barControls {
+    flex: 1 1 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
   .body {
     flex-direction: column;
     gap: 12px;

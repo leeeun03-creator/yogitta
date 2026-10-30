@@ -1,3 +1,4 @@
+export { FloorResizeButton } from "./components/FloorResizeButton";
 export { FloorSizeCard } from "./components/FloorSizeCard";
 export { RoomList } from "./components/RoomList";
 export { RoomNamePopover } from "./components/RoomNamePopover";

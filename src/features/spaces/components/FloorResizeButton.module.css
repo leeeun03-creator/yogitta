@@ -1,0 +1,11 @@
+/* 휴대폰은 "바닥"을 화면에서만 숨겨 격자 스냅과 한 줄에 넉넉히 들어가게 한다 (화면 읽기는 "바닥 6.0 × 4.5 m") */
+@media (max-width: 640px) {
+  .word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
