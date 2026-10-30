@@ -43,12 +43,12 @@ export function FloorPlan({ space }: FloorPlanProps) {
           aria-label={`2D 평면도, 바닥 ${labels.width} × ${labels.depth}, 벽 ${walls.length}개, 구역 선 ${scene.roomLines.length}개, 가구 ${space.boxes.length}개`}
         >
           {/* 선·글자는 cm 좌표 안에 있어서, 화면에서 같은 px로 보이게 1px = cmPerPx로 그린다 */}
-          <FloorScene floor={floor} walls={walls} scene={scene} cmPerPx={box.cmPerPx} />
+          <FloorScene floor={floor} walls={input.walls} scene={scene} cmPerPx={box.cmPerPx} />
           <FloorDimensions floor={floor} labels={labels} cmPerPx={box.cmPerPx} />
         </svg>
         <BoxOverlay tool={tool} scene={scene} view={box} onRemoved={focusPlan} />
         <PlanNotice text={input.notice} />
-        <Loupe finger={input.finger} box={box} floor={floor} walls={walls} scene={scene} />
+        <Loupe finger={input.finger} box={box} floor={floor} walls={input.walls} scene={scene} />
       </div>
       <PlanRoomPopover box={box} onClose={focusPlan} />
     </div>

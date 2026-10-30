@@ -9,6 +9,7 @@ import { addRoomLine } from "./logic/addRoomLine";
 import { addSpace, type AddSpaceResult, type NewSpaceInput } from "./logic/addSpace";
 import { addWall } from "./logic/addWall";
 import { eraseSegment } from "./logic/eraseSegment";
+import { moveWallPoint, type WallMoveResult } from "./logic/moveWallPoint";
 import { keepSelection } from "./logic/keepSelection";
 import { moveHistory, type HistoryDirection } from "./logic/moveHistory";
 import { EMPTY_HISTORY, type History } from "./logic/recordHistory";
@@ -43,6 +44,7 @@ type AppState = BoxActions & {
   setRoomFocus: (focus: RoomFocus | null) => void;
   addWall: (wall: Omit<Wall, "id">) => void; // 현재 공간에 더한다
   eraseSegment: (wallId: string, segment: number) => void;
+  moveWallPoint: (from: Point, to: Point) => WallMoveResult; // 붙은 벽 점도 같이, 막히면 그대로
   addRoom: (name: string, at?: Point) => RoomResult; // 현재 공간에 구역을 더한다 (at = 구역 기준점)
   renameRoom: (from: string, to: string) => RoomResult;
   removeRoom: (name: string) => void;
@@ -136,6 +138,11 @@ export const useAppStore = create<AppState>()((set, get) => ({
     set((state) => change(state, addWall(state.data, { ...wall, id: createId("wall") }))),
   eraseSegment: (wallId, segment) =>
     set((state) => change(state, eraseSegment(state.data, { wallId, segment }, createId("wall")))),
+  moveWallPoint: (from, to) => {
+    const result = moveWallPoint(get().data, from, to);
+    if (result.ok) set((state) => change(state, result.data));
+    return result;
+  },
   addRoom: (name, at) => {
     const result = addRoom(get().data, name, at);
     if (result.ok) set((state) => change(state, result.data));

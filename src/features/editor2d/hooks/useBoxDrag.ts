@@ -1,5 +1,5 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
-import { TAP_MOVE_PX } from "@/shared/constants/floorPlan";
+import { POINT_HIT_PX, TAP_MOVE_PX } from "@/shared/constants/floorPlan";
 import { GRID_SNAP_CM } from "@/shared/constants/grid";
 import { boxFootprint, type Footprint } from "@/shared/lib/boxFootprint";
 import { boxObstacles } from "@/shared/lib/boxObstacles";
@@ -8,6 +8,7 @@ import { resolveBoxMove } from "@/shared/lib/resolveBoxMove";
 import type { Floor, Point, Space } from "@/shared/types";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
 import { findBoxAt } from "../logic/findBoxAt";
+import { findWallPointAt } from "../logic/findWallPointAt";
 import type { ViewBox } from "../logic/fitViewBox";
 import { movedBoxCenter } from "../logic/movedBoxCenter";
 import { screenToCm } from "../logic/screenToCm";
@@ -23,9 +24,11 @@ type Drag = {
   center: Point | null; // 옮길 자리 (cm). 누르기 거리보다 멀리 끌기 전에는 null
 };
 
-/** 누른 자리(px)에 가구가 있으면 그 가구 끌기를 시작한다. */
+/** 누른 자리(px)에 가구가 있으면 그 가구 끌기를 시작한다. 벽 점 위면 벽 점 끌기가 먼저라 시작하지 않는다. */
 function startDrag(pointerId: number, screen: Point, view: ViewBox, space: Space): Drag | null {
-  const hit = findBoxAt(space.boxes, screenToCm(screen, view));
+  const at = screenToCm(screen, view);
+  if (findWallPointAt(space.walls, at, POINT_HIT_PX * view.cmPerPx)) return null;
+  const hit = findBoxAt(space.boxes, at);
   if (!hit) return null;
   const origin = { x: hit.x, y: hit.z }; // 2D y = 3D z
   const obstacles = boxObstacles(space, hit.id);

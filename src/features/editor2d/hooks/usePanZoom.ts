@@ -36,7 +36,7 @@ const keyHandler =
 export function usePanZoom(
   ref: RefObject<HTMLElement | null>,
   floor: Floor,
-  canPanAt: (point: Point) => boolean,
+  canPanAt: (point: Point, cmPerPx: number) => boolean,
 ) {
   const viewport = useElementSize(ref);
   const [view, setView] = useState(() => initialView(floor));
@@ -63,7 +63,7 @@ export function usePanZoom(
   const pointerHandlers = usePointerGestures({
     zoomBy,
     panByPx,
-    canPanFrom: (screen) => canPanAt(screenToCm(screen, box)),
+    canPanFrom: (screen) => canPanAt(screenToCm(screen, box), box.cmPerPx),
   });
   const reset = () => setView(initialView(floor));
   return {
