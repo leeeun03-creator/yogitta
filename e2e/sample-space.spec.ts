@@ -1,9 +1,8 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { collectErrors } from "./helpers";
 import { addItem, chips, listButton } from "./items";
+import { space3d } from "./scene";
 import { mainTitle, pill, spaceItem } from "./spaces";
-
-const space3d = (page: Page) => page.getByRole("img", { name: /^3D 공간,/ });
 
 test.describe("첫 접속에 샘플 공간 보여주기", () => {
   // 저장된 값이 없는 첫 접속 (다른 실제 테스트는 공간 없는 저장 데이터로 시작한다)

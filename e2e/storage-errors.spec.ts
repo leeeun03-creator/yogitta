@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { collectErrors, createSpace } from "./helpers";
+import { collectErrors, createSpace, setSavedData } from "./helpers";
 import { addItem, listButton } from "./items";
 import { mainTitle, pill } from "./spaces";
 import { BROKEN_BACKUP_KEY, STORAGE_KEY } from "../src/shared/constants/storage";
@@ -10,10 +10,7 @@ const BROKEN_MESSAGE = "저장된 데이터를 읽지 못해 샘플 공간으로
 /** 저장 값을 raw로 바꿔 두고 새로고침한다 (앱이 그 값으로 다시 연다). */
 async function openWithSaved(page: Page, raw: string) {
   await page.goto("./");
-  await page.evaluate(({ key, value }) => localStorage.setItem(key, value), {
-    key: STORAGE_KEY,
-    value: raw,
-  });
+  await setSavedData(page, raw);
   await page.reload();
   await expect(mainTitle(page)).toBeVisible();
 }

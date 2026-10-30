@@ -11,6 +11,14 @@ export function collectErrors(page: Page): string[] {
   return errors;
 }
 
+/** 열린 앱 페이지의 저장 값(localStorage)을 raw로 바꾼다. 새로고침하면 앱이 그 값으로 연다. */
+export async function setSavedData(page: Page, raw: string) {
+  await page.evaluate(({ key, value }) => localStorage.setItem(key, value), {
+    key: STORAGE_KEY,
+    value: raw,
+  });
+}
+
 /**
  * 첫 실행 화면을 연다. 한 테스트에서 공간을 여러 번 만들면 앞 공간이 저장돼 있어 메인 화면이 뜨므로,
  * 그때는 저장 데이터를 공간 없음으로 비우고 다시 연다.
@@ -20,11 +28,10 @@ export async function openEmptyScreen(page: Page) {
   const widthField = page.getByLabel("가로 (m)");
   await expect(widthField.or(page.getByRole("button", { name: "편집" }))).toBeVisible();
   if (await widthField.isVisible()) return;
-  const empty = JSON.stringify({ version: DATA_VERSION, spaces: [], currentSpaceId: null });
-  await page.evaluate(({ key, value }) => localStorage.setItem(key, value), {
-    key: STORAGE_KEY,
-    value: empty,
-  });
+  await setSavedData(
+    page,
+    JSON.stringify({ version: DATA_VERSION, spaces: [], currentSpaceId: null }),
+  );
   await page.reload();
 }
 

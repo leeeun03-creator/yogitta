@@ -2,9 +2,8 @@ import { expect, test, type Page } from "@playwright/test";
 import { collectErrors, createSpace } from "./helpers";
 import { drawWall, placeBox } from "./boxes";
 import { addItem, chips, listButton } from "./items";
+import { space3d } from "./scene";
 import { addSpaceFromList, finishEditing, mainTitle, pill } from "./spaces";
-
-const space3d = (page: Page) => page.getByRole("img", { name: /^3D 공간,/ });
 
 /** 새로고침하고 메인 화면이 다시 뜰 때까지 기다린다. */
 async function reload(page: Page) {
