@@ -268,7 +268,7 @@ export function segmentToWall(a: Point, b: Point): WallTransform { … }
 ## 11. 작업 흐름 (매번 이 순서)
 
 ```
-① 계획(+테스트 항목) → ② 작성 → ③ 자가 점검 → ④ npm run check + npm run test:e2e → ⑤ 커밋
+① 계획(+테스트 항목) → ② 작성 → ③ 자가 점검 → ④ npm run check + 실제 테스트(바뀐 기능, 큰 Todo 끝은 전체) → ⑤ 커밋
 ```
 
 ### ① 계획 — 코드 쓰기 전에 사용자에게 짧게 보여준다
@@ -300,7 +300,7 @@ T10-2 계획
 
 ### ④ 자동 검사
 
-`npm run check`와 `npm run test:e2e` 통과. 실패하면 고치고 다시. 통과 전에는 커밋하지 않고, 다음 세부 Todo로 넘어가지 않는다 (`yogitta-test` 1·2장).
+`npm run check`와 바뀐 기능의 실제 테스트 통과 (큰 Todo의 마지막 세부 Todo·정리 점검은 `npm run test:e2e` 전체). 실패하면 고치고 다시. 통과 전에는 커밋하지 않고, 다음 세부 Todo로 넘어가지 않는다 (`yogitta-test` 1·2장).
 
 ### ⑤ 커밋
 

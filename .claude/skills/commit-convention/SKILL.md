@@ -23,7 +23,7 @@ T3. 벽 도구                 ← 큰 Todo (`docs/TODO.md`)
 
 - 큰 Todo `Tn`의 번호는 기획서·PRD와 같게 유지
 - 세부 Todo `Tn-n`은 큰 Todo를 시작할 때 `docs/todo/Tn.md`에 먼저 적고 시작 (쓰는 법은 `yogitta-todo` 스킬)
-- 세부 Todo 하나 = 30분~2시간에 끝나는 크기, 끝나면 화면에서 확인 가능한 단위
+- 세부 Todo 하나 = 큰 Todo를 3~4개로 나눈 크기, 끝나면 화면에서 확인 가능한 단위
 - 번호는 재사용하지 않는다. 지운 세부 Todo 번호는 비워두고, 새로 생긴 것은 다음 번호 (`T3-5`)
 
 Todo를 읽고 쓰는 법(파일 구조, 동사형 제목, 완료 조건, 크기, 의존, 오늘 할 일)은 `yogitta-todo` 스킬을 따른다.
@@ -198,7 +198,7 @@ todo: T18-1 벽 모서리 이음새를 P2로 하향
 
 1. 지금 끝낸 세부 Todo 번호 확인 (`docs/todo/Tn.md`에 없으면 먼저 `todo:` 커밋으로 추가)
 2. `git status`로 바뀐 파일 확인
-3. `npm run check`와 `npm run test:e2e` 통과 확인 (실패하면 커밋하지 않고 먼저 고친다, `yogitta-test` 1장)
+3. `npm run check`와 바뀐 기능의 실제 테스트 통과 확인. 큰 Todo의 마지막 세부 Todo·정리 점검 커밋이면 실제 테스트 전체(`npm run test:e2e`) (실패하면 커밋하지 않고 먼저 고친다, `yogitta-test` 1장)
 4. 관련 파일만 `git add <파일>`
 5. `Tn-n: 작업 내용` 형식으로 `git commit`
 6. `docs/todo/Tn.md`에서 해당 세부 Todo 체크 + 결과 한 줄, `docs/TODO.md` 진행 수 올리기 (`yogitta-todo` 5장) (`- [x] T3-3 사각형 도구`) — 같은 커밋에 포함
