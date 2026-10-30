@@ -1,0 +1,60 @@
+/* 물건 넣기 입력과 누른 물건 줄 (가구 상세 패널 안, 칸 행과 같은 바탕) */
+.form,
+.itemBar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--yg-radius-row);
+  background: var(--yg-surface-2);
+}
+.selectField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.selectLabel {
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+.select {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--yg-border);
+  border-radius: var(--yg-radius-field);
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  font: inherit;
+  font-size: 15px;
+}
+.select:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 0;
+}
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* 누른 물건: 이름 · 칸, 메모 */
+.itemName {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.itemSlot {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--yg-text-sub);
+}
+.memo {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--yg-text-sub);
+  overflow-wrap: anywhere;
+}

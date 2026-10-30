@@ -19,7 +19,11 @@ export function FurniturePanel({ space }: { space: Space }) {
   return (
     <aside className={styles.panel} aria-label="가구 상세 패널" onKeyDown={handleKeyDown}>
       {selection ? (
-        <FurnitureDetail selection={selection} onClose={() => selectBox(null)} />
+        <FurnitureDetail
+          key={selection.box.id} // 다른 가구를 고르면 입력·누른 물건을 비운다
+          selection={selection}
+          onClose={() => selectBox(null)}
+        />
       ) : (
         <FurnitureList boxes={space.boxes} onChoose={selectBox} />
       )}

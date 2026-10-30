@@ -136,12 +136,45 @@
   padding: 0;
   list-style: none;
 }
+/* 물건 칩: 누르면 자세히 (누른 칩은 강조색, yogitta-design 4장 칩) */
 .chip {
   padding: 5px 12px;
+  border: none;
   border-radius: var(--yg-radius-pill);
   background: var(--yg-surface);
+  color: var(--yg-text);
+  font: inherit;
   font-size: 15px;
   overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] {
+  background: var(--yg-accent);
+  color: var(--yg-on-accent);
+}
+.chip:focus-visible,
+.addChip:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 2px;
+}
+/* 빈 칸의 [+ 추가]: 점선 추가 버튼 (시안 08) */
+.addChip {
+  margin-left: auto;
+  padding: 4px 12px;
+  border: 2px dashed var(--yg-dashed);
+  border-radius: var(--yg-radius-pill);
+  background: transparent;
+  color: var(--yg-accent);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+/* 손가락으로 누르는 화면은 터치 영역 44px (yogitta-design 9장) */
+@media (pointer: coarse) {
+  .chip,
+  .addChip {
+    min-height: 44px;
+  }
 }
 
 /* 휴대폰: 3D 공간 아래에 두고, 길어지면 패널 안에서 넘긴다 (3D 보기 버튼을 가리지 않게) */

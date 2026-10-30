@@ -43,10 +43,11 @@ test.describe("메인 화면 가구 상세 패널", () => {
     await furnitureButton(page, "서랍장 1").click();
     await expect(detail(page).getByRole("heading", { name: "서랍장 1" })).toBeFocused();
     await expect(detail(page)).toContainText("구역 없음 · 물건 0개");
+    // 빈 칸은 "비어 있어요" 뒤에 [+ 추가] 버튼이 붙는다 (T8-3)
     await expect(rows(page)).toHaveText([
-      "1번째 서랍비어 있어요",
-      "2번째 서랍비어 있어요",
-      "3번째 서랍비어 있어요",
+      /^1번째 서랍비어 있어요/,
+      /^2번째 서랍비어 있어요/,
+      /^3번째 서랍비어 있어요/,
     ]);
     await detail(page).getByRole("button", { name: "닫기" }).click();
     await expect(furnitureButton(page, "서랍장 1")).toBeVisible();
