@@ -23,7 +23,7 @@ test.describe("편집 모드 2D 평면도", () => {
     await createSpace(page, { width: "6.0", depth: "4.5" });
     await expect(page.getByText("내 방 · 6.0 × 4.5 m")).toBeVisible();
     await expect(floorPlan(page)).toHaveAccessibleName(
-      "2D 평면도, 바닥 6.0 m × 4.5 m, 벽 0개, 구역 선 0개",
+      "2D 평면도, 바닥 6.0 m × 4.5 m, 벽 0개, 구역 선 0개, 가구 0개",
     );
     await expect(floorPlan(page).getByText("6.0 m", { exact: true })).toBeVisible();
     await expect(floorPlan(page).getByText("4.5 m", { exact: true })).toBeVisible();

@@ -3,8 +3,16 @@ import type { Point } from "@/shared/types";
 /** 지금 보는 화면: 메인 화면(main) 또는 편집 모드(edit). */
 export type AppMode = "main" | "edit";
 
-/** 편집 모드의 그리기 도구. 가구 도구는 T6에서 더한다. */
-export const DRAWING_TOOLS = ["select", "line", "polyline", "rect", "roomLine", "eraser"] as const;
+/** 편집 모드의 그리기 도구. 가구(box) 도구로 보관함을 놓는다. */
+export const DRAWING_TOOLS = [
+  "select",
+  "line",
+  "polyline",
+  "rect",
+  "roomLine",
+  "box",
+  "eraser",
+] as const;
 export type DrawingTool = (typeof DRAWING_TOOLS)[number];
 
 /**

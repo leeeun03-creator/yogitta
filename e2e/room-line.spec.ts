@@ -46,7 +46,7 @@ test.describe("구역 선 도구", () => {
     expect(points.length).toBeGreaterThan(CURVE.length); // 곡선 그대로 (점 4개로 줄지 않음)
     expectPoint(points[0], { x: 300, y: 0 }); // 15cm → 위 테두리
     expectPoint(points[points.length - 1], { x: 300, y: 450 }); // 15cm → 아래 테두리
-    await expect(plan(page)).toHaveAccessibleName(/벽 0개, 구역 선 1개$/);
+    await expect(plan(page)).toHaveAccessibleName(/벽 0개, 구역 선 1개, 가구 0개$/);
     await expect(plan(page).getByTestId("room-line-draft")).toHaveCount(0);
     expect(errors).toEqual([]);
   });

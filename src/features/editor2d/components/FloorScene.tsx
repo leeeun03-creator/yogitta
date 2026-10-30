@@ -1,8 +1,10 @@
 import type { Rect, RoomArea } from "@/features/spaces";
-import type { Floor, Point, RoomLine, Wall } from "@/shared/types";
+import type { Box, Floor, Point, RoomLine, Wall } from "@/shared/types";
+import type { BoxPlacement } from "../logic/boxFromDrag";
 import type { Measure } from "../logic/draftMeasure";
 import type { Erasing } from "../hooks/useEraserTool";
 import type { Snapped } from "../hooks/useSnapper";
+import { BoxLayer } from "./BoxLayer";
 import { FloorGrid } from "./FloorGrid";
 import { LengthLabel } from "./LengthLabel";
 import { RoomAreaLayer } from "./RoomAreaLayer";
@@ -22,11 +24,13 @@ export type SceneState = {
   roomAreas: readonly RoomArea[]; // 칠할 구역
   selectedRoom: string | null; // 고른 구역
   partPreview: { rects: Rect[]; color: string } | null; // 누르면 새 구역이 될 구획 (옅게)
+  boxes: readonly Box[];
+  boxDraft: BoxPlacement | null; // 가구 도구로 끄는 중인 사각형
 };
 
 type FloorSceneProps = { floor: Floor; walls: readonly Wall[]; scene: SceneState; cmPerPx: number };
 
-/** 바닥·격자·구역 색·구역 선·벽·구역 이름·미리보기·붙을 곳·길이 표시. 2D 평면도와 돋보기가 같은 그림을 그린다 (선·글자는 화면 1px = cmPerPx). */
+/** 바닥·격자·구역 색·구역 선·벽·가구·구역 이름·미리보기·붙을 곳·길이 표시. 2D 평면도와 돋보기가 같은 그림을 그린다 (선·글자는 화면 1px = cmPerPx). */
 export function FloorScene({ floor, walls, scene, cmPerPx }: FloorSceneProps) {
   return (
     <>
@@ -49,6 +53,8 @@ export function FloorScene({ floor, walls, scene, cmPerPx }: FloorSceneProps) {
         erasing={scene.erasing.wall}
         cmPerPx={cmPerPx}
       />
+      {/* 가구는 벽 위에 그려, 벽에 붙여 놓아도 테두리와 이름이 가려지지 않게 한다 */}
+      <BoxLayer boxes={scene.boxes} draft={scene.boxDraft} cmPerPx={cmPerPx} />
       <RoomLabelLayer areas={scene.roomAreas} selected={scene.selectedRoom} cmPerPx={cmPerPx} />
       <SnapIndicator cursor={scene.cursor} cmPerPx={cmPerPx} />
       <LengthLabel measure={scene.measure} cmPerPx={cmPerPx} />

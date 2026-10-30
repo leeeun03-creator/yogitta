@@ -48,11 +48,16 @@
   white-space: nowrap; /* "구역 선"이 좁은 화면에서 두 줄로 꺾여 버튼 높이가 달라지지 않게 */
 }
 
-/* 좁은 화면: 2D 평면도 위에 가로로, 버튼이 폭을 나눠 갖는다 (5 × 64px은 360px 화면에 안 들어간다) */
+/*
+ * 좁은 화면: 2D 평면도 위에 가로로, 버튼이 폭을 나눠 갖는다 (7 × 64px은 360px 화면에 안 들어간다).
+ * 7 × 44px 터치 영역이 화면 폭 360 - 여백 32px 안에 들어가게 간격·안쪽 여백을 줄인다
+ */
 @media (max-width: 640px) {
   .bar {
     flex-direction: row;
     align-self: stretch;
+    gap: 2px;
+    padding: 4px;
   }
   .tool {
     flex: 1;

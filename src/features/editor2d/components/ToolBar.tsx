@@ -1,4 +1,5 @@
 import {
+  Box,
   Eraser,
   MousePointer2,
   Slash,
@@ -18,6 +19,7 @@ const TOOLS: readonly { tool: DrawingTool; label: string; Icon: LucideIcon }[] =
   { tool: "polyline", label: "연속선", Icon: Waypoints },
   { tool: "rect", label: "사각형", Icon: Square },
   { tool: "roomLine", label: "구역 선", Icon: Spline },
+  { tool: "box", label: "가구", Icon: Box },
   { tool: "eraser", label: "지우개", Icon: Eraser },
 ];
 

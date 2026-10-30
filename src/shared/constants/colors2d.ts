@@ -5,6 +5,9 @@ export const FLOOR_PLAN_COLORS = {
   wall: "#6E5236", // 벽 (T3)
 } as const;
 
+/** 2D 평면도의 보관함 (시안 04 "상자 1"): 연한 바탕 + 같은 계열 점선 테두리. 정면 삼각형도 테두리 색이다. */
+export const BOX_PLAN_COLORS = { fill: "#EFE4D5", stroke: "#B6A28A" } as const;
+
 /** 구역 색 (yogitta-design 6장). 구역 목록 순서대로 돌려 쓴다. 2D 평면도·3D 미리보기 바닥이 같이 쓴다. */
 export const ROOM_COLORS = [
   "#F9D5C2", // 복숭아

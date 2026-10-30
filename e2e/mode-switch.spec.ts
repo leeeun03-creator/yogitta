@@ -168,7 +168,7 @@ test.describe("편집 모드 ↔ 메인 화면", () => {
       isMobile,
     );
     await roundTrip(page);
-    await expect(plan(page)).toHaveAccessibleName(/구역 선 1개$/);
+    await expect(plan(page)).toHaveAccessibleName(/구역 선 1개, 가구 0개$/);
   });
 
   test("스크린샷을 남긴다", async ({ page }, testInfo) => {

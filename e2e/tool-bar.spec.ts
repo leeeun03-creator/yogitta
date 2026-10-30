@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createSpace } from "./helpers";
 
-const TOOLS = ["선택", "직선", "연속선", "사각형", "구역 선", "지우개"];
+const TOOLS = ["선택", "직선", "연속선", "사각형", "구역 선", "가구", "지우개"];
 const ACCENT = "rgb(168, 80, 27)"; // --yg-accent #A8501B
 const LABEL_LINE_PX = 20; // 도구 이름(12px) 한 줄 높이
 
@@ -24,7 +24,7 @@ test.describe("그리기 도구 막대", () => {
     await createSpace(page, { width: "6.0", depth: "4.5" });
   });
 
-  test("도구 6개가 있고 처음에는 선택 도구다", async ({ page }) => {
+  test("도구 7개가 있고 처음에는 선택 도구다", async ({ page }) => {
     for (const name of TOOLS) await expect(tool(page, name)).toBeVisible();
     expect(await pressedTools(page)).toEqual(["선택"]);
     await expect(tool(page, "선택")).toHaveCSS("background-color", ACCENT);
@@ -102,7 +102,7 @@ test.describe("그리기 도구 막대", () => {
     );
   });
 
-  test("엣지: 도구 6개가 360px에서도 막대 안에 한 줄로 들어가고 44px이다", async ({ page }) => {
+  test("엣지: 도구 7개가 360px에서도 막대 안에 한 줄로 들어가고 44px이다", async ({ page }) => {
     const bar = page.getByRole("toolbar", { name: "그리기 도구" });
     const barBox = await bar.boundingBox();
     for (const button of await bar.getByRole("button").all()) {

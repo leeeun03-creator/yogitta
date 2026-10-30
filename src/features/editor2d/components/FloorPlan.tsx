@@ -38,7 +38,7 @@ export function FloorPlan({ space }: FloorPlanProps) {
           className={styles.svg}
           viewBox={`${box.x} ${box.y} ${box.width} ${box.height}`}
           role="img"
-          aria-label={`2D 평면도, 바닥 ${labels.width} × ${labels.depth}, 벽 ${walls.length}개, 구역 선 ${scene.roomLines.length}개`}
+          aria-label={`2D 평면도, 바닥 ${labels.width} × ${labels.depth}, 벽 ${walls.length}개, 구역 선 ${scene.roomLines.length}개, 가구 ${space.boxes.length}개`}
         >
           {/* 선·글자는 cm 좌표 안에 있어서, 화면에서 같은 px로 보이게 1px = cmPerPx로 그린다 */}
           <FloorScene floor={floor} walls={walls} scene={scene} cmPerPx={box.cmPerPx} />
