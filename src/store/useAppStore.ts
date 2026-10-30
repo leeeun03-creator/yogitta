@@ -4,6 +4,7 @@ import { createId } from "@/shared/lib/createId";
 import type { AppData, Point } from "@/shared/types";
 import { boxActions, type BoxActions } from "./boxActions";
 import { change } from "./change";
+import { itemActions, type ItemActions } from "./itemActions";
 import { addRoom, type RoomResult } from "./logic/addRoom";
 import { addRoomLine } from "./logic/addRoomLine";
 import { addSpace, type AddSpaceResult, type NewSpaceInput } from "./logic/addSpace";
@@ -24,11 +25,13 @@ import { wallActions, type WallActions } from "./wallActions";
 export type { AppMode, DrawingTool, EditView, RoomFocus } from "./uiState";
 export { DRAWING_TOOLS } from "./uiState";
 export type { HistoryDirection, RoomResult, SpaceResult };
+export type { ItemError } from "./logic/addItem";
 export type { RoomNameError } from "./logic/checkRoomName";
 export type { SpaceNameError } from "./logic/spaceNameError";
 
 type AppState = BoxActions &
-  WallActions & {
+  WallActions &
+  ItemActions & {
     data: AppData; // 저장 대상 (T11에서 localStorage와 연결)
     ui: UiState; // 화면 상태, 저장하지 않음
     history: History; // 되돌리기 기록, 저장하지 않음
@@ -131,6 +134,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
   ...uiActions(set),
   ...boxActions(set, get),
   ...wallActions(set, get),
+  ...itemActions(set, get),
   addRoom: (name, at) => {
     const result = addRoom(get().data, name, at);
     if (result.ok) set((state) => change(state, result.data));
