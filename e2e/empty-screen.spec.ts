@@ -2,7 +2,6 @@ import { expect, test } from "@playwright/test";
 
 // 색 값은 tokens.css와 같다 (브라우저는 rgb로 돌려준다)
 const ACCENT_HOVER = "rgb(124, 58, 18)"; // --yg-accent-hover #7C3A12
-const DISABLED_TEXT = "rgb(143, 122, 102)"; // --yg-disabled-text #8F7A66
 
 test.describe("첫 실행 화면", () => {
   test.beforeEach(async ({ page }) => {
@@ -16,11 +15,11 @@ test.describe("첫 실행 화면", () => {
     await expect(page.getByRole("button", { name: "새 공간 만들기" })).toHaveCount(2);
   });
 
-  test("샘플 공간 버튼은 준비 전이라 비활성이고 안내가 붙어 있다", async ({ page }) => {
-    const sample = page.getByRole("button", { name: "샘플 공간 둘러보기" });
-    await expect(sample).toBeDisabled();
-    await expect(sample).toHaveAccessibleDescription("샘플 공간은 준비 중이에요.");
-    await expect(sample).toHaveCSS("color", DISABLED_TEXT);
+  test("[샘플 공간 둘러보기]를 누르면 샘플 공간(내 방)이 메인 화면에 열린다", async ({ page }) => {
+    await page.getByRole("button", { name: "샘플 공간 둘러보기" }).click();
+    await expect(page.getByRole("heading", { level: 1, name: "요깃따" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "공간 내 방", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: /^화장대 서랍장 물건 4개$/ })).toBeVisible();
   });
 
   test("주 버튼에 올리면 올림 색이 된다", async ({ page, isMobile }) => {
@@ -32,7 +31,7 @@ test.describe("첫 실행 화면", () => {
 
   test("키보드 Tab으로 이동하면 포커스 테두리가 보인다", async ({ page, isMobile }) => {
     test.skip(isMobile, "모바일에는 키보드 Tab 이동이 없다");
-    // 순서: 점선 + 타일 → 주 버튼 (비활성인 샘플 버튼은 건너뛴다)
+    // 순서: 점선 + 타일 → 주 버튼
     const tile = page.getByRole("button", { name: "새 공간 만들기" }).first();
     const primary = page.getByRole("button", { name: "새 공간 만들기" }).last();
     for (const target of [tile, primary]) {

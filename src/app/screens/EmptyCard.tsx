@@ -1,14 +1,16 @@
 import { Plus } from "lucide-react";
+import { SAMPLE_DATA } from "@/features/storage";
 import { Button } from "@/shared/ui";
+import { useAppStore } from "@/store/useAppStore";
 import styles from "./EmptyCard.module.css";
 
 const ADD_ICON_SIZE = 44;
-const SAMPLE_HINT_ID = "sample-space-hint";
 
 type EmptyCardProps = { onCreate: () => void };
 
 /** 공간이 없다는 안내와 새 공간 만들기·샘플 공간 둘러보기 (시안 03 왼쪽). */
 export function EmptyCard({ onCreate }: EmptyCardProps) {
+  const loadData = useAppStore((state) => state.loadData);
   return (
     <section className={styles.card} aria-labelledby="empty-title">
       <button
@@ -31,14 +33,8 @@ export function EmptyCard({ onCreate }: EmptyCardProps) {
         <Button variant="primary" onClick={onCreate}>
           새 공간 만들기
         </Button>
-        <Button disabled aria-describedby={SAMPLE_HINT_ID}>
-          샘플 공간 둘러보기
-        </Button>
+        <Button onClick={() => loadData(SAMPLE_DATA)}>샘플 공간 둘러보기</Button>
       </div>
-      {/* TODO(T11): 샘플 공간이 생기면 버튼을 켠다 */}
-      <p id={SAMPLE_HINT_ID} className={styles.hint}>
-        샘플 공간은 준비 중이에요.
-      </p>
     </section>
   );
 }
