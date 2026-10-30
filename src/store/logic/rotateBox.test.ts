@@ -20,6 +20,15 @@ describe("rotateBox", () => {
     expect(rotateBox(original, "box_1")).toBe(original);
   });
 
+  it("엣지: 돌린 모양이 다른 가구에 파고들면 돌리지 않고 원본 그대로다", () => {
+    // 200 × 40 가구를 돌리면 세로 200(y 100 ~ 300)이 되어 아래 가구(y 255 ~ 305)를 뚫는다
+    const original = createBoxTestData([
+      { w: 200, d: 40, x: 300, z: 200 },
+      { x: 300, z: 280 },
+    ]);
+    expect(rotateBox(original, "box_1")).toBe(original);
+  });
+
   it("엣지: 없는 가구면 그대로 둔다", () => {
     const original = createBoxTestData([{}]);
     expect(rotateBox(original, "box_9")).toBe(original);

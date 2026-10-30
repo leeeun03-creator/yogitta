@@ -2,8 +2,10 @@ import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { TAP_MOVE_PX } from "@/shared/constants/floorPlan";
 import { GRID_SNAP_CM } from "@/shared/constants/grid";
 import { boxFootprint, type Footprint } from "@/shared/lib/boxFootprint";
+import { boxObstacles } from "@/shared/lib/boxObstacles";
 import { distance } from "@/shared/lib/distance";
-import type { Box, Floor, Point, Space } from "@/shared/types";
+import { resolveBoxMove } from "@/shared/lib/resolveBoxMove";
+import type { Floor, Point, Space } from "@/shared/types";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
 import { findBoxAt } from "../logic/findBoxAt";
 import type { ViewBox } from "../logic/fitViewBox";
@@ -17,18 +19,31 @@ type Drag = {
   screen: Point; // 누른 자리 (px)
   origin: Point; // 끌기 전 가구 가운데 (cm)
   size: Footprint;
+  obstacles: Point[][]; // 이 가구를 막는 벽·다른 가구 모양 (끄는 동안 바뀌지 않아 시작할 때 한 번 구한다)
   center: Point | null; // 옮길 자리 (cm). 누르기 거리보다 멀리 끌기 전에는 null
 };
 
 /** 누른 자리(px)에 가구가 있으면 그 가구 끌기를 시작한다. */
-function startDrag(pointerId: number, screen: Point, view: ViewBox, boxes: readonly Box[]) {
-  const hit = findBoxAt(boxes, screenToCm(screen, view));
+function startDrag(pointerId: number, screen: Point, view: ViewBox, space: Space): Drag | null {
+  const hit = findBoxAt(space.boxes, screenToCm(screen, view));
   if (!hit) return null;
   const origin = { x: hit.x, y: hit.z }; // 2D y = 3D z
-  return { pointerId, id: hit.id, screen, origin, size: boxFootprint(hit), center: null };
+  const obstacles = boxObstacles(space, hit.id);
+  return {
+    pointerId,
+    id: hit.id,
+    screen,
+    origin,
+    size: boxFootprint(hit),
+    obstacles,
+    center: null,
+  };
 }
 
-/** 지금 손가락·마우스 자리(px)까지 끈 가구 가운데. 누르기 거리를 넘기 전에는 그대로 둔다. */
+/**
+ * 지금 손가락·마우스 자리(px)까지 끈 가구 가운데. 누르기 거리를 넘기 전에는 그대로 둔다.
+ * 벽·다른 가구를 뚫지 않게 바로 앞 자리에서 이어서 옮겨, 막히면 면에 붙고 다른 쪽으로는 미끄러진다.
+ */
 function followDrag(
   drag: Drag,
   screen: Point,
@@ -41,7 +56,10 @@ function followDrag(
     x: (screen.x - drag.screen.x) * view.cmPerPx,
     y: (screen.y - drag.screen.y) * view.cmPerPx,
   };
-  return { ...drag, center: movedBoxCenter({ ...drag, delta, gridStep, floor }) };
+  const target = movedBoxCenter({ ...drag, delta, gridStep, floor });
+  const from = drag.center ?? drag.origin;
+  const { size, obstacles } = drag;
+  return { ...drag, center: resolveBoxMove({ from, to: target, size, obstacles }) };
 }
 
 /**
@@ -66,7 +84,7 @@ export function useBoxDrag(tool: DrawingTool, view: ViewBox, space: Space) {
       if (tool !== "select") return;
       // 두 번째 손가락이 닿으면 핀치 줌으로 보고, 옮기던 가구는 제자리에 둔다
       const isOne = active.current.size === 1;
-      setDrag(isOne ? startDrag(event.pointerId, eventPoint(event), view, space.boxes) : null);
+      setDrag(isOne ? startDrag(event.pointerId, eventPoint(event), view, space) : null);
     },
     onPointerMove: (event: PointerEvent<HTMLElement>) => {
       if (drag && isMine(event))

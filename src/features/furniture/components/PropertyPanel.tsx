@@ -1,7 +1,7 @@
 import { MapPin, RotateCw, Trash2 } from "lucide-react";
 import { useId, useRef } from "react";
 import { formatSize } from "@/shared/lib/formatSize";
-import { rotatedBox } from "@/shared/lib/rotatedBox";
+import { rotatedBox, type RotateBlock } from "@/shared/lib/rotatedBox";
 import { Button } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
 import { useSelectedBox, type SelectedBox } from "../hooks/useSelectedBox";
@@ -9,6 +9,10 @@ import styles from "./PropertyPanel.module.css";
 
 const ICON_SIZE = 18;
 const ROOM_ICON_SIZE = 16;
+const ROTATE_BLOCK_MESSAGES: Record<RotateBlock, string> = {
+  tooLong: "바닥보다 길어서 돌릴 수 없어요",
+  blocked: "벽이나 다른 가구에 걸려서 돌릴 수 없어요",
+};
 
 /**
  * 속성 패널 (시안 04). 고른 가구의 이름·놓인 구역·크기와 [90° 회전]·[삭제]를 보인다 (이름·종류·크기 바꾸기는 T7·T26).
@@ -61,12 +65,13 @@ function BoxProperties(props: BoxPropertiesProps) {
   );
 }
 
-/** [90° 회전]·[삭제]. 돌린 모양이 바닥보다 길면 [90° 회전]을 막고 까닭을 알린다. */
-function BoxActionButtons({ box, floor, onRemoved }: BoxPropertiesProps) {
+/** [90° 회전]·[삭제]. 돌린 모양이 바닥보다 길거나 벽·다른 가구에 걸리면 [90° 회전]을 막고 까닭을 알린다. */
+function BoxActionButtons({ box, space, onRemoved }: BoxPropertiesProps) {
   const rotateBox = useAppStore((state) => state.rotateBox);
   const removeBox = useAppStore((state) => state.removeBox);
   const noticeId = useId();
-  const canRotate = rotatedBox(box, floor) !== null;
+  const rotation = rotatedBox(box, space);
+  const canRotate = rotation.ok;
   return (
     <>
       <div className={styles.actions}>
@@ -89,9 +94,9 @@ function BoxActionButtons({ box, floor, onRemoved }: BoxPropertiesProps) {
           삭제
         </Button>
       </div>
-      {!canRotate && (
+      {!rotation.ok && (
         <p id={noticeId} className={styles.notice}>
-          바닥보다 길어서 돌릴 수 없어요
+          {ROTATE_BLOCK_MESSAGES[rotation.reason]}
         </p>
       )}
     </>

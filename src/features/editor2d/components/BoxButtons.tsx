@@ -3,6 +3,7 @@ import { GRID_SNAP_CM } from "@/shared/constants/grid";
 import type { Box } from "@/shared/types";
 import { useAppStore } from "@/store/useAppStore";
 import { boxKeyAction, type BoxKeyAction } from "../logic/boxKeyAction";
+import { boxKeyMove } from "../logic/boxKeyMove";
 import { boxScreenRect } from "../logic/boxScreenRect";
 import type { ViewBox } from "../logic/fitViewBox";
 import styles from "./FloorPlan.module.css";
@@ -14,8 +15,11 @@ type BoxButtonsProps = {
   onRemoved: () => void; // 초점이 있던 가구를 지운 뒤 (초점을 2D 평면도로 돌린다)
 };
 
-/** 초점이 있는 가구에 키보드 동작을 한다. 방향키·R은 그 가구를 고른 채로 둔다. */
+/** 초점이 있는 가구에 키보드 동작을 한다. 방향키·R은 그 가구를 고른 채로 둔다. 방향키는 벽·다른 가구를 뚫지 않는다. */
 function useBoxKeys(selected: string | null, onRemoved: () => void) {
+  const space = useAppStore((state) =>
+    state.data.spaces.find((candidate) => candidate.id === state.data.currentSpaceId),
+  );
   const moveBox = useAppStore((state) => state.moveBox);
   const rotateBox = useAppStore((state) => state.rotateBox);
   const removeBox = useAppStore((state) => state.removeBox);
@@ -32,10 +36,7 @@ function useBoxKeys(selected: string | null, onRemoved: () => void) {
       return;
     }
     if (action.type === "rotate") rotateBox(box.id);
-    else {
-      const { x, y } = action.direction;
-      moveBox(box.id, { x: box.x + x * step, y: box.z + y * step });
-    }
+    else if (space) moveBox(box.id, boxKeyMove(box, action.direction, step, space));
     if (selected !== box.id) selectBox(box.id);
   };
 }
