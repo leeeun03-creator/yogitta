@@ -1,4 +1,5 @@
 import { expect, type Page } from "@playwright/test";
+import { DATA_VERSION, STORAGE_KEY } from "../src/shared/constants/storage";
 
 /** 페이지에서 난 콘솔 에러와 처리 안 된 예외를 모은다. */
 export function collectErrors(page: Page): string[] {
@@ -10,9 +11,26 @@ export function collectErrors(page: Page): string[] {
   return errors;
 }
 
+/**
+ * 첫 실행 화면을 연다. 한 테스트에서 공간을 여러 번 만들면 앞 공간이 저장돼 있어 메인 화면이 뜨므로,
+ * 그때는 저장 데이터를 공간 없음으로 비우고 다시 연다.
+ */
+export async function openEmptyScreen(page: Page) {
+  await page.goto("./");
+  const widthField = page.getByLabel("가로 (m)");
+  await expect(widthField.or(page.getByRole("button", { name: "편집" }))).toBeVisible();
+  if (await widthField.isVisible()) return;
+  const empty = JSON.stringify({ version: DATA_VERSION, spaces: [], currentSpaceId: null });
+  await page.evaluate(({ key, value }) => localStorage.setItem(key, value), {
+    key: STORAGE_KEY,
+    value: empty,
+  });
+  await page.reload();
+}
+
 /** 첫 실행 화면에서 바닥 크기를 넣고 공간을 만들어 편집 모드로 들어간다. */
 export async function createSpace(page: Page, size: { width: string; depth: string }) {
-  await page.goto("./");
+  await openEmptyScreen(page);
   await page.getByLabel("가로 (m)").fill(size.width);
   await page.getByLabel("세로 (m)").fill(size.depth);
   await page.getByRole("button", { name: "벽 그리러 가기" }).click();

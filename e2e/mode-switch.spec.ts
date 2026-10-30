@@ -3,6 +3,7 @@ import {
   chooseTool,
   collectErrors,
   createSpace,
+  openEmptyScreen,
   openPreview,
   plan,
   pressCm,
@@ -56,7 +57,7 @@ test.describe("편집 모드 상단 바의 [‹ 완료]", () => {
   test("엣지: 공간 이름이 길어도 상단 바가 넘치지 않고 높이가 같다", async ({ page }) => {
     await createSpace(page, { width: "6.0", depth: "4.5" });
     const short = await topBarHeight(page);
-    await page.goto("./");
+    await openEmptyScreen(page);
     await page.getByLabel("공간 이름").fill("아주아주긴공간이름입니다");
     await page.getByLabel("가로 (m)").fill("6.0");
     await page.getByLabel("세로 (m)").fill("4.5");

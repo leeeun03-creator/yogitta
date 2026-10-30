@@ -41,6 +41,7 @@ type AppState = BoxActions &
     switchSpace: (id: string) => void;
     renameSpace: (id: string, name: string) => SpaceResult;
     removeSpace: (id: string) => void; // 벽·가구·물건 모두 지운다 (확인은 화면에서)
+    loadData: (data: AppData) => void; // 저장된 데이터·샘플 공간으로 바꾼다 (메인 화면에서 시작)
     setMode: (mode: AppMode) => void;
     setView: (view: EditView) => void;
     setTool: (tool: DrawingTool) => void;
@@ -63,7 +64,10 @@ const move = (state: AppState, direction: HistoryDirection) => {
   return moved ? { ...moved, ui: keepSelection(state.ui, moved.data) } : {};
 };
 
-type SpaceActions = Pick<AppState, "addSpace" | "switchSpace" | "renameSpace" | "removeSpace">;
+type SpaceActions = Pick<
+  AppState,
+  "addSpace" | "switchSpace" | "renameSpace" | "removeSpace" | "loadData"
+>;
 type SetState = StoreApi<AppState>["setState"];
 type GetState = StoreApi<AppState>["getState"];
 
@@ -75,7 +79,7 @@ const changeSpace = (state: AppState, data: AppData, mode = state.ui.mode) => ({
 });
 
 /**
- * 공간 단위 액션 (만들기·바꾸기·이름 바꾸기·삭제). 되돌리지 않고 되돌리기 기록을 비운다
+ * 공간 단위 액션 (만들기·바꾸기·이름 바꾸기·삭제·불러오기). 되돌리지 않고 되돌리기 기록을 비운다
  * (되돌려서 다른 공간이 바뀌거나 지운 공간이 살아나지 않게). 새 공간은 벽부터 그리도록 편집 모드로 연다.
  */
 const spaceActions = (set: SetState, get: GetState): SpaceActions => ({
@@ -97,6 +101,7 @@ const spaceActions = (set: SetState, get: GetState): SpaceActions => ({
     const data = removeSpace(get().data, id);
     if (data !== get().data) set((state) => changeSpace(state, data, "main"));
   },
+  loadData: (data) => set((state) => changeSpace(state, data, "main")),
 });
 
 type UiActions = Pick<AppState, "setMode" | "setView" | "setTool" | "setSnap" | "setRoomFocus">;

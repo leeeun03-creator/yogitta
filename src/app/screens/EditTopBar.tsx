@@ -14,14 +14,15 @@ const VIEW_OPTIONS: readonly { value: EditView; label: string }[] = [
   { value: "preview", label: "3D 미리보기" },
 ];
 
-/** 편집 모드 상단 바: [‹ 완료] · 제목 · 공간 이름과 바닥 크기 · [2D 평면도 | 3D 미리보기] · 되돌리기·다시하기. */
+/**
+ * 편집 모드 상단 바: [‹ 완료] · 제목 · 공간 이름과 바닥 크기 · "자동 저장됨" · [2D 평면도 | 3D 미리보기] · 되돌리기·다시하기.
+ */
 export function EditTopBar({ space }: { space: Space }) {
   const view = useAppStore((state) => state.ui.view);
   const setView = useAppStore((state) => state.setView);
   const setMode = useAppStore((state) => state.setMode);
   const titleRef = useFocusOnShow<HTMLHeadingElement>();
   return (
-    // TODO(T11): 자동 저장됨
     <header className={styles.topBar}>
       <div className={styles.heading}>
         <Button
@@ -38,6 +39,7 @@ export function EditTopBar({ space }: { space: Space }) {
           <span className={styles.spaceInfo}>
             {space.name} · {formatMeters(space.floor.w)} × {formatMeters(space.floor.h)} m
           </span>
+          <span className={styles.saved}>자동 저장됨</span>
         </div>
       </div>
       <div className={styles.controls}>

@@ -47,9 +47,20 @@
   color: var(--yg-text-sub);
 }
 
+/* 바뀔 때마다 저장하므로 늘 저장된 상태다 (저장 실패는 따로 안내한다) */
+.saved {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+
 @media (max-width: 640px) {
   .topBar {
     padding: 16px;
+  }
+  /* 좁은 화면은 제목 줄이 공간 정보로 꽉 차서 빼 둔다 */
+  .saved {
+    display: none;
   }
   /* 좁은 화면: 제목 줄과 [전환 · 되돌리기] 줄을 항상 나눈다. 글꼴이 늦게 와도 줄바꿈 자리가 바뀌지 않게 */
   .heading {
