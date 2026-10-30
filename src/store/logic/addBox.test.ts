@@ -48,6 +48,29 @@ describe("addBox", () => {
     expect(zero).toMatchObject({ w: 10, d: 10 });
   });
 
+  it("엣지: 다른 가구에 파고드는 자리면 놓지 않고, 맞닿는 자리는 놓는다", () => {
+    const data = createBoxTestData([{ x: 300, z: 200 }]); // 60 × 50: x 270 ~ 330
+    expect(addBox(data, { ...INPUT, center: { x: 320, y: 200 } })).toBe(data);
+    expect(addBox(data, { ...INPUT, center: { x: 360, y: 200 } }).spaces[0]?.boxes).toHaveLength(2);
+  });
+
+  it("엣지: 벽에 파고드는 자리면 놓지 않는다", () => {
+    const base = createBoxTestData();
+    const wall = {
+      id: "wall_1",
+      tool: "line" as const,
+      points: [
+        { x: 300, y: 0 },
+        { x: 300, y: 450 },
+      ],
+      closed: false,
+    };
+    const [mine, other] = base.spaces;
+    if (!mine || !other) throw new Error("테스트 공간이 없다");
+    const data = { ...base, spaces: [{ ...mine, walls: [wall] }, other] };
+    expect(addBox(data, { ...INPUT, center: { x: 300, y: 200 } })).toBe(data);
+  });
+
   it("엣지: 현재 공간이 없으면 그대로 둔다", () => {
     const original = { ...createBoxTestData(), currentSpaceId: null };
     expect(addBox(original, INPUT)).toBe(original);

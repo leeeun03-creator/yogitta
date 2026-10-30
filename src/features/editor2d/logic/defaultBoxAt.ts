@@ -1,6 +1,6 @@
 import { BOX_DEFAULT_SIZE } from "@/shared/constants/furniture";
 import type { Point } from "@/shared/types";
-import type { BoxPlacement } from "./boxFromDrag";
+import type { BoxPlacement } from "@/shared/lib/fitBoxPlacement";
 import { snapBoxCenter } from "./snapBoxCenter";
 
 /**

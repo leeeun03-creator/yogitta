@@ -1,7 +1,7 @@
 import type { Rect, RoomArea } from "@/features/spaces";
 import type { Box, Floor, Point, RoomLine, Wall } from "@/shared/types";
-import type { BoxPlacement } from "../logic/boxFromDrag";
 import type { Measure } from "../logic/draftMeasure";
+import type { BoxDraft } from "../hooks/useBoxTool";
 import type { Erasing } from "../hooks/useEraserTool";
 import type { Snapped } from "../hooks/useSnapper";
 import { BoxLayer } from "./BoxLayer";
@@ -25,8 +25,9 @@ export type SceneState = {
   selectedRoom: string | null; // 고른 구역
   partPreview: { rects: Rect[]; color: string } | null; // 누르면 새 구역이 될 구획 (옅게)
   boxes: readonly Box[];
-  boxDraft: BoxPlacement | null; // 가구 도구로 끄는 중인 사각형
+  boxDraft: BoxDraft | null; // 가구 도구로 끄는 중인 사각형 (겹치면 삭제색)
   selectedBox: string | null; // 고른(또는 끄는 중인) 가구
+  overlapping: ReadonlySet<string>; // 벽·다른 가구와 겹쳐 있는 가구 (삭제색 테두리)
 };
 
 type FloorSceneProps = { floor: Floor; walls: readonly Wall[]; scene: SceneState; cmPerPx: number };
@@ -60,6 +61,7 @@ export function FloorScene({ floor, walls, scene, cmPerPx }: FloorSceneProps) {
         draft={scene.boxDraft}
         selected={scene.selectedBox}
         erasing={scene.erasing.box}
+        overlapping={scene.overlapping}
         cmPerPx={cmPerPx}
       />
       <RoomLabelLayer areas={scene.roomAreas} selected={scene.selectedRoom} cmPerPx={cmPerPx} />

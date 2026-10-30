@@ -1,8 +1,6 @@
 import { BOX_MIN_SIZE_CM } from "@/shared/constants/furniture";
+import type { BoxPlacement } from "@/shared/lib/fitBoxPlacement";
 import type { Point } from "@/shared/types";
-
-/** 끈 두 점(cm)으로 정한 새 가구의 가운데와 가로·깊이 (cm). */
-export type BoxPlacement = { center: Point; w: number; d: number };
 
 /** 한 방향의 길이와 가운데. 최소 크기보다 짧으면 누른 점에서 끈 쪽으로 최소 크기만큼 늘린다. */
 function span(from: number, to: number) {

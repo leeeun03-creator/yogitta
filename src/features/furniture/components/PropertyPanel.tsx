@@ -44,7 +44,7 @@ type BoxPropertiesProps = SelectedBox & { onRemoved: () => void };
 
 /** 고른 가구 하나의 속성: 이름·놓인 구역·크기와 돌리기·지우기. */
 function BoxProperties(props: BoxPropertiesProps) {
-  const { box, room } = props;
+  const { box, room, isOverlapping } = props;
   return (
     <>
       <div className={styles.field}>
@@ -59,6 +59,7 @@ function BoxProperties(props: BoxPropertiesProps) {
         <p className={styles.label}>크기 (cm)</p>
         <p className={styles.value}>{formatSize(box.w, box.d, box.h)}</p>
       </div>
+      {isOverlapping && <p className={styles.warning}>벽이나 다른 가구와 겹쳐 있어요</p>}
       <BoxActionButtons {...props} />
       <p className={styles.hint}>2D 평면도에서 R 키로 돌리고, Delete 키로 지울 수 있어요</p>
     </>

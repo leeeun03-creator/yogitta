@@ -6,6 +6,7 @@ import { BoxOverlay } from "./BoxOverlay";
 import { FloorDimensions } from "./FloorDimensions";
 import { FloorScene } from "./FloorScene";
 import { Loupe } from "./Loupe";
+import { PlanNotice } from "./PlanNotice";
 import { PlanRoomPopover } from "./PlanRoomPopover";
 import styles from "./FloorPlan.module.css";
 
@@ -47,6 +48,7 @@ export function FloorPlan({ space }: FloorPlanProps) {
           <FloorDimensions floor={floor} labels={labels} cmPerPx={box.cmPerPx} />
         </svg>
         <BoxOverlay tool={tool} scene={scene} view={box} onRemoved={focusPlan} />
+        <PlanNotice text={input.notice} />
         <Loupe finger={input.finger} box={box} floor={floor} walls={walls} scene={scene} />
       </div>
       <PlanRoomPopover box={box} onClose={focusPlan} />

@@ -98,6 +98,39 @@
   fill: var(--yg-danger-hover);
   stroke: var(--yg-danger);
 }
+/* 벽·다른 가구와 겹쳐 있는 가구 (나중에 그은 벽 등): 삭제색 테두리로 알린다 */
+.overlappingBox {
+  stroke: var(--yg-danger);
+}
+/* 겹치는 자리로 끄는 가구 미리보기: 떼도 놓이지 않는다 */
+.blockedDraft {
+  fill: var(--yg-danger-hover);
+  stroke: var(--yg-danger);
+  opacity: 0.8;
+}
+
+/* 2D 평면도 위쪽 가운데에 잠깐 뜨는 안내 (겹치는 자리에 가구를 놓으려 할 때) */
+.notice {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 8px 16px;
+  border: 1px solid var(--yg-danger-border);
+  border-radius: var(--yg-radius-pill);
+  background: var(--yg-danger-hover);
+  color: var(--yg-danger);
+  font-size: 14px;
+  text-align: center;
+  word-break: keep-all; /* 좁은 화면에서 "겹 / 치는"처럼 낱말 가운데서 꺾이지 않게 띄어쓰기에서만 꺾는다 */
+  box-shadow: var(--yg-shadow-card);
+  pointer-events: none;
+}
+.notice:empty {
+  display: none; /* 안내가 없을 때도 알림 자리(role="status")는 남겨 둬야 화면 읽기 프로그램이 새 안내를 읽는다 */
+}
 
 /* 가구 버튼: 가구 자리에 투명하게 겹친다. 누르기·끌기는 2D 평면도가 받고, 키보드 초점만 받는다.
    화면 밖 가구에 초점이 가도 캔버스가 스크롤되지 않게 clip으로 자른다 */

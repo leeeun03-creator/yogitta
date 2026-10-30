@@ -131,13 +131,17 @@ test.describe("선택 도구로 가구 고르기·옮기기", () => {
     await expectBox(page, [200, 125, 200, 150, 0]);
   });
 
-  test("엣지: 겹친 가구는 나중에 놓은 것이 골라지고 옮겨진다", async ({ page, isMobile }) => {
-    await placeBox(page, { x: 250, y: 150 }, { x: 400, y: 300 }, isMobile); // 보관함 2
+  test("엣지: 맞닿은 두 가구도 누른 쪽이 골라지고, 그 가구만 옮겨진다", async ({
+    page,
+    isMobile,
+  }) => {
+    // 가구끼리는 겹치게 놓을 수 없어(T6-8) 맞닿게 놓는다 (보관함 1 오른쪽 면 300)
+    await placeBox(page, { x: 300, y: 50 }, { x: 450, y: 200 }, isMobile); // 보관함 2
     await pressCm(page, FLOOR, [{ x: 500, y: 400 }], isMobile);
-    await pressCm(page, FLOOR, [{ x: 275, y: 175 }], isMobile);
+    await pressCm(page, FLOOR, [{ x: 320, y: 125 }], isMobile);
     await expect(boxButton(page, "보관함 2")).toHaveAttribute("aria-pressed", "true");
     await expect(boxButton(page, "보관함 1")).toHaveAttribute("aria-pressed", "false");
-    await dragCm(page, { x: 275, y: 175 }, { x: 375, y: 175 }, isMobile);
+    await dragCm(page, { x: 400, y: 125 }, { x: 450, y: 225 }, isMobile);
     await expectBox(page, [200, 125, 200, 150, 0], 0);
     await expectBox(page, [425, 225, 150, 150, 0], 1);
   });

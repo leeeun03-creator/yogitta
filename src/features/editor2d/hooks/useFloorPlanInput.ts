@@ -40,6 +40,7 @@ export function useFloorPlanInput(ref: RefObject<HTMLElement | null>, space: Spa
       measure: wall.scene.measure ?? furniture.measure,
     },
     finger: loupe.finger, // 돋보기를 띄울 손가락 자리
+    notice: furniture.notice, // 잠깐 뜨는 안내 (겹치는 자리에 가구를 놓으려 할 때)
     // 같은 이벤트는 줌·이동 → 돋보기 → 누르기 → 벽 도구 → 구역 → 가구 → 지우개 순서로 받는다
     handlers: mergeHandlers(
       pan,

@@ -11,28 +11,33 @@ import {
 } from "@/shared/constants/floorPlan";
 import { BOX_ROTATION_STEP, FULL_TURN } from "@/shared/constants/furniture";
 import type { Box } from "@/shared/types";
-import type { BoxPlacement } from "../logic/boxFromDrag";
+import type { BoxDraft } from "../hooks/useBoxTool";
 import { boxLabelFont } from "../logic/boxLabelFont";
 import styles from "./FloorPlan.module.css";
 
 type BoxLayerProps = {
   boxes: readonly Box[];
-  draft: BoxPlacement | null; // 가구 도구로 끄는 중인 사각형
+  draft: BoxDraft | null; // 가구 도구로 끄는 중인 사각형 (겹치면 삭제색)
   selected: string | null; // 고른 가구 (강조색 테두리 + 회전 핸들)
   erasing: string | null; // 지우개로 지울 가구 (삭제색)
+  overlapping: ReadonlySet<string>; // 벽·다른 가구와 겹쳐 있는 가구 (삭제색 테두리)
   cmPerPx: number;
 };
 
-/** 가구 모양: 보통, 고름, 지우개로 지울 것. */
-type BoxLook = "normal" | "selected" | "erasing";
+/** 가구 모양: 보통, 고름, 지우개로 지울 것, 벽·다른 가구와 겹쳐 있음. */
+type BoxLook = "normal" | "selected" | "erasing" | "overlapping";
 
 /**
  * 가구: 보관함은 연한 바탕 + 점선 테두리, 정면 가장자리 밖 삼각형, 가운데 이름.
  * 고른 가구는 찾은 칸 바탕 + 강조색 실선 테두리 + 정면 반대쪽 회전 핸들 (시안 04, yogitta-design 6장).
  */
-export function BoxLayer({ boxes, draft, selected, erasing, cmPerPx }: BoxLayerProps) {
-  const lookOf = (id: string): BoxLook =>
-    id === erasing ? "erasing" : id === selected ? "selected" : "normal";
+export function BoxLayer(props: BoxLayerProps) {
+  const { boxes, draft, selected, erasing, overlapping, cmPerPx } = props;
+  const lookOf = (id: string): BoxLook => {
+    if (id === erasing) return "erasing";
+    if (id === selected) return "selected";
+    return overlapping.has(id) ? "overlapping" : "normal";
+  };
   return (
     <g>
       {boxes.map((box) => (
@@ -46,7 +51,8 @@ export function BoxLayer({ boxes, draft, selected, erasing, cmPerPx }: BoxLayerP
           width={draft.w}
           height={draft.d}
           rx={BOX_CORNER_PX * cmPerPx}
-          className={styles.draft}
+          data-blocked={draft.isBlocked}
+          className={draft.isBlocked ? `${styles.draft} ${styles.blockedDraft}` : styles.draft}
           fill={BOX_PLAN_COLORS.fill}
           stroke={BOX_PLAN_COLORS.stroke}
           strokeWidth={BOX_STROKE_PX * cmPerPx}
@@ -62,6 +68,7 @@ const BODY_CLASS: Record<BoxLook, string | undefined> = {
   normal: undefined,
   selected: styles.selectedBox,
   erasing: styles.erasingBox,
+  overlapping: styles.overlappingBox,
 };
 
 /** 가구 하나: 몸통과 이름. 같은 가구인지 테스트에서 알아볼 수 있게 자리·크기·회전을 붙인다. */
@@ -70,6 +77,7 @@ function BoxShape({ box, look, cmPerPx }: BoxShapeProps) {
     <g
       data-testid="box"
       data-box={`${box.x},${box.z},${box.w},${box.d},${box.rotation}`}
+      data-look={look}
       aria-label={box.name}
     >
       <BoxBody box={box} look={look} cmPerPx={cmPerPx} />
