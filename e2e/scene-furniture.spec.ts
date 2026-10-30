@@ -38,4 +38,21 @@ test.describe("3D에 가구 종류별 모양 세우기", () => {
     await page.screenshot({ path: testInfo.outputPath("scene-furniture.png"), fullPage: true });
     expect(errors).toEqual([]);
   });
+
+  test("책상·테이블·침대(돌린 침대 포함)가 3D 미리보기에 오류 없이 선다", async ({
+    page,
+    isMobile,
+  }, testInfo) => {
+    const errors = collectErrors(page);
+    await createSpace(page, { width: "6.0", depth: "4.5" });
+    await placeAs(page, "책상", { x: 20, y: 20 }, { x: 140, y: 80 }, isMobile);
+    await placeAs(page, "테이블", { x: 180, y: 20 }, { x: 300, y: 100 }, isMobile);
+    await placeAs(page, "침대", { x: 340, y: 20 }, { x: 500, y: 220 }, isMobile); // 160 × 200
+    await panel(page).getByRole("button", { name: "90° 회전" }).click(); // 머리판이 오른쪽으로
+    await openPreview(page);
+    await expect(preview(page)).toHaveAccessibleName(/가구 3개$/);
+    await page.waitForTimeout(300); // 3D가 그려질 때까지 (스크린샷용)
+    await page.screenshot({ path: testInfo.outputPath("scene-tables.png"), fullPage: true });
+    expect(errors).toEqual([]);
+  });
 });

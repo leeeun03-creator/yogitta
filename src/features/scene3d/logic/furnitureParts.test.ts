@@ -131,6 +131,47 @@ describe("furnitureParts", () => {
     }
   });
 
+  it("책상·테이블: 상판 + 다리 4개, 다리는 바닥부터 상판 아래까지이고 모두 가구 크기 안이다", () => {
+    for (const type of ["desk", "table"] as const) {
+      const table = box({ type, w: 120, d: 60, h: 73 });
+      expect(keysOf(table)).toEqual(["top", "leg-0-0", "leg-0-1", "leg-1-0", "leg-1-1"]);
+      expectInside(table);
+      const leg = partOf(table, "leg-1-1");
+      expect((leg?.position[1] ?? 0) - (leg?.size[1] ?? 0) / 2).toBeCloseTo(0);
+      expect((leg?.position[1] ?? 0) + (leg?.size[1] ?? 0) / 2).toBeCloseTo(70); // 상판 3cm 아래
+    }
+  });
+
+  it("엣지: 다리 굵기(5cm)보다 좁은(4cm)·상판보다 낮은(2cm) 책상도 부품이 가구 안이다", () => {
+    expectInside(box({ type: "desk", w: 4, d: 4, h: 73 }));
+    expectInside(box({ type: "table", h: 2 }));
+  });
+
+  it("침대: 정면 반대쪽 머리판(40cm 더 높음) + 프레임 + 매트리스(윗면 = 침대 높이)", () => {
+    const bed = box({ type: "bed", w: 160, d: 200, h: 45 });
+    expect(keysOf(bed)).toEqual(["headboard", "frame", "mattress"]);
+    const headboard = partOf(bed, "headboard");
+    expect((headboard?.position[2] ?? 0) + (headboard?.size[2] ?? 0) / 2).toBeCloseTo(-90); // 뒤 10cm
+    expect((headboard?.position[1] ?? 0) + (headboard?.size[1] ?? 0) / 2).toBeCloseTo(85);
+    const mattress = partOf(bed, "mattress");
+    expect((mattress?.position[1] ?? 0) + (mattress?.size[1] ?? 0) / 2).toBeCloseTo(45);
+    expect(mattress?.color).toBe("#F7EFE3");
+    expect(headboard?.size[0]).toBe(160); // 머리판은 침대 가로 그대로
+  });
+
+  it("엣지: 낮은(10cm)·작은(10 × 10cm) 침대도 프레임·매트리스가 가구 안이다", () => {
+    for (const bed of [box({ type: "bed", h: 10 }), box({ type: "bed", w: 10, d: 10 })]) {
+      const parts = furnitureParts(bed).filter((part) => part.key !== "headboard");
+      for (const part of parts) {
+        expect(
+          part.size.every((size) => size > 0),
+          part.key,
+        ).toBe(true);
+        expect(part.position[1] + part.size[1] / 2, part.key).toBeLessThanOrEqual(bed.h + EPSILON);
+      }
+    }
+  });
+
   it("보관함: 상자 + 정면 위쪽 손잡이 홈 (가로의 40%, 최대 20cm, 정면으로 반만큼 나옴)", () => {
     const handle = partOf(box({}), "handle");
     expect(handle?.size).toEqual([20, 3, 1]);
