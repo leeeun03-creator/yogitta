@@ -57,7 +57,7 @@ export const ROTATE_HANDLE_HIT_PX = 22; // 누른 것으로 보는 거리 (44px 
 export const HANGUL_CHAR_EM = 1; // 한글 글자 하나의 폭 어림 (글자 크기 배수)
 export const SPACE_CHAR_EM = 0.3; // 띄어쓰기 폭 어림
 
-/** 2D 평면도에 잠깐 뜨는 안내가 떠 있는 시간 (ms). 예) 겹치는 자리에 가구를 놓으려 할 때. */
+/** 2D 평면도에 잠깐 뜨는 안내가 떠 있는 시간 (ms). 예) 겹치는 자리에 가구를 놓거나 벽을 그으려 할 때. */
 export const PLAN_NOTICE_MS = 2500;
 
 /** 구역 선 (px). 벽보다 얇은 점선이라 벽과 헷갈리지 않는다. */

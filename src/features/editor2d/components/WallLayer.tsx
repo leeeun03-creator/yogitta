@@ -9,12 +9,14 @@ type WallLayerProps = {
   walls: readonly Wall[];
   draft: readonly Point[]; // 그리는 중인 점 (마지막에 커서를 이어 미리보기)
   cursor: Point | null; // 붙을 커서 위치
+  isDraftBlocked: boolean; // 미리보기가 가구에 파고듦 (삭제색, 그어지지 않는다)
   erasing: { from: Point; to: Point } | null; // 지우개로 지울 선분
   cmPerPx: number;
 };
 
 /** 벽(두께 12cm, 끝 각지게)과 연결점, 그리는 중인 미리보기 선 (yogitta-design 6장). */
-export function WallLayer({ walls, draft, cursor, erasing, cmPerPx }: WallLayerProps) {
+export function WallLayer(props: WallLayerProps) {
+  const { walls, draft, cursor, isDraftBlocked, erasing, cmPerPx } = props;
   const preview = cursor && draft.length > 0 ? [...draft, cursor] : draft;
   const jointRadius = JOINT_RADIUS_PX * cmPerPx;
   return (
@@ -36,8 +38,9 @@ export function WallLayer({ walls, draft, cursor, erasing, cmPerPx }: WallLayerP
       {preview.length > 0 && (
         <polyline
           data-testid="draft"
+          data-blocked={isDraftBlocked}
           points={toSvgPoints(preview)}
-          className={styles.draft}
+          className={isDraftBlocked ? styles.blockedWallDraft : styles.draft}
           stroke={FLOOR_PLAN_COLORS.wall}
           strokeWidth={WALL_THICKNESS_CM}
           strokeDasharray={`${WALL_THICKNESS_CM} ${WALL_THICKNESS_CM}`}

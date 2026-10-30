@@ -1,4 +1,4 @@
-import type { Point, Space } from "@/shared/types";
+import type { Box, Point, Wall } from "@/shared/types";
 import { boxFootprint } from "./boxFootprint";
 import { rectCorners } from "./rectCorners";
 import { wallQuads } from "./wallQuads";
@@ -8,7 +8,7 @@ import { wallQuads } from "./wallQuads";
  * 구역 선은 3D에 서지 않으니 막지 않는다. 새로 놓을 가구면 exceptId는 null이다.
  */
 export function boxObstacles(
-  space: Pick<Space, "walls" | "boxes">,
+  space: { walls: readonly Wall[]; boxes: readonly Box[] },
   exceptId: string | null,
 ): Point[][] {
   const others = space.boxes

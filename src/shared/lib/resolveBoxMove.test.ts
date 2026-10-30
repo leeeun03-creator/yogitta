@@ -70,7 +70,7 @@ describe("resolveBoxMove", () => {
     expect(isBoxBlocked(at(result.x - 0.5, result.y), size, diagonal)).toBe(true);
   });
 
-  it("엣지: 이미 겹쳐 있는 가구(나중에 그은 벽)는 막지 않아 빼낼 수 있다", () => {
+  it("엣지: 이미 겹쳐 있는 가구(가져온 백업 파일 등)는 막지 않아 빼낼 수 있다", () => {
     const input = { from: at(300, 150), to: at(150, 150), size: SIZE, obstacles: MIDDLE_WALL };
     expect(resolveBoxMove(input)).toEqual(at(150, 150));
   });

@@ -9,7 +9,6 @@ import { mergeHandlers } from "./mergeHandlers";
 import { useBoxDrag } from "./useBoxDrag";
 import { useBoxSelect } from "./useBoxSelect";
 import { useBoxTool, type BoxDraft } from "./useBoxTool";
-import { usePlanNotice } from "./usePlanNotice";
 import type { SnapAt } from "./useSnapper";
 
 /** 끄는 중인 가구 가운데에 크기("60 × 50 cm"). 가구 크기는 속성 패널과 같은 cm로 보인다. */
@@ -29,10 +28,14 @@ const withMoving = (boxes: Box[], moving: { id: string; center: Point } | null) 
  * 고른 가구 키보드(R·Delete·Esc), 벽·다른 가구와 겹쳐 있는 가구 찾기.
  * tap은 가구나 회전 핸들을 눌렀으면 true를 돌려준다 (그 아래 구획을 눌러 구역 입력칸이 뜨지 않게).
  */
-export function useBoxInput(tool: DrawingTool, view: ViewBox, space: Space, snapAt: SnapAt) {
+export function useBoxInput(
+  tool: DrawingTool,
+  view: ViewBox,
+  space: Space,
+  input: { snapAt: SnapAt; notify: (message: string) => void },
+) {
   const selected = useAppStore((state) => state.ui.selectedBoxId);
-  const notice = usePlanNotice();
-  const place = useBoxTool(tool, view, space, { snapAt, notify: notice.show });
+  const place = useBoxTool(tool, view, space, input);
   const drag = useBoxDrag(tool, view, space);
   const choose = useBoxSelect(tool, view, space.boxes);
   const { walls, boxes } = space;
@@ -47,7 +50,6 @@ export function useBoxInput(tool: DrawingTool, view: ViewBox, space: Space, snap
       overlapping,
     },
     measure: draftMeasure(place.draft),
-    notice: notice.text,
     handlers: mergeHandlers(place.handlers, drag.handlers, choose.handlers),
   };
 }

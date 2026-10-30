@@ -16,6 +16,7 @@ import { WallLayer } from "./WallLayer";
 export type SceneState = {
   draft: readonly Point[];
   previewCursor: Point | null;
+  isDraftBlocked: boolean; // 그리는 벽 미리보기가 가구에 파고듦 (삭제색)
   cursor: Snapped | null;
   measure: Measure | null;
   erasing: Erasing;
@@ -52,6 +53,7 @@ export function FloorScene({ floor, walls, scene, cmPerPx }: FloorSceneProps) {
         walls={walls}
         draft={scene.draft}
         cursor={scene.previewCursor}
+        isDraftBlocked={scene.isDraftBlocked}
         erasing={scene.erasing.wall}
         cmPerPx={cmPerPx}
       />

@@ -6,7 +6,7 @@ import { lineSegments } from "./lineSegments";
  * 벽이 바닥에서 차지하는 모양: 선분마다 두께 12cm, 끝이 각진(양 끝으로 두께 절반씩 더 나온) 사각형 꼭짓점.
  * 2D 평면도의 벽 선(끝 square)과 같은 모양이라, 꺾인 자리도 빈틈 없이 막힌다. 길이 0인 선분은 뺀다.
  */
-export function wallQuads(walls: readonly Wall[]): Point[][] {
+export function wallQuads(walls: readonly Pick<Wall, "points" | "closed">[]): Point[][] {
   const half = WALL_THICKNESS_CM / 2;
   return walls.flatMap((wall) =>
     lineSegments(wall).flatMap(([a, b]) => {

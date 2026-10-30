@@ -8,7 +8,7 @@ import { useAppStore } from "@/store/useAppStore";
 
 /**
  * 고른 가구, 가구가 있는 현재 공간(바닥·벽·다른 가구), 가구가 놓인 구역(없으면 null),
- * 벽·다른 가구와 겹쳐 있는지(나중에 그은 벽 등).
+ * 벽·다른 가구와 겹쳐 있는지(놓기·옮기기·돌리기·벽 긋기는 막지만, 가져온 백업 파일 등).
  */
 export type SelectedBox = { box: Box; space: Space; room: string | null; isOverlapping: boolean };
 

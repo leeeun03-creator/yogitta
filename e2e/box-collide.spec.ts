@@ -108,16 +108,4 @@ test.describe("가구가 벽·다른 가구를 뚫지 않기", () => {
     await expect(rotate).toBeDisabled();
     await expect(rotate).toHaveAccessibleDescription("벽이나 다른 가구에 걸려서 돌릴 수 없어요");
   });
-
-  test("엣지: 나중에 그은 벽과 겹친 가구는 빼낼 수 있고, 빼낸 뒤에는 다시 막힌다", async ({
-    page,
-    isMobile,
-  }) => {
-    await placeBox(page, { x: 400, y: 300 }, { x: 500, y: 400 }, isMobile); // 가운데 (450, 350)
-    await drawWall(page, { x: 450, y: 250 }, { x: 450, y: 450 }, isMobile); // 가구 한가운데로
-    await dragFloorCm(page, FLOOR, { x: 420, y: 350 }, { x: 500, y: 350 }, isMobile);
-    await expectCenter(page, { x: 530, y: 350 }, 1); // 겹친 채로도 움직인다
-    await dragFloorCm(page, FLOOR, { x: 530, y: 350 }, { x: 430, y: 350 }, isMobile);
-    await expectCenter(page, { x: 506, y: 350 }, 1); // 벽 면 456에 붙어 멈춘다
-  });
 });

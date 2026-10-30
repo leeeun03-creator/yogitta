@@ -54,7 +54,7 @@ function slideBoth(input: MoveInput, first: Axis, second: Axis): Point {
 /**
  * 가구를 from에서 to로 옮길 때 실제로 갈 자리. 벽·다른 가구를 뚫지 않고, 막히면 그 면에 딱 붙어 멈추며
  * 막히지 않은 축으로는 미끄러지듯 따라간다(가로 먼저·세로 먼저 중 to에 더 가까운 쪽).
- * 이미 겹쳐 있는 가구(나중에 그은 벽 등)는 빼낼 수 있게 막지 않는다.
+ * 이미 겹쳐 있는 가구(가져온 백업 파일 등)는 빼낼 수 있게 막지 않는다.
  */
 export function resolveBoxMove(input: MoveInput): Point {
   if (isBoxBlocked(input.from, input.size, input.obstacles)) return input.to;

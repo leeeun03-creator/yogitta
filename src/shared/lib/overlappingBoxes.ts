@@ -4,8 +4,8 @@ import { boxObstacles } from "./boxObstacles";
 import { isBoxBlocked } from "./isBoxBlocked";
 
 /**
- * 벽이나 다른 가구와 겹쳐 있는 가구 id들. 놓기·옮기기·돌리기는 겹치지 않게 막지만,
- * 벽을 가구 위로 나중에 그으면 겹칠 수 있어 알려 준다. 가구 둘이 겹치면 둘 다 들어간다.
+ * 벽이나 다른 가구와 겹쳐 있는 가구 id들. 놓기·옮기기·돌리기·벽 긋기는 겹치지 않게 막지만,
+ * 가져온 백업 파일 등에서는 겹쳐 있을 수 있어 알려 준다. 가구 둘이 겹치면 둘 다 들어간다.
  */
 export function overlappingBoxes(space: Pick<Space, "walls" | "boxes">): Set<string> {
   const result = new Set<string>();

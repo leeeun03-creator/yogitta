@@ -1,12 +1,13 @@
 import { useState, type KeyboardEvent, type PointerEvent } from "react";
 import { POINT_HIT_PX } from "@/shared/constants/floorPlan";
 import { callAll } from "@/shared/lib/callAll";
-import type { Point } from "@/shared/types";
+import type { Box, Point } from "@/shared/types";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
 import { drawDragStep } from "../logic/drawDragStep";
 import { drawKeyStep } from "../logic/drawKeyStep";
 import { drawTapStep, type DrawStep } from "../logic/drawTapStep";
 import type { ViewBox } from "../logic/fitViewBox";
+import { isDrawStepBlocked } from "../logic/isDrawStepBlocked";
 import { eventPoint } from "./eventPoint";
 import { useDrawDrag } from "./useDrawDrag";
 import type { SnapAt, Snapped } from "./useSnapper";
@@ -38,20 +39,29 @@ function keyHandler(
   };
 }
 
+/** 벽 도구가 받는 것: 붙일 곳 찾기, 벽이 파고들면 안 되는 가구, 막혔을 때 알리기. */
+export type WallInput = { snapAt: SnapAt; boxes: readonly Box[]; onBlocked: () => void };
+
 const TAP_TOOLS: readonly DrawingTool[] = ["line", "polyline"];
 const CURSOR_TOOLS: readonly DrawingTool[] = [...TAP_TOOLS, "rect"];
 
 /**
  * 직선·연속선 도구로 찍은 점(draft)과 붙을 커서 위치를 들고, 다 그리면 store에 벽을 더한다.
  * 두 번 누르기와 끌어서 그리기 모두 된다. 도구를 바꾸면 그리던 것은 버린다.
+ * 가구를 지나가게 되는 점은 찍지 않고 알린다(onBlocked).
  */
-export function useDrawTool(tool: DrawingTool, box: ViewBox, snapAt: SnapAt) {
+export function useDrawTool(tool: DrawingTool, box: ViewBox, input: WallInput) {
+  const { snapAt, boxes, onBlocked } = input;
   const addWall = useAppStore((state) => state.addWall);
   const [points, setPoints] = useToolDraft(tool);
   const [cursor, setCursor] = useState<Snapped | null>(null);
 
   const closeRadius = POINT_HIT_PX * box.cmPerPx;
   const apply = (step: DrawStep) => {
+    if (isDrawStepBlocked(points, step, boxes)) {
+      onBlocked();
+      return;
+    }
     setPoints(step.draft);
     if (step.wall) addWall(step.wall);
   };

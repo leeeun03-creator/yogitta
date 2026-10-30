@@ -7,8 +7,6 @@ type Cm = { x: number; y: number };
 
 const notice = (page: Page) =>
   page.getByRole("region", { name: "2D 평면도 영역" }).getByRole("status");
-const panel = (page: Page) => page.getByRole("complementary", { name: "속성 패널" });
-const firstBox = (page: Page) => plan(page).getByTestId("box").first();
 
 /** 직선 도구로 벽 하나를 긋는다 (두 점을 차례로 누른다). */
 async function drawWall(page: Page, from: Cm, to: Cm, isMobile: boolean) {
@@ -70,23 +68,6 @@ test.describe("겹치는 자리에 가구 놓기 막기", () => {
     });
     await expect(plan(page)).toHaveAccessibleName(/가구 2개$/);
     await expect(notice(page)).toBeHidden();
-  });
-
-  test("엣지: 벽을 가구 위로 그으면 겹친 가구를 알리고, 빼내면 사라지며, 되돌리면 다시 알린다", async ({
-    page,
-    isMobile,
-  }) => {
-    await drawWall(page, { x: 150, y: 50 }, { x: 150, y: 300 }, isMobile); // 보관함 1 한가운데로
-    await expect(firstBox(page)).toHaveAttribute("data-look", "overlapping");
-    await expect(firstBox(page).locator("rect")).toHaveCSS("stroke", DANGER);
-    await pressCm(page, FLOOR, [{ x: 120, y: 150 }], isMobile);
-    await expect(panel(page).getByText("벽이나 다른 가구와 겹쳐 있어요")).toBeVisible();
-    await dragFloorCm(page, FLOOR, { x: 120, y: 150 }, { x: 20, y: 150 }, isMobile); // 왼쪽으로 빼낸다
-    await expect(panel(page).getByText("벽이나 다른 가구와 겹쳐 있어요")).toHaveCount(0);
-    await pressCm(page, FLOOR, [{ x: 450, y: 400 }], isMobile); // 풀어서 보통 모양을 본다
-    await expect(firstBox(page)).toHaveAttribute("data-look", "normal");
-    await page.getByRole("button", { name: "되돌리기" }).click(); // 빼내기 전으로
-    await expect(firstBox(page)).toHaveAttribute("data-look", "overlapping");
   });
 
   test("엣지: 휴대폰에서도 안내가 화면 안이다", async ({ page, isMobile }, testInfo) => {

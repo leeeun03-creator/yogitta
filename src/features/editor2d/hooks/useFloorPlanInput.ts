@@ -8,6 +8,7 @@ import { useBoxInput } from "./useBoxInput";
 import { useEraserTool } from "./useEraserTool";
 import { useLoupe } from "./useLoupe";
 import { usePanZoom } from "./usePanZoom";
+import { usePlanNotice } from "./usePlanNotice";
 import { useRoomInput } from "./useRoomInput";
 import { useSnapper } from "./useSnapper";
 import { useTap } from "./useTap";
@@ -21,9 +22,10 @@ export function useFloorPlanInput(ref: RefObject<HTMLElement | null>, space: Spa
   const canPanAt = (point: Point) => tool === "select" && !isOnBox(point);
   const { box, handlers: pan } = usePanZoom(ref, space.floor, canPanAt);
   const snapAt = useSnapper(space.walls, box, space.floor);
-  const wall = useWallTools(tool, box, snapAt);
+  const notice = usePlanNotice();
+  const wall = useWallTools(tool, box, { snapAt, boxes: space.boxes, notify: notice.show });
   const room = useRoomInput(tool, box, space, isOnBox);
-  const furniture = useBoxInput(tool, box, space, snapAt);
+  const furniture = useBoxInput(tool, box, space, { snapAt, notify: notice.show });
   const eraser = useEraserTool(tool, box, { ...space, roomLines: room.scene.roomLines });
   // 가구를 눌러 골랐으면 그 아래 구획은 누르지 않는다 (구역 입력칸이 뜨지 않게)
   const tap = useTap(callAll(wall.tap, eraser.tap, (at) => furniture.tap(at) || room.tap(at)));
@@ -40,7 +42,7 @@ export function useFloorPlanInput(ref: RefObject<HTMLElement | null>, space: Spa
       measure: wall.scene.measure ?? furniture.measure,
     },
     finger: loupe.finger, // 돋보기를 띄울 손가락 자리
-    notice: furniture.notice, // 잠깐 뜨는 안내 (겹치는 자리에 가구를 놓으려 할 때)
+    notice: notice.text, // 잠깐 뜨는 안내 (가구를 놓거나 벽을 그으려는 자리가 겹칠 때)
     // 같은 이벤트는 줌·이동 → 돋보기 → 누르기 → 벽 도구 → 구역 → 가구 → 지우개 순서로 받는다
     handlers: mergeHandlers(
       pan,
