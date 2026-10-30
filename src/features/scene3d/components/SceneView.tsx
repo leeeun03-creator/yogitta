@@ -19,7 +19,7 @@ type SceneViewProps = {
   space: Space;
   name: string; // 3D 그림 이름 앞머리: 편집 모드는 "3D 미리보기", 메인 화면은 "3D 공간"
   fallback: string; // 3D를 못 그리는 브라우저에서 보일 안내 문구
-  onPickBox?: (id: string) => void; // 가구를 누르면 (메인 화면만, 편집 모드 3D 미리보기는 누르지 않는다)
+  onPickBox?: (id: string | null) => void; // 가구를 누르면, 가구가 아닌 곳은 null (메인 화면만, 편집 모드 3D 미리보기는 누르지 않는다)
 };
 
 /** 공간의 3D 그림(바닥·구역 색·벽·가구)과 보기 버튼. 3D를 못 그리는 브라우저에서는 안내 문구를 보인다. */

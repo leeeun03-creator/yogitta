@@ -19,7 +19,7 @@ type PreviewCanvasProps = {
   boxes: readonly Box[];
   areas: readonly RoomArea[];
   label: string;
-  onPickBox?: (id: string) => void; // 가구를 누르면
+  onPickBox?: (id: string | null) => void; // 가구를 누르면, 가구가 아닌 곳(바닥·빈 곳·벽)은 null
 };
 
 // 카메라가 준비되기 전에는 눌러도 아무 일이 없으므로 모두 막아 둔다

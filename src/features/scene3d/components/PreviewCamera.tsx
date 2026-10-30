@@ -108,12 +108,36 @@ function useCameraStart(
 }
 
 /**
+ * OrbitControls 처리기와 사용자가 움직였는지(isMoved). 누르는 동안 카메라가 바뀌어야 움직인 것이다
+ * (가구를 누르기만 해서는 아니다). 이동으로 보는 곳이 바닥 밖으로 나가면 카메라째 바닥 안으로 당긴다.
+ */
+function useUserMove(controls: ControlsRef, floor: Floor, report: () => void) {
+  const isMoved = useRef(false); // 사용자가 움직였으면 화면 크기가 바뀌어도 처음 자리로 되돌리지 않는다
+  const isPressing = useRef(false);
+  const onChange = useCallback(() => {
+    const current = controls.current;
+    if (!current) return;
+    if (isPressing.current) isMoved.current = true;
+    const view = readView(current);
+    const kept = keepViewOnFloor(view, floor);
+    if (kept !== view) writeView(current, kept);
+    report();
+  }, [controls, floor, report]);
+  const onStart = useCallback(() => {
+    isPressing.current = true;
+  }, []);
+  const onEnd = useCallback(() => {
+    isPressing.current = false;
+  }, []);
+  return { isMoved, handlers: { onStart, onEnd, onChange } };
+}
+
+/**
  * 3D 미리보기 카메라. 처음에는 바닥 전체가 보이게 두고,
  * 끌기 회전 · 휠·두 손가락 줌 · 오른쪽 끌기·두 손가락 이동을 정해진 범위 안에서 받는다.
  */
 export function PreviewCamera({ floor, ref, onViewChange }: PreviewCameraProps) {
   const controls = useRef<Controls>(null);
-  const isMoved = useRef(false); // 사용자가 움직였으면 화면 크기가 바뀌어도 처음 자리로 되돌리지 않는다
   const width = useThree((state) => state.size.width);
   const height = useThree((state) => state.size.height);
   const start = useMemo(
@@ -122,18 +146,8 @@ export function PreviewCamera({ floor, ref, onViewChange }: PreviewCameraProps) 
   );
   const limits = useMemo(() => cameraLimits(start), [start]);
   const move = useCameraMove(controls, start, limits, onViewChange);
+  const { isMoved, handlers } = useUserMove(controls, floor, move.report);
   useCameraStart(ref, controls, isMoved, { start, limits }, move);
-
-  const { report } = move;
-  /** 이동으로 보는 곳이 바닥 밖으로 나가면 카메라째 바닥 안으로 당긴다. */
-  const handleChange = useCallback(() => {
-    const current = controls.current;
-    if (!current) return;
-    const view = readView(current);
-    const kept = keepViewOnFloor(view, floor);
-    if (kept !== view) writeView(current, kept);
-    report();
-  }, [floor, report]);
 
   return (
     <OrbitControls
@@ -143,10 +157,7 @@ export function PreviewCamera({ floor, ref, onViewChange }: PreviewCameraProps) 
       minDistance={limits.minDistance}
       maxDistance={limits.maxDistance}
       maxPolarAngle={limits.maxPolarAngle}
-      onStart={() => {
-        isMoved.current = true;
-      }}
-      onChange={handleChange}
+      {...handlers}
     />
   );
 }

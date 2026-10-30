@@ -1,48 +1,7 @@
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { collectErrors, createSpace, openPreview, preview } from "./helpers";
 import { drawWall, panel as propertyPanel, placeBox } from "./boxes";
-import { finishEditing } from "./spaces";
-
-const detail = (page: Page) => page.getByRole("complementary", { name: "가구 상세 패널" });
-const space3d = (page: Page) => page.getByRole("img", { name: /^3D 공간,/ });
-
-/** 라벨이 멈출 때까지(연달아 잰 자리가 같을 때까지) 기다린 뒤 자리를 돌려준다. */
-async function settledBox(label: Locator) {
-  let last = "";
-  await expect
-    .poll(
-      async () => {
-        const now = JSON.stringify(await label.boundingBox());
-        const isSame = now === last;
-        last = now;
-        return isSame;
-      },
-      { intervals: [100] },
-    )
-    .toBe(true);
-  return label.boundingBox();
-}
-
-/**
- * 3D에서 가구 몸통을 누른다. 이름 라벨은 가구 맨 위 가운데 바로 위에 뜨므로 라벨 아래(below px)를 누르면
- * 그 가구 윗면이 눌린다. below가 0이면 라벨 가운데(라벨 누르기)다.
- * 휴대폰은 가구 상세 패널이 열리면 3D 영역이 줄어 라벨이 움직이므로 멈춘 뒤에 잰다.
- */
-async function pickBox(page: Page, root: Locator, name: string, isMobile: boolean, below = 30) {
-  const label = await settledBox(root.getByTestId("box-label").filter({ hasText: name }));
-  const point = {
-    x: (label?.x ?? 0) + (label?.width ?? 0) / 2,
-    y: (label?.y ?? 0) + (label?.height ?? 0) / 2 + below,
-  };
-  if (isMobile) await page.touchscreen.tap(point.x, point.y);
-  else await page.mouse.click(point.x, point.y);
-}
-
-/** 메인 화면으로 돌아가 3D 카메라가 자리를 잡을 때까지(확대 버튼이 풀림) 기다린다. 그 전에는 라벨 자리가 아직 움직인다. */
-async function openMainScene(page: Page) {
-  await finishEditing(page);
-  await expect(page.getByRole("button", { name: "확대" })).toBeEnabled();
-}
+import { detail, openMainScene, pickBox, space3d } from "./scene";
 
 test.describe("3D에서 가구를 눌러 가구 상세 패널 열기", () => {
   test.skip(

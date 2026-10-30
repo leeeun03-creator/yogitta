@@ -2,7 +2,10 @@ import type { Space } from "@/shared/types";
 import { useAppStore } from "@/store/useAppStore";
 import { SceneView } from "./SceneView";
 
-/** 메인 화면의 3D 공간. 가구를 누르면 가구 상세 패널이 열린다. 검색한 물건의 위치 표시(T28)가 여기에 붙는다. */
+/**
+ * 메인 화면의 3D 공간. 가구를 누르면 가구 상세 패널이 열리고, 가구가 아닌 곳을 누르면 닫힌다.
+ * 검색한 물건의 위치 표시(T28)가 여기에 붙는다.
+ */
 export function SpaceScene({ space }: { space: Space }) {
   const selectBox = useAppStore((state) => state.selectBox);
   return (

@@ -1,15 +1,11 @@
 import { useThree, type RootState } from "@react-three/fiber";
 import { useEffect } from "react";
 import { Raycaster, Vector2 } from "three";
-import { TAP_MOVE_PX } from "@/shared/constants/floorPlan";
 import { pickedBoxId } from "../logic/pickedBoxId";
+import { tapTracker } from "../logic/tapTracker";
 
-type BoxPickerProps = {
-  onPick: (id: string) => void; // 가구를 눌렀을 때
-  onMiss?: () => void; // 가구가 아닌 곳(바닥·빈 곳·벽)을 눌렀을 때
-};
+type BoxPickerProps = { onPick: (id: string | null) => void }; // 누른 가구, 가구가 아닌 곳(바닥·빈 곳·벽)은 null
 
-type Press = { pointerId: number; x: number; y: number };
 type Three = Pick<RootState, "gl" | "camera" | "scene">;
 
 /** 화면 자리(event)를 지나는 첫 가구의 id. 다시 그리기 전에도 맞게 카메라 행렬을 먼저 맞춘다. */
@@ -39,11 +35,11 @@ function labelBoxId(target: HTMLElement, { clientX: x, clientY: y }: PointerEven
 }
 
 /**
- * 3D에서 가구 누르기. 손가락·마우스를 누른 자리에서 TAP_MOVE_PX 안에서 떼면 누르기로 보고(더 움직이면 3D 돌리기),
- * 누른 자리를 지나는 첫 가구를 고른다. 이름 라벨을 눌렀으면 그 가구다. 두 번째 손가락이 닿으면(확대) 누르기가 아니다.
+ * 3D에서 가구 누르기. 누르기(끌기·확대가 아님, tapTracker)면 누른 자리를 지나는 첫 가구를 고른다(없으면 null).
+ * 이름 라벨을 눌렀으면 그 가구다. 보기 버튼은 이 3D 영역 밖에 있어 누르기로 치지 않는다.
  * three.js 누르기 이벤트 대신 직접 재는 것은, 휴대폰에서 화면을 연 뒤 첫 터치가 눌리지 않아서다.
  */
-export function BoxPicker({ onPick, onMiss }: BoxPickerProps) {
+export function BoxPicker({ onPick }: BoxPickerProps) {
   const gl = useThree((state) => state.gl);
   const camera = useThree((state) => state.camera);
   const scene = useThree((state) => state.scene);
@@ -52,26 +48,14 @@ export function BoxPicker({ onPick, onMiss }: BoxPickerProps) {
     // 3D 그림과 이름 라벨(drei Html은 여기에 붙는다)을 함께 담은 곳
     const target = connected instanceof HTMLElement ? connected : null;
     if (!target) return;
-    let press: Press | null = null;
-    const down = (event: PointerEvent) => {
-      const { pointerId, clientX: x, clientY: y } = event;
-      press = event.isPrimary ? { pointerId, x, y } : null;
-    };
-    const up = (event: PointerEvent) => {
-      const start = press;
-      press = null;
-      if (!start || start.pointerId !== event.pointerId) return;
-      if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > TAP_MOVE_PX) return;
-      const id = labelBoxId(target, event) ?? boxAt(event, { gl, camera, scene });
-      if (id) onPick(id);
-      else onMiss?.();
-    };
-    target.addEventListener("pointerdown", down);
-    target.addEventListener("pointerup", up);
+    const tracker = tapTracker((event: PointerEvent) =>
+      onPick(labelBoxId(target, event) ?? boxAt(event, { gl, camera, scene })),
+    );
+    const types = ["pointerdown", "pointermove", "pointerup"] as const;
+    for (const type of types) target.addEventListener(type, tracker[type]);
     return () => {
-      target.removeEventListener("pointerdown", down);
-      target.removeEventListener("pointerup", up);
+      for (const type of types) target.removeEventListener(type, tracker[type]);
     };
-  }, [gl, camera, scene, connected, onPick, onMiss]);
+  }, [gl, camera, scene, connected, onPick]);
   return null;
 }
