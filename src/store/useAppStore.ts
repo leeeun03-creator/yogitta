@@ -1,15 +1,17 @@
 import { create, type StoreApi } from "zustand";
-import { UNDO_LIMIT } from "@/shared/constants/history";
 import { DATA_VERSION } from "@/shared/constants/storage";
 import { createId } from "@/shared/lib/createId";
 import type { AppData, Point, Wall } from "@/shared/types";
+import { boxActions, type BoxActions } from "./boxActions";
+import { change } from "./change";
 import { addRoom, type RoomResult } from "./logic/addRoom";
 import { addRoomLine } from "./logic/addRoomLine";
 import { addSpace, type AddSpaceResult, type NewSpaceInput } from "./logic/addSpace";
 import { addWall } from "./logic/addWall";
 import { eraseSegment } from "./logic/eraseSegment";
+import { keepSelection } from "./logic/keepSelection";
 import { moveHistory, type HistoryDirection } from "./logic/moveHistory";
-import { EMPTY_HISTORY, recordHistory, type History } from "./logic/recordHistory";
+import { EMPTY_HISTORY, type History } from "./logic/recordHistory";
 import { removeRoom } from "./logic/removeRoom";
 import { removeRoomLine } from "./logic/removeRoomLine";
 import { removeSpace } from "./logic/removeSpace";
@@ -26,7 +28,7 @@ export type { HistoryDirection, RoomResult, SpaceResult };
 export type { RoomNameError } from "./logic/checkRoomName";
 export type { SpaceNameError } from "./logic/spaceNameError";
 
-type AppState = {
+type AppState = BoxActions & {
   data: AppData; // 저장 대상 (T11에서 localStorage와 연결)
   ui: UiState; // 화면 상태, 저장하지 않음
   history: History; // 되돌리기 기록, 저장하지 않음
@@ -52,15 +54,11 @@ type AppState = {
 
 const INITIAL_DATA: AppData = { version: DATA_VERSION, spaces: [], currentSpaceId: null };
 
-/** 데이터를 바꾸고 바뀌기 전을 되돌리기 기록에 남긴다. 바뀌지 않았으면 기록도 그대로다. */
-const change = (state: AppState, data: AppData) => ({
-  data,
-  history: recordHistory(state.history, state.data, data, UNDO_LIMIT),
-});
-
-/** 되돌리기·다시하기. 더 갈 곳이 없으면 아무것도 바꾸지 않는다. */
-const move = (state: AppState, direction: HistoryDirection) =>
-  moveHistory(state.history, state.data, direction) ?? {};
+/** 되돌리기·다시하기. 더 갈 곳이 없으면 아무것도 바꾸지 않는다. 고른 가구가 사라지면 고른 가구도 비운다. */
+const move = (state: AppState, direction: HistoryDirection) => {
+  const moved = moveHistory(state.history, state.data, direction);
+  return moved ? { ...moved, ui: keepSelection(state.ui, moved.data) } : {};
+};
 
 type SpaceActions = Pick<AppState, "addSpace" | "switchSpace" | "renameSpace" | "removeSpace">;
 type SetState = StoreApi<AppState>["setState"];
@@ -113,10 +111,18 @@ const uiActions = (set: SetState): UiActions => ({
 /** 앱 전체 데이터와 화면 상태. 데이터 변경은 여기 액션으로만 한다. */
 export const useAppStore = create<AppState>()((set, get) => ({
   data: INITIAL_DATA,
-  ui: { mode: "main", view: "plan", tool: "select", snap: true, roomFocus: null },
+  ui: {
+    mode: "main",
+    view: "plan",
+    tool: "select",
+    snap: true,
+    roomFocus: null,
+    selectedBoxId: null,
+  },
   history: EMPTY_HISTORY,
   ...spaceActions(set, get),
   ...uiActions(set),
+  ...boxActions(set, get),
   addWall: (wall) =>
     set((state) => change(state, addWall(state.data, { ...wall, id: createId("wall") }))),
   eraseSegment: (wallId, segment) =>

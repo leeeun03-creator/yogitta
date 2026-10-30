@@ -22,4 +22,5 @@ export type UiState = {
   tool: DrawingTool;
   snap: boolean;
   roomFocus: RoomFocus | null;
+  selectedBoxId: string | null; // 고른 가구 (현재 공간)
 };
