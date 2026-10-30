@@ -15,6 +15,24 @@ export const FULL_TURN = 360;
 /** 가구가 벽·다른 가구에 이만큼(cm)까지 파고든 것은 맞닿은 것으로 본다 (소수 오차). 면끼리 붙이는 것은 된다. */
 export const TOUCH_TOLERANCE_CM = 0.01;
 
+/** 가구 종류마다 정한 기본 높이(cm)·칸 수·설치 높이(cm). */
+export type FurnitureDefaults = { h: number; rows: number; cols: number; elevation: number };
+
+/**
+ * 가구 종류별 기본값 (기획서 3.4). 종류를 바꾸면 칸 수·설치 높이가 이 값이 되고,
+ * 높이는 크기를 그대로 두다가 기본 높이를 고를 때만 바뀐다.
+ */
+export const FURNITURE_DEFAULTS: Record<FurnitureType, FurnitureDefaults> = {
+  cabinet: { h: 180, rows: 4, cols: 2, elevation: 0 }, // 왼쪽·오른쪽 문 × 위에서 n번째 칸
+  drawer: { h: 90, rows: 3, cols: 1, elevation: 0 },
+  shelf: { h: 180, rows: 4, cols: 1, elevation: 0 },
+  wall: { h: 60, rows: 2, cols: 1, elevation: 150 }, // 벽에 걸어 바닥에서 띄운다
+  desk: { h: 73, rows: 1, cols: 1, elevation: 0 }, // 상판 위
+  table: { h: 72, rows: 1, cols: 1, elevation: 0 }, // 테이블 위
+  bed: { h: 45, rows: 2, cols: 1, elevation: 0 }, // 침대 위 · 침대 밑
+  box: { h: 40, rows: 1, cols: 1, elevation: 0 }, // 보관함 안
+};
+
 /** 가구 종류의 화면 이름 (용어집). 새 가구 자동 이름("보관함 1")의 앞머리로도 쓴다. */
 export const FURNITURE_LABELS: Record<FurnitureType, string> = {
   cabinet: "양문 수납장",

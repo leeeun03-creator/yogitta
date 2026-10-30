@@ -2,6 +2,6 @@
 export type Item = {
   id: string;
   name: string; // 자유 입력
-  slot?: number; // 칸 번호, 없으면 칸 없음
+  slot?: number; // 칸 번호 0 ~ (rows × cols − 1), 없으면 칸 없음
   memo?: string;
 };

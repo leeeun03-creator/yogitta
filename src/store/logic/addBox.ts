@@ -1,4 +1,8 @@
-import { BOX_DEFAULT_SIZE, FURNITURE_LABELS } from "@/shared/constants/furniture";
+import {
+  BOX_DEFAULT_SIZE,
+  FURNITURE_DEFAULTS,
+  FURNITURE_LABELS,
+} from "@/shared/constants/furniture";
 import { fitBoxPlacement, type BoxPlacement } from "@/shared/lib/fitBoxPlacement";
 import { isPlacementBlocked } from "@/shared/lib/isPlacementBlocked";
 import type { AppData, Box, Floor } from "@/shared/types";
@@ -8,9 +12,13 @@ import { updateCurrentSpace } from "./updateCurrentSpace";
 /** 새 가구를 놓을 자리와 새 가구 id. */
 export type NewBoxInput = BoxPlacement & { id: string };
 
-/** 새 가구 하나를 만든다. 크기는 최소 크기 ~ 바닥 크기로, 위치는 바닥 안으로 맞춘다. */
+/**
+ * 새 가구 하나를 만든다. 크기는 최소 크기 ~ 바닥 크기로, 위치는 바닥 안으로 맞춘다.
+ * 칸 수·설치 높이는 보관함 기본값이고, 높이는 종류를 고르기 전 자리라 BOX_DEFAULT_SIZE를 쓴다.
+ */
 function createBox(input: NewBoxInput, floor: Floor, name: string): Box {
   const { center, w, d } = fitBoxPlacement(input, floor);
+  const { rows, cols, elevation } = FURNITURE_DEFAULTS.box;
   return {
     id: input.id,
     name,
@@ -21,9 +29,9 @@ function createBox(input: NewBoxInput, floor: Floor, name: string): Box {
     w,
     d,
     h: BOX_DEFAULT_SIZE.h,
-    elevation: 0,
-    rows: 1,
-    cols: 1,
+    elevation,
+    rows,
+    cols,
     items: [],
   };
 }
