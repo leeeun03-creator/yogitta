@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { formatMeters } from "@/shared/lib/formatMeters";
 import type { Space } from "@/shared/types";
+import { pressFocusHandlers } from "../hooks/pressFocusHandlers";
 import { useFloorPlanInput } from "../hooks/useFloorPlanInput";
 import { BoxOverlay } from "./BoxOverlay";
 import { FloorDimensions } from "./FloorDimensions";
@@ -33,12 +34,7 @@ export function FloorPlan({ space }: FloorPlanProps) {
         tabIndex={0}
         aria-label="2D 평면도 보기: 휠·+/-로 줌, 끌기·방향키로 이동, 0으로 처음 보기"
         {...input.handlers}
-        // 누르면 터치도 마우스처럼 2D 평면도로 초점을 옮긴다: 속성 패널 입력칸(가구 이름)이 초점을 잃어
-        // 저장되고 화면 키보드가 닫힌다. 누를 때라서 그 뒤에 뜨는 구역 이름 입력칸의 초점은 뺏지 않는다
-        onPointerDownCapture={() => wrapperRef.current?.focus({ preventScroll: true })}
-        // 터치를 뗀 뒤 브라우저가 흉내 내는 마우스 누르기가 2D 평면도로 초점을 가져가지 않게 한다
-        // (구획을 눌러 뜬 이름 입력칸의 초점을 뺏지 않게). 끌기 뒤처럼 취소할 수 없는 때는 건드리지 않는다
-        onTouchEnd={(event) => event.cancelable && event.preventDefault()}
+        {...pressFocusHandlers}
       >
         <svg
           className={styles.svg}

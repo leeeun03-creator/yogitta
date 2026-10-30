@@ -1,16 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 import { collectErrors, createSpace, openPreview, preview, viewGroup } from "./helpers";
-import { nameField, placeBox } from "./boxes";
+import { placeBox, renameBox } from "./boxes";
 import { finishEditing } from "./spaces";
 
 const labels = (page: Page) => preview(page).getByTestId("box-label");
 const SURFACE = "rgb(255, 250, 243)"; // --yg-surface
-
-/** 이름 입력칸에 써 넣고 Enter. */
-async function rename(page: Page, name: string) {
-  await nameField(page).fill(name);
-  await nameField(page).press("Enter");
-}
 
 test.describe("3D에 가구 이름 라벨 띄우기", () => {
   test.skip(
@@ -26,11 +20,11 @@ test.describe("3D에 가구 이름 라벨 띄우기", () => {
 
   test("3D 미리보기에 가구마다 이름 라벨이 뜨고, 이름을 바꾸면 따라 바뀐다", async ({ page }) => {
     const errors = collectErrors(page);
-    await rename(page, "화장대 서랍장");
+    await renameBox(page, "화장대 서랍장");
     await openPreview(page);
     await expect(labels(page)).toHaveText(["보관함 1", "화장대 서랍장"]);
     await viewGroup(page).getByRole("button", { name: "2D 평면도" }).click();
-    await rename(page, "큰 서랍장");
+    await renameBox(page, "큰 서랍장");
     await openPreview(page);
     await expect(labels(page)).toHaveText(["보관함 1", "큰 서랍장"]);
     expect(errors).toEqual([]);

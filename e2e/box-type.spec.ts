@@ -1,11 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 import { chooseTool, collectErrors, createSpace, plan, pressCm } from "./helpers";
-import { FLOOR, boxButton, nameField, panel, placeBox } from "./boxes";
+import { FLOOR, boxButton, nameField, panel, placeBox, typeButton } from "./boxes";
 
 const typeButtons = (page: Page) =>
   panel(page).getByRole("group", { name: "종류" }).getByRole("button");
-const typeButton = (page: Page, name: string) =>
-  panel(page).getByRole("group", { name: "종류" }).getByRole("button", { name, exact: true });
 const firstBox = (page: Page) => plan(page).getByTestId("box").first();
 const body = (page: Page) => firstBox(page).locator("rect").first(); // 몸통 (침대는 머리판 띠가 뒤에 있다)
 const undo = (page: Page) => page.getByRole("button", { name: "되돌리기" }).click();

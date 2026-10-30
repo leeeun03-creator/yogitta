@@ -11,6 +11,9 @@ export const panel = (page: Page) => page.getByRole("complementary", { name: "�
 /** 속성 패널의 가구 이름 입력칸. */
 export const nameField = (page: Page) =>
   panel(page).getByRole("textbox", { name: "가구 이름", exact: true });
+/** 속성 패널 종류 선택의 종류 버튼 (양문 수납장 … 보관함). */
+export const typeButton = (page: Page, name: string) =>
+  panel(page).getByRole("group", { name: "종류" }).getByRole("button", { name, exact: true });
 /** 가구 자리에 겹친 투명 버튼 (키보드·화면 읽기용, 이름 = 가구 이름). */
 export const boxButton = (page: Page, name: string) =>
   page.getByRole("button", { name, exact: true });
@@ -25,6 +28,12 @@ export async function placeBox(
 ) {
   await chooseTool(page, "가구");
   await dragFloorCm(page, FLOOR, from, to, isMobile, beforeUp);
+}
+
+/** 속성 패널 이름 입력칸에 써 넣고 Enter (막히면 이름은 그대로다). */
+export async function renameBox(page: Page, name: string) {
+  await nameField(page).fill(name);
+  await nameField(page).press("Enter");
 }
 
 /** 직선 도구로 벽 하나를 긋고(두 점을 차례로 누른다) 선택 도구로 돌아온다. */

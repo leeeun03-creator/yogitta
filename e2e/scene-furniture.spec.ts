@@ -1,11 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import { collectErrors, createSpace, openPreview, preview } from "./helpers";
-import { panel, placeBox } from "./boxes";
+import { panel, placeBox, typeButton } from "./boxes";
 
 type Cm = { x: number; y: number };
-
-const typeButton = (page: Page, name: string) =>
-  panel(page).getByRole("group", { name: "종류" }).getByRole("button", { name, exact: true });
 
 /** 가구를 놓고 종류를 고른다. 기본 높이 버튼이 있으면 눌러 그 종류 높이로 세운다. */
 async function placeAs(page: Page, type: string, from: Cm, to: Cm, isMobile: boolean) {
