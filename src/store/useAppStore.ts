@@ -30,6 +30,7 @@ export type { ItemError } from "./logic/itemOf";
 export type { RoomNameError } from "./logic/checkRoomName";
 export type { SpaceNameError } from "./logic/spaceNameError";
 export type { RowHeightBlock } from "./logic/changeRowHeight";
+export type { ElevationBlock } from "./logic/changeElevation";
 
 type AppState = BoxActions &
   BoxRemoveActions &

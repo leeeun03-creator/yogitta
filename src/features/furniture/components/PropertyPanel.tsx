@@ -10,6 +10,7 @@ import { useSlotNotice } from "../hooks/useSlotNotice";
 import { BoxNameField } from "./BoxNameField";
 import { BoxSizeFields } from "./BoxSizeFields";
 import { DetailsToggle } from "./DetailsToggle";
+import { ElevationField } from "./ElevationField";
 import { FurnitureTypePicker } from "./FurnitureTypePicker";
 import styles from "./PropertyPanel.module.css";
 import { RowHeightFields } from "./RowHeightFields";
@@ -26,7 +27,8 @@ const ROTATE_BLOCK_MESSAGES: Record<RotateBlock, string> = {
 };
 
 /**
- * 속성 패널 (시안 04). 고른 가구의 이름·놓인 구역·종류·크기·칸 수를 바꾸고 [90° 회전]·[삭제]를 한다.
+ * 속성 패널 (시안 04). 고른 가구의 이름·놓인 구역·종류·크기·칸 수·칸 높이(T30)·벽걸이 설치 높이를 바꾸고
+ * [90° 회전]·[삭제]를 한다.
  * 칸이 줄어 물건이 칸 없음으로 가면 알린다.
  * 데스크톱은 2D 평면도 오른쪽에 늘 있어(고른 가구가 없으면 안내) 가구를 골라도 2D 평면도 크기가 그대로이고,
  * 휴대폰은 2D 평면도에서 고른 가구가 있을 때만 화면 아래에 겹쳐 뜬다 (3D 미리보기의 보기 버튼을 가리지 않게).
@@ -91,6 +93,7 @@ function BoxProperties(props: BoxPropertiesProps) {
         />
         {/* 크기가 바뀌면(되돌리기·기본 높이 등) 입력 중이던 글자를 버리고 새로 그린다 */}
         <BoxSizeFields key={`${box.id}:${box.w}:${box.d}:${box.h}`} box={box} />
+        {box.type === "wall" && <ElevationField key={`${box.id}:${box.elevation}`} box={box} />}
         <RowFields box={box} onMoved={notice.report} />
       </div>
       {notice.text && <SlotNotice text={notice.text} />}

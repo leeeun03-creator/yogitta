@@ -6,6 +6,7 @@ import { addBox, type NewBoxInput } from "./logic/addBox";
 import { applyTypeHeight } from "./logic/applyTypeHeight";
 import { changeBoxRows } from "./logic/changeBoxRows";
 import { changeBoxType } from "./logic/changeBoxType";
+import { changeElevation, type ElevationResult } from "./logic/changeElevation";
 import { changeRowHeight, type RowHeightResult } from "./logic/changeRowHeight";
 import { moveBox } from "./logic/moveBox";
 import { movedToNoSlot } from "./logic/movedToNoSlot";
@@ -23,6 +24,7 @@ export type BoxActions = {
   resizeBox: (id: string, size: BoxSize) => ResizeBoxResult; // 막히면 데이터는 그대로
   changeBoxRows: (id: string, rows: number) => number; // 1 ~ 8칸, 칸 수를 바꿀 수 있는 종류만. 칸 없음으로 옮긴 물건 수
   changeRowHeight: (id: string, row: number, height: number) => RowHeightResult; // 막히면 데이터는 그대로
+  changeElevation: (id: string, elevation: number) => ElevationResult; // 벽걸이 설치 높이, 막히면 그대로
   selectBox: (id: string | null) => void;
 };
 
@@ -32,6 +34,16 @@ function changeSlots(set: SetCore, get: GetCore, id: string, update: (data: AppD
   const after = update(before);
   set((state) => change(state, after));
   return movedToNoSlot(before, after, id);
+}
+
+/** 막힐 수 있는 바꾸기의 결과 (이름·크기·칸 높이·설치 높이). */
+type Checked = { ok: true; data: AppData } | { ok: false };
+
+/** 막힐 수 있는 바꾸기: 되면 되돌리기 한 번으로 바꾸고, 결과(막힌 까닭 포함)를 그대로 돌려준다. */
+function applyChecked<R extends Checked>(set: SetCore, result: R): R {
+  const checked: Checked = result;
+  if (checked.ok) set((state) => change(state, checked.data));
+  return result;
 }
 
 /** 가구 액션 (현재 공간). 고르기 말고는 모두 되돌리기 한 번씩이다. 지우기는 boxRemoveActions. */
@@ -48,22 +60,12 @@ export const boxActions = (set: SetCore, get: GetCore): BoxActions => ({
   rotateBox: (id) => set((state) => change(state, rotateBox(state.data, id))),
   changeBoxType: (id, type) => changeSlots(set, get, id, (data) => changeBoxType(data, id, type)),
   applyTypeHeight: (id) => set((state) => change(state, applyTypeHeight(state.data, id))),
-  renameBox: (id, name) => {
-    const result = renameBox(get().data, id, name);
-    if (result.ok) set((state) => change(state, result.data));
-    return result;
-  },
-  resizeBox: (id, size) => {
-    const result = resizeBox(get().data, id, size);
-    if (result.ok) set((state) => change(state, result.data));
-    return result;
-  },
+  renameBox: (id, name) => applyChecked(set, renameBox(get().data, id, name)),
+  resizeBox: (id, size) => applyChecked(set, resizeBox(get().data, id, size)),
   changeBoxRows: (id, rows) => changeSlots(set, get, id, (data) => changeBoxRows(data, id, rows)),
-  changeRowHeight: (id, row, height) => {
-    const result = changeRowHeight(get().data, id, row, height);
-    if (result.ok) set((state) => change(state, result.data));
-    return result;
-  },
+  changeRowHeight: (id, row, height) =>
+    applyChecked(set, changeRowHeight(get().data, id, row, height)),
+  changeElevation: (id, elevation) => applyChecked(set, changeElevation(get().data, id, elevation)),
   // 가구를 고르면 열려 있던 구역 입력칸은 닫는다 (고른 것이 둘이 되지 않게)
   selectBox: (selectedBoxId) =>
     set((state) => ({
