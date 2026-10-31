@@ -29,7 +29,8 @@ test.describe("첫 화면", () => {
   });
 
   test("디자인 토큰이 yogitta-design 1장 값과 같다", async ({ page }) => {
-    const skill = readFileSync(".claude/skills/yogitta-design/SKILL.md", "utf-8");
+    // 1장(색 토큰)은 yogitta-design 목차에서 yogitta-design-tokens 스킬로 옮겼다
+    const skill = readFileSync(".claude/skills/yogitta-design-tokens/SKILL.md", "utf-8");
     const cssBlock = skill.slice(
       skill.indexOf("```css"),
       skill.indexOf("```", skill.indexOf("```css") + 6),
