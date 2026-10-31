@@ -1,3 +1,4 @@
+import { baseOf } from "@/shared/lib/baseOf";
 import { boxFootprint } from "@/shared/lib/boxFootprint";
 import { canStackOn } from "@/shared/lib/canStackOn";
 import { clampBoxCenter } from "@/shared/lib/clampBoxCenter";
@@ -7,8 +8,7 @@ import { updateStackedBox } from "./updateStackedBox";
 
 /** 옮길 받침 가구. undefined면 지금 받침 가구 그대로(없어진 받침 가구면 바닥), 올릴 수 없는 가구면 false. */
 function baseFor(box: Box, space: Space, parentId: string | null | undefined): Box | null | false {
-  const id = parentId === undefined ? box.parentId : parentId;
-  const base = space.boxes.find((candidate) => candidate.id === id);
+  const base = baseOf({ parentId: parentId === undefined ? box.parentId : parentId }, space.boxes);
   if (!base) return parentId ? false : null;
   return canStackOn(space.boxes, box, base) && base;
 }

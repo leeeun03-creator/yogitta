@@ -1,3 +1,4 @@
+import { baseOf } from "@/shared/lib/baseOf";
 import { boxFootprint } from "@/shared/lib/boxFootprint";
 import { boxObstacles } from "@/shared/lib/boxObstacles";
 import { findBase } from "@/shared/lib/findBase";
@@ -33,7 +34,7 @@ export function nextBoxMove({ box, space, previous, target }: StepInput): BoxMov
   if (baseId !== previous.parentId && !isBoxBlocked(target, size, obstaclesOn(base))) {
     return { center: target, parentId: baseId };
   }
-  const current = space.boxes.find((candidate) => candidate.id === previous.parentId) ?? null;
+  const current = baseOf(previous, space.boxes) ?? null;
   const goal = current ? clampOntoBase(target, current) : target;
   const obstacles = obstaclesOn(current);
   return {

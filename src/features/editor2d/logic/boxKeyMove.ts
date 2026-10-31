@@ -1,3 +1,4 @@
+import { baseOf } from "@/shared/lib/baseOf";
 import { boxFootprint } from "@/shared/lib/boxFootprint";
 import { boxObstacles } from "@/shared/lib/boxObstacles";
 import { clampBoxCenter } from "@/shared/lib/clampBoxCenter";
@@ -18,7 +19,7 @@ export function boxKeyMove(box: Box, direction: Point, step: number, space: Spac
     size,
     space.floor,
   );
-  const base = space.boxes.find((candidate) => candidate.id === box.parentId);
+  const base = baseOf(box, space.boxes);
   const to = base ? clampOntoBase(moved, base) : moved;
   return resolveBoxMove({
     from,

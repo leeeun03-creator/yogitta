@@ -1,4 +1,4 @@
-import { isStackedOn } from "@/shared/lib/isStackedOn";
+import { stackedOn } from "@/shared/lib/stackedOn";
 import { change, type GetCore, type SetCore, type StoreCore } from "./change";
 import { currentBox } from "./logic/currentBox";
 import { keepSelection } from "./logic/keepSelection";
@@ -27,7 +27,7 @@ export const boxRemoveActions = (set: SetCore, get: GetCore): BoxRemoveActions =
     const box = currentBox(get().data, id);
     if (!box) return;
     const boxes = get().data.spaces.find((space) => space.boxes.includes(box))?.boxes ?? [];
-    const hasStacked = boxes.some((other) => isStackedOn(boxes, other.id, id));
+    const hasStacked = stackedOn(boxes, id).length > 0;
     if (box.items.length > 0 || hasStacked)
       set((state) => ({ ui: { ...state.ui, removeAsk: id } }));
     else set((state) => removed(state, id));

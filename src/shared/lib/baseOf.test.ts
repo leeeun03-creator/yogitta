@@ -12,4 +12,9 @@ describe("baseOf", () => {
   it("엣지: 받침 가구를 찾을 수 없으면(깨진 데이터) undefined", () => {
     expect(baseOf(stackBox("top", { parentId: "gone" }), [STACK_DESK])).toBeUndefined();
   });
+
+  it("엣지: 끄는 중인 자리처럼 parentId가 null이면 undefined", () => {
+    expect(baseOf({ parentId: null }, [STACK_DESK])).toBeUndefined();
+    expect(baseOf({ parentId: "desk" }, [STACK_DESK])).toBe(STACK_DESK);
+  });
 });

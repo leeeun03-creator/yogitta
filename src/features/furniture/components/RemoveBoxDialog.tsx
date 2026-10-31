@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { isStackedOn } from "@/shared/lib/isStackedOn";
 import { josa } from "@/shared/lib/josa";
+import { stackedOn } from "@/shared/lib/stackedOn";
 import type { Box } from "@/shared/types";
 import { ConfirmDialog, Segmented, SelectField } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
@@ -51,11 +51,13 @@ function StackedField({ count, value, onChange }: StackedFieldProps) {
 function RemoveBoxConfirm({ box, boxes }: { box: Box; boxes: readonly Box[] }) {
   const removeBox = useAppStore((state) => state.removeBox);
   const cancelRemoveBox = useAppStore((state) => state.cancelRemoveBox);
-  const isOnTop = (other: Box) => isStackedOn(boxes, other.id, box.id);
-  const stackedCount = boxes.filter(isOnTop).length;
+  const stacked = stackedOn(boxes, box.id);
+  const stackedCount = stacked.length;
   const [choice, setChoice] = useState<StackedChoice>("lower");
   const withStacked = choice === "remove";
-  const others = boxes.filter((other) => other !== box && !(withStacked && isOnTop(other)));
+  const others = boxes.filter(
+    (other) => other !== box && !(withStacked && stacked.includes(other)),
+  );
   const [picked, setPicked] = useState(others[0]?.id ?? "");
   const moveTo = others.some((other) => other.id === picked) ? picked : (others[0]?.id ?? "");
   const count = box.items.length;

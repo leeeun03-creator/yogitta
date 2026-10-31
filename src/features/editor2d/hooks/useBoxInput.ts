@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { formatSize } from "@/shared/lib/formatSize";
+import { baseOf } from "@/shared/lib/baseOf";
 import { carryStacked } from "@/shared/lib/carryStacked";
 import { overlappingBoxes } from "@/shared/lib/overlappingBoxes";
 import { stackedElevation } from "@/shared/lib/stackedElevation";
@@ -27,7 +28,7 @@ function withMoving(space: Space, moving: (BoxMove & { id: string }) | null) {
   const { boxes, floor } = space;
   const before = boxes.find((box) => box.id === moving?.id);
   if (!moving || !before) return stackOrder(boxes);
-  const base = boxes.find((box) => box.id === moving.parentId) ?? null;
+  const base = baseOf(moving, boxes) ?? null;
   const { x, y } = moving.center;
   const after = { ...before, x, z: y, elevation: stackedElevation(before, base) }; // 2D y = 3D z
   const replaced = boxes.map((box) => (box === before ? after : box));
