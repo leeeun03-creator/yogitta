@@ -13,6 +13,7 @@ import {
   viewStatus,
   zoomDistance,
   zoomView,
+  lerpView,
 } from "./cameraView";
 import { startCamera, type Vector } from "./startCamera";
 
@@ -137,5 +138,19 @@ describe("keepViewOnFloor", () => {
       position: [800, 500, 300],
       target: [600, 0, 100],
     });
+  });
+});
+
+describe("lerpView", () => {
+  const from: CameraView = { position: [0, 100, 0], target: [0, 0, 0] };
+  const to: CameraView = { position: [100, 200, 300], target: [10, 0, 20] };
+
+  it("t만큼 카메라 자리와 보는 곳을 함께 옮긴다", () => {
+    expect(lerpView(from, to, 0.5)).toEqual({ position: [50, 150, 150], target: [5, 0, 10] });
+  });
+
+  it("엣지: 0이면 처음, 1이면 끝", () => {
+    expect(lerpView(from, to, 0)).toEqual(from);
+    expect(lerpView(from, to, 1)).toEqual(to);
   });
 });

@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from "react";
 import { PREVIEW_FOV_DEG } from "@/shared/constants/scene";
 import type { RoomArea } from "@/features/spaces";
 import type { Box, Floor, Wall } from "@/shared/types";
-import type { ViewStatus, ZoomDirection } from "../logic/cameraView";
+import type { ViewStatus } from "../logic/cameraView";
 import { BoxMeshes } from "./BoxMeshes";
 import { BoxPicker, type BoxPicking } from "./BoxPicker";
 import { FloorMesh } from "./FloorMesh";
@@ -43,6 +43,7 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
   const camera = useRef<CameraCommands>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null); // 마우스를 올린 가구
   const { status, handleViewChange } = useViewStatus();
+  const pickedBoxId = picking?.found.find((spot) => spot.isPicked)?.boxId;
   return (
     <div className={styles.wrap}>
       <div
@@ -53,7 +54,12 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
         {/* flat: 색 보정(톤 매핑)을 끄고 yogitta-design 5장 색을 그대로 낸다
             frameloop demand: 매 프레임 다시 그리지 않고 바뀔 때만 그린다 (휴대폰 배터리·CPU) */}
         <Canvas flat frameloop="demand" camera={{ fov: PREVIEW_FOV_DEG }} aria-hidden="true">
-          <PreviewCamera floor={floor} ref={camera} onViewChange={handleViewChange} />
+          <PreviewCamera
+            floor={floor}
+            ref={camera}
+            onViewChange={handleViewChange}
+            focusBox={boxes.find((box) => box.id === pickedBoxId)}
+          />
           <FloorMesh floor={floor} />
           <RoomFloorMeshes areas={areas} />
           <WallMeshes walls={walls} />
@@ -66,11 +72,7 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
           {picking && <BoxPicker onPick={picking.onPick} onHover={setHoveredId} />}
         </Canvas>
       </div>
-      <ViewButtons
-        status={status}
-        onReset={() => camera.current?.reset()}
-        onZoom={(direction: ZoomDirection) => camera.current?.zoom(direction)}
-      />
+      <ViewButtons status={status} camera={camera} />
     </div>
   );
 }

@@ -11,7 +11,8 @@ import {
   type RefObject,
 } from "react";
 import { PREVIEW_FOV_DEG } from "@/shared/constants/scene";
-import type { Floor } from "@/shared/types";
+import type { Box, Floor } from "@/shared/types";
+import { useFocusMove } from "../hooks/useFocusMove";
 import {
   cameraLimits,
   keepViewOnFloor,
@@ -31,6 +32,7 @@ type PreviewCameraProps = {
   floor: Floor;
   ref: Ref<CameraCommands>;
   onViewChange: (status: ViewStatus) => void;
+  focusBox?: Box; // 위치 표시할 찾은 가구: 바뀌면 카메라를 그 가구 정면으로 옮긴다 (T15)
 };
 type Controls = ComponentRef<typeof OrbitControls>;
 type ControlsRef = RefObject<Controls | null>;
@@ -129,14 +131,18 @@ function useUserMove(controls: ControlsRef, floor: Floor, report: () => void) {
   const onEnd = useCallback(() => {
     isPressing.current = false;
   }, []);
-  return { isMoved, handlers: { onStart, onEnd, onChange } };
+  const markMoved = useCallback(() => {
+    isMoved.current = true;
+  }, []);
+  return { isMoved, markMoved, handlers: { onStart, onEnd, onChange } };
 }
 
 /**
  * 3D 미리보기 카메라. 처음에는 바닥 전체가 보이게 두고,
  * 끌기 회전 · 휠·두 손가락 줌 · 오른쪽 끌기·두 손가락 이동을 정해진 범위 안에서 받는다.
+ * 찾은 가구가 생기면 그 가구 정면으로 옮겨 간다.
  */
-export function PreviewCamera({ floor, ref, onViewChange }: PreviewCameraProps) {
+export function PreviewCamera({ floor, ref, onViewChange, focusBox }: PreviewCameraProps) {
   const controls = useRef<Controls>(null);
   const width = useThree((state) => state.size.width);
   const height = useThree((state) => state.size.height);
@@ -146,8 +152,15 @@ export function PreviewCamera({ floor, ref, onViewChange }: PreviewCameraProps) 
   );
   const limits = useMemo(() => cameraLimits(start), [start]);
   const move = useCameraMove(controls, start, limits, onViewChange);
-  const { isMoved, handlers } = useUserMove(controls, floor, move.report);
+  const { isMoved, markMoved, handlers } = useUserMove(controls, floor, move.report);
   useCameraStart(ref, controls, isMoved, { start, limits }, move);
+  useFocusMove(focusBox, {
+    read: () => (controls.current ? readView(controls.current) : null),
+    moveTo: move.moveTo,
+    markMoved,
+    lens: { fovDeg: PREVIEW_FOV_DEG, aspect: width / height },
+    limits,
+  });
 
   return (
     <OrbitControls

@@ -58,3 +58,9 @@ export const PING = {
 } as const; // lift: 바닥에서 띄운 높이(겹쳐 깜빡이지 않게)
 export const CIRCLE_SEGMENTS = 64; // 원을 몇 조각 선으로 그리나
 export const FOUND_LINE_PX = 2; // 핀 선·점선 원 굵기 (화면 px)
+
+/**
+ * 찾은 가구로 카메라를 옮길 때 (T15): 정면에서 옆으로 돌린 각도, 내려다보는 각도 (도), 가구를 감싸는 구에 둘 여유 (배),
+ * 옮겨 가는 시간 (ms). 정면에서 조금 비스듬히 봐야 칸의 깊이(빠져나온 칸)가 보인다.
+ */
+export const FOCUS = { yawDeg: 25, elevationDeg: 35, margin: 1.6, moveMs: 600 } as const;

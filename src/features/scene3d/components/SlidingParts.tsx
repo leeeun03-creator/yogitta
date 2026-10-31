@@ -2,16 +2,10 @@ import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import type { Group } from "three";
 import { SLOT_OPEN_CM, SLOT_OPEN_MS } from "@/shared/constants/scene";
+import { prefersReducedMotion } from "../hooks/prefersReducedMotion";
+import { easeOut } from "../logic/easeOut";
 import type { FurniturePart } from "../logic/furniturePart";
 import { PartMesh, type Look } from "./PartMesh";
-
-const EASE_POWER = 3; // 빠르게 나오다 끝에서 천천히 멈추게 (ease-out cubic)
-const easeOut = (t: number) => 1 - (1 - t) ** EASE_POWER;
-
-/** 동작 줄이기 설정이면 애니메이션 없이 바로 연다. */
-const prefersReducedMotion = () =>
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
 /**
  * 찾은 칸으로 빠져나오는 부품 묶음 (yogitta-design 5장 "칸 열림: 짧은 애니메이션"). 나타나면 SLOT_OPEN_MS 동안

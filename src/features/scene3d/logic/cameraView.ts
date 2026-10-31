@@ -92,3 +92,13 @@ export function keepViewOnFloor(view: CameraView, floor: Floor): CameraView {
     target: next,
   };
 }
+
+/** 두 카메라 사이 (t = 0이면 from, 1이면 to). 카메라 자리와 보는 곳을 함께 옮긴다. */
+export function lerpView(from: CameraView, to: CameraView, t: number): CameraView {
+  const mix = (a: Vector, b: Vector): Vector => [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t,
+    a[2] + (b[2] - a[2]) * t,
+  ];
+  return { position: mix(from.position, to.position), target: mix(from.target, to.target) };
+}
