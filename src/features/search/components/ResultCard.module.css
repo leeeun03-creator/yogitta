@@ -69,6 +69,39 @@
   margin-top: 3px;
 }
 
+/* 같은 칸에 있는 물건: 라벨(13px sub) + 카드 안 칩 (시안 07, T14) */
+.sameSlot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+.sameSlotLabel {
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chip,
+.moreChip {
+  padding: 5px 12px;
+  border-radius: var(--yg-radius-pill);
+  font-size: 15px;
+}
+.chip {
+  background: var(--yg-chip);
+}
+.moreChip {
+  border: 1px solid var(--yg-border);
+  color: var(--yg-accent);
+}
+
 /* 여러 곳: 번호 붙은 결과 행 (시안 07 "찾음 (여러 곳)"). 누르면 고르고, 고른 행은 찾은 칸 배경 */
 .list {
   display: flex;

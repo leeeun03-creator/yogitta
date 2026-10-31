@@ -6,3 +6,6 @@ export const ITEM_MEMO_MAX_LENGTH = 100;
 
 /** 칸을 고르지 않은 물건이 들어가는 자리의 화면 이름. */
 export const NO_SLOT_LABEL = "칸 없음";
+
+/** 검색 결과 카드에 보이는 같은 칸 물건 칩 수. 더 있으면 "외 n개"로 묶는다 (시안 07, T14). */
+export const SAME_SLOT_CHIP_LIMIT = 4;

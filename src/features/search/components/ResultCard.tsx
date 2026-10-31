@@ -3,7 +3,9 @@ import { useId } from "react";
 import { Button } from "@/shared/ui";
 import type { SpaceCount } from "../logic/countBySpace";
 import type { ItemMatch } from "../logic/matchItems";
+import { sameSlotItems } from "../logic/sameSlotItems";
 import { LocationSentence } from "./LocationSentence";
+import { SameSlotChips } from "./SameSlotChips";
 import styles from "./ResultCard.module.css";
 
 const MEMO_ICON_SIZE = 16;
@@ -18,7 +20,7 @@ type ResultCardProps = {
 };
 
 /**
- * 검색 결과 카드 (시안 07 "찾음"): "요깃따!"와 "'여권' 1곳 찾음", 위치 문장, 메모, 다른 공간 링크. 여러 곳이면 위치 문장을
+ * 검색 결과 카드 (시안 07 "찾음"): "요깃따!"와 "'여권' 1곳 찾음", 위치 문장, 메모, 같은 칸에 있는 물건(T14), 다른 공간 링크. 여러 곳이면 위치 문장을
  * 번호 목록으로 보이고 눌러서 고른다. 지금 공간에 없고 다른 공간에만 있으면 그 공간 링크만 보인다.
  * "요깃따!"는 찾았을 때만 쓴다. 찾은 개수는 글자를 쓰는 대로 화면 읽기 프로그램이 읽는다.
  * 휴대폰은 가구 상세 패널 자리를 쓰므로 [가구 전체 보기]로 그 가구의 칸을 본다 (시안 02).
@@ -43,6 +45,7 @@ export function ResultCard(props: ResultCardProps) {
       {picked && matches.length > 1 && (
         <ResultList matches={matches} picked={picked} onPick={onPick} />
       )}
+      {picked && <SameSlotChips items={sameSlotItems(picked)} />}
       {elsewhere.spaces.length > 0 && <ElsewhereLinks {...elsewhere} isOnlyThere={!picked} />}
       {picked && (
         <Button variant="primary" className={styles.showBox} onClick={onShowBox}>
