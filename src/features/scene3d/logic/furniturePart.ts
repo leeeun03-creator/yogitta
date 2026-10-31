@@ -1,4 +1,5 @@
-type Xyz = [number, number, number];
+/** 가구 로컬 3D 좌표·크기 (cm): x, y, z. */
+export type Xyz = [number, number, number];
 
 /** 3D 가구 부품 하나 (가구 로컬 cm: x 가로, y 가구 아랫면부터 높이, z 깊이 · +z가 정면). */
 export type FurniturePart = {

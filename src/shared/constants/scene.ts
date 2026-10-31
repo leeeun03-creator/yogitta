@@ -57,3 +57,4 @@ export const PING = {
   lift: 0.5,
 } as const; // lift: 바닥에서 띄운 높이(겹쳐 깜빡이지 않게)
 export const CIRCLE_SEGMENTS = 64; // 원을 몇 조각 선으로 그리나
+export const FOUND_LINE_PX = 2; // 핀 선·점선 원 굵기 (화면 px)
