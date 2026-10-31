@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import type { SelectedBox } from "@/features/furniture";
+import { baseOf } from "@/shared/lib/baseOf";
 import type { Box, FurnitureType } from "@/shared/types";
 import { Button, IconButton } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
@@ -106,10 +107,14 @@ type DetailHeadProps = Pick<FurnitureDetailProps, "selection" | "onClose"> & {
   titleRef: RefObject<HTMLHeadingElement | null>;
 };
 
-/** 머리: 종류 아이콘 타일 · 가구 이름 · 위치 핀 + "구역 안방 · 물건 3개" · 닫기 (시안 08). */
+/**
+ * 머리: 종류 아이콘 타일 · 가구 이름 · 위치 핀 + "구역 안방 · 물건 3개" · 닫기 (시안 08).
+ * 가구 위 가구는 앞에 "책상 위 · "를 붙인다 (T29).
+ */
 function DetailHead({ selection, titleRef, onClose }: DetailHeadProps) {
   const { box, room } = selection;
   const Icon = TYPE_ICONS[box.type];
+  const base = baseOf(box, selection.space.boxes);
   return (
     <header className={styles.head}>
       <span className={styles.tile} aria-hidden="true">
@@ -121,6 +126,7 @@ function DetailHead({ selection, titleRef, onClose }: DetailHeadProps) {
         </h2>
         <p className={styles.meta}>
           <MapPin size={META_ICON_SIZE} aria-hidden="true" />
+          {base && `${base.name} 위 · `}
           {room === null ? "구역 없음" : `구역 ${room}`} · 물건 {box.items.length}개
         </p>
       </div>

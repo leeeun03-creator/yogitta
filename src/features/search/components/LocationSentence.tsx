@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { baseOf } from "@/shared/lib/baseOf";
 import { buildLocationSentence } from "../logic/buildLocationSentence";
 import type { ItemMatch } from "../logic/matchItems";
 import styles from "./ResultCard.module.css";
@@ -12,6 +13,7 @@ export function LocationSentence({ match }: { match: ItemMatch }) {
     item: match.item,
     box: match.box,
     spaceName: match.space.name,
+    baseName: baseOf(match.box, match.space.boxes)?.name,
   });
   return (
     <span className={styles.sentence}>

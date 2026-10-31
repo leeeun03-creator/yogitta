@@ -74,4 +74,17 @@ describe("buildLocationSentence", () => {
     expect(sentence({ id: "i", name: "충전기 3" }, at)).toMatch(/^충전기 3은 /);
     expect(sentence({ id: "i", name: "USB" }, at)).toMatch(/^USB는 /);
   });
+
+  it('가구 위 가구면 "[받침 가구] 위 [가구]"를 한 덩어리로 굵게 보인다 (PRD: 책상 위 보관함 안)', () => {
+    const parts = buildLocationSentence({
+      item: { id: "i", name: "충전기", slot: 0 },
+      box: box("box", "보관함"),
+      spaceName: "내 방",
+      baseName: "책상",
+    });
+    expect(parts.map((part) => part.text).join("")).toBe(
+      "충전기는 내 방의 책상 위 보관함 안에 보관 중이에요.",
+    );
+    expect(parts.find((part) => part.mark === "box")?.text).toBe("책상 위 보관함");
+  });
 });
