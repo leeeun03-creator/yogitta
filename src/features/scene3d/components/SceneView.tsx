@@ -41,7 +41,10 @@ export function SceneView({ space, name, fallback, picking }: SceneViewProps) {
   }
   // 벽 하나(예: 사각형)는 선분 여러 개로 서므로 둘 다 알린다
   const segments = walls.flatMap(wallToBoxes).length;
-  const label = `${name}, 바닥 ${formatMeters(floor.w)} × ${formatMeters(floor.h)} m, 벽 ${walls.length}개, 선분 ${segments}개, 구역 ${areas.length}개, 가구 ${boxes.length}개`;
+  const foundBox = boxes.find((box) =>
+    picking?.found.some((spot) => spot.isPicked && spot.boxId === box.id),
+  );
+  const label = `${name}, 바닥 ${formatMeters(floor.w)} × ${formatMeters(floor.h)} m, 벽 ${walls.length}개, 선분 ${segments}개, 구역 ${areas.length}개, 가구 ${boxes.length}개${foundBox ? `, 찾은 가구 ${foundBox.name}` : ""}`;
   return (
     <div className={styles.view}>
       <Suspense fallback={<p className={styles.message}>3D를 불러오고 있어요</p>}>

@@ -1,8 +1,8 @@
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FurniturePanel } from "@/features/items";
 import { SpaceScene } from "@/features/scene3d";
-import { NoResultCard, ResultCard, useFoundItem, useSearch } from "@/features/search";
+import { foundSpots, NoResultCard, ResultCard, useFoundItem, useSearch } from "@/features/search";
 import { SpaceSwitcher } from "@/features/spaces";
 import type { Space } from "@/shared/types";
 import { Button, Logo, SearchBar } from "@/shared/ui";
@@ -34,42 +34,63 @@ function MainHeader() {
   );
 }
 
+type SearchCardProps = {
+  space: Space;
+  search: ReturnType<typeof useSearch>;
+  found: ReturnType<typeof useFoundItem>;
+  onShowBox: () => void; // 휴대폰: 카드 대신 고른 가구의 가구 상세 패널을 본다
+};
+
+/** 검색 중 카드: 찾으면(다른 공간 포함) 검색 결과 카드, 못 찾으면 결과 없음 카드. */
+function SearchCard({ space, search, found, onShowBox }: SearchCardProps) {
+  if (search.matches.length === 0 && search.elsewhere.length === 0) {
+    return <NoResultCard key={search.query} query={search.query} boxes={space.boxes} />;
+  }
+  return (
+    <ResultCard
+      query={search.query}
+      matches={search.matches}
+      picked={found.picked}
+      onPick={found.pick}
+      onShowBox={onShowBox}
+      elsewhere={{ spaces: search.elsewhere, onGo: search.goToSpace }}
+    />
+  );
+}
+
 /**
- * 검색창 → [3D 공간 + 가구 상세 패널]. 검색하면 3D 공간 위 왼쪽에 카드가 뜬다: 찾으면 검색 결과 카드(찾은 가구의 가구 상세
- * 패널도 열린다), 못 찾으면 결과 없음 카드. 휴대폰은 카드가 가구 상세 패널 자리(3D 아래)에 뜨고, [가구 전체 보기]를 누르면
+ * 검색창 → [3D 공간 + 가구 상세 패널]. 검색하면 3D 공간 위 왼쪽에 카드가 뜬다(SearchCard). 찾으면 찾은 가구의 가구 상세
+ * 패널이 열리고 3D에서 위치를 표시한다. 휴대폰은 카드가 가구 상세 패널 자리(3D 아래)에 뜨고, [가구 전체 보기]를 누르면
  * 그 검색어 동안은 카드 대신 패널을 본다.
  */
 function MainBody({ space }: { space: Space }) {
   const search = useSearch();
   const found = useFoundItem(search.matches);
   const [panelQuery, setPanelQuery] = useState<string | null>(null); // 휴대폰: 카드 대신 패널을 볼 검색어
-  const hasCard = search.isSearching;
-  const isFound = search.matches.length > 0 || search.elsewhere.length > 0;
   const isPanelShown = panelQuery === search.query;
+  const { isSearching, matches } = search;
+  const spots = useMemo(
+    () => (isSearching ? foundSpots(matches, found.picked) : []),
+    [isSearching, matches, found.picked],
+  );
   return (
     <main className={styles.body}>
       <SearchBar value={search.query} onChange={search.setQuery} />
       <div
-        className={hasCard && !isPanelShown ? `${styles.stage} ${styles.searching}` : styles.stage}
+        className={
+          search.isSearching && !isPanelShown ? `${styles.stage} ${styles.searching}` : styles.stage
+        }
       >
         <section className={canvasStyles.canvas} aria-label="3D 공간 영역">
           {/* 공간을 바꾸면 3D 공간을 새로 만들어 카메라도 그 공간의 처음 자리에서 시작한다 */}
-          <SpaceScene key={space.id} space={space} />
+          <SpaceScene key={space.id} space={space} found={spots} />
         </section>
-        {hasCard && (
+        {search.isSearching && (
           <div className={isPanelShown ? `${styles.result} ${styles.besidePanel}` : styles.result}>
-            {isFound ? (
-              <ResultCard
-                query={search.query}
-                matches={search.matches}
-                picked={found.picked}
-                onPick={found.pick}
-                onShowBox={() => setPanelQuery(search.query)}
-                elsewhere={{ spaces: search.elsewhere, onGo: search.goToSpace }}
-              />
-            ) : (
-              <NoResultCard key={search.query} query={search.query} boxes={space.boxes} />
-            )}
+            <SearchCard
+              {...{ space, search, found }}
+              onShowBox={() => setPanelQuery(search.query)}
+            />
           </div>
         )}
         <FurniturePanel space={space} />

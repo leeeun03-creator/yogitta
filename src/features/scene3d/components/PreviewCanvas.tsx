@@ -27,17 +27,22 @@ const NOT_READY: ViewStatus = { isStart: true, canZoomIn: false, canZoomOut: fal
 const isSameStatus = (a: ViewStatus, b: ViewStatus) =>
   a.isStart === b.isStart && a.canZoomIn === b.canZoomIn && a.canZoomOut === b.canZoomOut;
 
+/** 보기 버튼 상태와 카메라가 알리는 처리기. 끄는 동안 매번 불리므로 바뀐 때만 다시 그린다. */
+function useViewStatus() {
+  const [status, setStatus] = useState(NOT_READY);
+  const handleViewChange = useCallback(
+    (next: ViewStatus) => setStatus((prev) => (isSameStatus(prev, next) ? prev : next)),
+    [],
+  );
+  return { status, handleViewChange };
+}
+
 /** three.js를 쓰는 3D 그림 본체와 보기 버튼. 무거워서 SceneView가 처음 열 때 따로 불러온다. */
 export function PreviewCanvas(props: PreviewCanvasProps) {
   const { floor, walls, boxes, areas, label, picking } = props;
   const camera = useRef<CameraCommands>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null); // 마우스를 올린 가구
-  const [status, setStatus] = useState(NOT_READY);
-  // 끄는 동안 매번 불리므로 바뀐 때만 다시 그린다
-  const handleViewChange = useCallback(
-    (next: ViewStatus) => setStatus((prev) => (isSameStatus(prev, next) ? prev : next)),
-    [],
-  );
+  const { status, handleViewChange } = useViewStatus();
   return (
     <div className={styles.wrap}>
       <div
@@ -52,7 +57,12 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
           <FloorMesh floor={floor} />
           <RoomFloorMeshes areas={areas} />
           <WallMeshes walls={walls} />
-          <BoxMeshes boxes={boxes} selectedId={picking?.selectedId} hoveredId={hoveredId} />
+          <BoxMeshes
+            boxes={boxes}
+            selectedId={picking?.selectedId}
+            hoveredId={hoveredId}
+            foundId={picking?.found.find((spot) => spot.isPicked)?.boxId}
+          />
           {picking && <BoxPicker onPick={picking.onPick} onHover={setHoveredId} />}
         </Canvas>
       </div>

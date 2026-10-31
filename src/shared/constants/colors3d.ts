@@ -8,7 +8,18 @@ export const SCENE_COLORS = {
   edge: "#9B7A5A", // 모서리 선, 가구 손잡이
   selectedEdge: "#3B2F25", // 고른 가구의 모서리 선: 글자색(--yg-text). 강조색은 찾은 가구에만 쓴다
   mattress: "#F7EFE3", // 침대 매트리스
+  dimTarget: "#FBF6EE", // 흐리게 칠할 때 섞는 3D 영역 바탕색 (--yg-canvas)
 } as const;
+
+/** 검색 위치 표시 색 (yogitta-design 5장). 3D 강조색은 찾은 가구 하나에만 쓴다. */
+export const FOUND_COLORS = {
+  box: "#E5893A", // 찾은 가구
+  openSlot: "#FFB877", // 열린 칸
+  openInside: "#7A3D10", // 열린 칸 안쪽
+} as const;
+
+/** 위치 표시 때 찾은 가구 말고 나머지 가구를 바탕색 쪽으로 섞는 비율. */
+export const DIM_RATIO = 0.55;
 
 /** 가구 종류별 나무 톤 (yogitta-design 5장). 서랍장은 시안 표에 없어 같은 수납 가구 색을 쓴다. */
 export const FURNITURE_COLORS: Record<FurnitureType, string> = {
