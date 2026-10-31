@@ -61,7 +61,7 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
             boxes={boxes}
             selectedId={picking?.selectedId}
             hoveredId={hoveredId}
-            found={picking?.found.find((spot) => spot.isPicked)}
+            found={picking?.found}
           />
           {picking && <BoxPicker onPick={picking.onPick} onHover={setHoveredId} />}
         </Canvas>

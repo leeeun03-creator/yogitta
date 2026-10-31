@@ -34,6 +34,7 @@ describe("foundSpots", () => {
     const socks = match({ id: "item_2", name: "양말", slot: 2 });
     expect(foundSpots([passport, socks], passport)).toEqual([
       {
+        itemId: "item_1",
         boxId: "box_1",
         slot: 1,
         itemName: "여권",
@@ -41,6 +42,7 @@ describe("foundSpots", () => {
         isPicked: true,
       },
       {
+        itemId: "item_2",
         boxId: "box_1",
         slot: 2,
         itemName: "양말",

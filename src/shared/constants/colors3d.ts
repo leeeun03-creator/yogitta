@@ -16,6 +16,7 @@ export const FOUND_COLORS = {
   box: "#E5893A", // 찾은 가구
   openSlot: "#FFB877", // 열린 칸
   openInside: "#7A3D10", // 열린 칸 안쪽
+  pin: "#A8501B", // 핀 선·바닥 점선 원 (강조색 --yg-accent)
 } as const;
 
 /** 위치 표시 때 찾은 가구 말고 나머지 가구를 바탕색 쪽으로 섞는 비율. */

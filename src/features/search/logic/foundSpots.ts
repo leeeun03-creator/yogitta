@@ -11,6 +11,7 @@ export function foundSpots(matches: readonly ItemMatch[], picked: ItemMatch | nu
   return matches.map(({ box, item }) => {
     const label = item.slot === undefined ? undefined : slotLabels(box)[item.slot];
     return {
+      itemId: item.id,
       boxId: box.id,
       ...(label === undefined ? {} : { slot: item.slot }),
       itemName: item.name,

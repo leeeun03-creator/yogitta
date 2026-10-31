@@ -28,3 +28,30 @@
     font-size: 12px; /* 최소 글자 크기 (yogitta-design 2장) */
   }
 }
+
+/* 칸 위 핀 라벨 (yogitta-design 5장 위치 표시 4단계): 강조색 둥근 라벨, 아랫변이 핀 선 끝에 닿게 올린다 */
+.pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: var(--yg-radius-field);
+  background: var(--yg-accent);
+  color: var(--yg-on-accent);
+  white-space: nowrap;
+  transform: translateY(-50%);
+  box-shadow: var(--yg-shadow-card);
+  user-select: none;
+}
+/* 여러 곳을 찾았을 때 고르지 않은 결과의 핀은 옅게 */
+.pin:not([data-picked]) {
+  background: var(--yg-surface);
+  color: var(--yg-accent);
+  box-shadow: inset 0 0 0 1.5px var(--yg-accent);
+}
+.pinName {
+  font-size: 15px;
+}
+.pinPlace {
+  font-size: 12px;
+}

@@ -44,3 +44,16 @@ export const XYZ_PER_POINT = 3;
 /** 위치 표시 때 찾은 칸이 정면으로 빠져나오는 거리 (cm, yogitta-design 5장)와 걸리는 시간 (ms). */
 export const SLOT_OPEN_CM = 26;
 export const SLOT_OPEN_MS = 300;
+
+/** 칸 위 핀: 핀이 시작하는 점(열린 칸·가구 맨 위)에서 라벨까지 선 높이 (cm). */
+export const PIN_RISE_CM = 50;
+/** 바닥 점선 원(핑): 가구 바깥에서 안쪽 원까지 띄운 거리, 두 원 사이, 점선 길이·틈 (cm), 바깥 원 불투명도. */
+export const PING = {
+  inset: 15,
+  gap: 20,
+  dash: 8,
+  space: 6,
+  outerOpacity: 0.4,
+  lift: 0.5,
+} as const; // lift: 바닥에서 띄운 높이(겹쳐 깜빡이지 않게)
+export const CIRCLE_SEGMENTS = 64; // 원을 몇 조각 선으로 그리나
