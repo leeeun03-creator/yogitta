@@ -7,6 +7,7 @@ type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> & 
   onChange: (value: string) => void;
   error?: string; // 있으면 오류 상태 + 아래 안내 문구
   invalid?: { describedBy: string }; // 안내 문구를 입력칸 묶음 아래에 따로 둘 때: 오류 상태만 + 그 문구를 가리킨다
+  inline?: boolean; // 라벨을 입력칸 왼쪽에 둔다 (칸 높이 목록처럼 여러 줄일 때)
   ref?: Ref<HTMLInputElement>;
 };
 
@@ -17,13 +18,14 @@ export function TextField({
   onChange,
   error,
   invalid,
+  inline,
   ref,
   ...rest
 }: TextFieldProps) {
   const inputId = useId();
   const errorId = `${inputId}-error`;
   return (
-    <div className={styles.field}>
+    <div className={inline ? `${styles.field} ${styles.inline}` : styles.field}>
       <label htmlFor={inputId} className={error ? styles.labelError : styles.label}>
         {label}
       </label>

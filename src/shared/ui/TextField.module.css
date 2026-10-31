@@ -11,6 +11,16 @@
   color: var(--yg-text-sub);
 }
 
+/* 라벨을 왼쪽에: "1번째 서랍 [25]" (시안 04 칸 높이) */
+.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.inline > label {
+  flex: 0 0 76px;
+}
+
 .labelError {
   font-size: 13px;
   color: var(--yg-danger);

@@ -6,6 +6,7 @@ import { addBox, type NewBoxInput } from "./logic/addBox";
 import { applyTypeHeight } from "./logic/applyTypeHeight";
 import { changeBoxRows } from "./logic/changeBoxRows";
 import { changeBoxType } from "./logic/changeBoxType";
+import { changeRowHeight, type RowHeightResult } from "./logic/changeRowHeight";
 import { moveBox } from "./logic/moveBox";
 import { movedToNoSlot } from "./logic/movedToNoSlot";
 import { renameBox, type BoxNameResult } from "./logic/renameBox";
@@ -21,6 +22,7 @@ export type BoxActions = {
   renameBox: (id: string, name: string) => BoxNameResult; // 막히면 데이터는 그대로
   resizeBox: (id: string, size: BoxSize) => ResizeBoxResult; // 막히면 데이터는 그대로
   changeBoxRows: (id: string, rows: number) => number; // 1 ~ 8칸, 칸 수를 바꿀 수 있는 종류만. 칸 없음으로 옮긴 물건 수
+  changeRowHeight: (id: string, row: number, height: number) => RowHeightResult; // 막히면 데이터는 그대로
   selectBox: (id: string | null) => void;
 };
 
@@ -57,6 +59,11 @@ export const boxActions = (set: SetCore, get: GetCore): BoxActions => ({
     return result;
   },
   changeBoxRows: (id, rows) => changeSlots(set, get, id, (data) => changeBoxRows(data, id, rows)),
+  changeRowHeight: (id, row, height) => {
+    const result = changeRowHeight(get().data, id, row, height);
+    if (result.ok) set((state) => change(state, result.data));
+    return result;
+  },
   // 가구를 고르면 열려 있던 구역 입력칸은 닫는다 (고른 것이 둘이 되지 않게)
   selectBox: (selectedBoxId) =>
     set((state) => ({

@@ -14,6 +14,7 @@ type SavedBox = {
   rotation: number;
   elevation: number;
   parentId?: string;
+  rowHeights?: number[];
 };
 type Saved = {
   currentSpaceId: string | null;

@@ -24,9 +24,9 @@ export function shelfParts(
       look,
     );
   };
-  // 맨 아래 칸의 아랫면은 바닥 판이라 위 칸들의 아랫면에만 선반 판을 넣는다
+  // 칸마다 아랫면에 선반 판을 넣는다. 바닥 판과 겹치는 맨 아래(칸 높이 합이 가구 높이와 같을 때)는 뺀다
   const dividers = rowSpans(box)
-    .slice(0, -1)
+    .filter(({ bottom }) => bottom > t)
     .map(({ bottom }, row) => board(`board-${row}`, bottom));
   return [
     partBetween("side-left", [-w / 2, 0, -d / 2], [inner.left, h, d / 2], look),

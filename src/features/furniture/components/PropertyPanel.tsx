@@ -2,6 +2,7 @@ import { MapPin, RotateCw, Trash2 } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { ROW_TYPES } from "@/shared/constants/furniture";
 import { rotatedBox, type RotateBlock } from "@/shared/lib/rotatedBox";
+import type { Box } from "@/shared/types";
 import { Button } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
 import { useSelectedBox, type SelectedBox } from "../hooks/useSelectedBox";
@@ -11,10 +12,14 @@ import { BoxSizeFields } from "./BoxSizeFields";
 import { DetailsToggle } from "./DetailsToggle";
 import { FurnitureTypePicker } from "./FurnitureTypePicker";
 import styles from "./PropertyPanel.module.css";
+import { RowHeightFields } from "./RowHeightFields";
 import { RowStepper } from "./RowStepper";
 
 const ICON_SIZE = 18;
 const ROOM_ICON_SIZE = 16;
+/** 칸 높이 입력칸을 새로 그릴 때를 정하는 열쇠: 가구·높이·칸 수·정해 둔 칸 높이. */
+const rowHeightsKey = (box: Box) =>
+  `${box.id}:${box.h}:${box.rows}:${box.rowHeights?.join(",") ?? ""}`;
 const ROTATE_BLOCK_MESSAGES: Record<RotateBlock, string> = {
   tooLong: "바닥보다 길어서 돌릴 수 없어요",
   blocked: "벽이나 다른 가구에 걸려서 돌릴 수 없어요",
@@ -86,12 +91,24 @@ function BoxProperties(props: BoxPropertiesProps) {
         />
         {/* 크기가 바뀌면(되돌리기·기본 높이 등) 입력 중이던 글자를 버리고 새로 그린다 */}
         <BoxSizeFields key={`${box.id}:${box.w}:${box.d}:${box.h}`} box={box} />
-        {ROW_TYPES.includes(box.type) && <RowStepper box={box} onMoved={notice.report} />}
+        <RowFields box={box} onMoved={notice.report} />
       </div>
       {notice.text && <SlotNotice text={notice.text} />}
       {isOverlapping && <p className={styles.warning}>벽이나 다른 가구와 겹쳐 있어요</p>}
       <BoxActionButtons {...props} />
       <p className={styles.hint}>2D 평면도에서 R 키로 돌리고, Delete 키로 지울 수 있어요</p>
+    </>
+  );
+}
+
+/** 칸 수 스테퍼와 칸 높이 입력칸 (칸 수를 바꿀 수 있는 종류만, T30). */
+function RowFields({ box, onMoved }: { box: Box; onMoved: (count: number) => void }) {
+  if (!ROW_TYPES.includes(box.type)) return null;
+  return (
+    <>
+      <RowStepper box={box} onMoved={onMoved} />
+      {/* 칸 높이·칸 수·높이가 바뀌면(되돌리기 등) 입력 중이던 글자를 버리고 새로 그린다 */}
+      <RowHeightFields key={rowHeightsKey(box)} box={box} />
     </>
   );
 }

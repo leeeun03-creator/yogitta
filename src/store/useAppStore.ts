@@ -29,6 +29,7 @@ export type { HistoryDirection, RoomResult, SpaceResult };
 export type { ItemError } from "./logic/itemOf";
 export type { RoomNameError } from "./logic/checkRoomName";
 export type { SpaceNameError } from "./logic/spaceNameError";
+export type { RowHeightBlock } from "./logic/changeRowHeight";
 
 type AppState = BoxActions &
   BoxRemoveActions &

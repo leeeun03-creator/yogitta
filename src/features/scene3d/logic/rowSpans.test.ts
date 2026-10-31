@@ -18,7 +18,14 @@ describe("rowSpans", () => {
     ]);
   });
 
-  it("엣지: 칸 높이 개수·합이 맞지 않거나 0 이하가 있으면 균등 분배한다", () => {
+  it("칸 높이 합이 가구 높이보다 작으면 위 칸부터 채우고 맨 아래는 빈 자리다 (T30)", () => {
+    expect(rowSpans({ h: 100, rows: 2, rowHeights: [50, 30] })).toEqual([
+      { bottom: 50, height: 50 },
+      { bottom: 20, height: 30 },
+    ]);
+  });
+
+  it("엣지: 칸 높이 개수가 다르거나, 합이 가구 높이를 넘거나, 0 이하가 있으면 균등 분배한다", () => {
     const even = rowSpans({ h: 100, rows: 2 });
     expect(rowSpans({ h: 100, rows: 2, rowHeights: [50, 30, 20] })).toEqual(even);
     expect(rowSpans({ h: 100, rows: 2, rowHeights: [70, 40] })).toEqual(even);
