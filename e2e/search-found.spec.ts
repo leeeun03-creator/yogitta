@@ -1,10 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import { chips, row } from "./items";
 import { detail } from "./scene";
-import { mainTitle } from "./spaces";
+import { card, openSample, searchBox } from "./search";
 
-const searchBox = (page: Page) => page.getByRole("searchbox", { name: "물건 검색" });
-const card = (page: Page) => page.getByRole("region", { name: "요깃따!" });
 const heading = (page: Page, name: string) => detail(page).getByRole("heading", { name });
 const FOUND_BG = "rgb(246, 217, 191)"; // --yg-found-bg #F6D9BF
 const ACCENT = "rgb(168, 80, 27)"; // --yg-accent #A8501B
@@ -14,8 +12,7 @@ test.describe("찾은 가구를 가구 상세 패널에 열고 찾은 칸 강조
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("./");
-    await expect(mainTitle(page)).toBeVisible();
+    await openSample(page);
   });
 
   test("여권을 찾으면 화장대 서랍장이 열리고 2번째 서랍 행과 여권 칩이 강조된다", async ({

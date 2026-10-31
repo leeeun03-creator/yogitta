@@ -1,10 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 import { setSavedData } from "./helpers";
 import { detail } from "./scene";
-import { mainTitle, pill } from "./spaces";
+import { pill } from "./spaces";
+import { card, openSample, searchBox } from "./search";
 
-const searchBox = (page: Page) => page.getByRole("searchbox", { name: "물건 검색" });
-const card = (page: Page) => page.getByRole("region", { name: "요깃따!" });
 const link = (page: Page, name: string) =>
   card(page).getByRole("button", { name: new RegExp(`^${name} \\d+곳`) });
 
@@ -31,8 +30,7 @@ test.describe("다른 공간에서 찾은 결과로 그 공간에 가기", () =>
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("./");
-    await expect(mainTitle(page)).toBeVisible();
+    await openSample(page);
   });
 
   test("다른 공간에도 있으면 링크가 보이고, 누르면 그 공간의 결과가 보인다", async ({

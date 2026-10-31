@@ -1,9 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { collectErrors } from "./helpers";
-import { mainTitle } from "./spaces";
-
-const searchBox = (page: Page) => page.getByRole("searchbox", { name: "물건 검색" });
-const card = (page: Page) => page.getByRole("region", { name: "요깃따!" });
+import { card, openSample, searchBox } from "./search";
 
 /** 검색창에 쓴다 (쓰는 대로 찾는다). */
 const search = (page: Page, query: string) => searchBox(page).fill(query);
@@ -13,8 +10,7 @@ test.describe("검색하면 요깃따!와 위치 문장 카드 보여주기", ()
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("./");
-    await expect(mainTitle(page)).toBeVisible();
+    await openSample(page);
   });
 
   test("'여권'을 쓰면 요깃따!와 '1곳 찾음', 위치 문장, 메모가 뜬다", async ({ page }, testInfo) => {

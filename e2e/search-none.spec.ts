@@ -1,19 +1,15 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { collectErrors, createSpace } from "./helpers";
 import { detail } from "./scene";
-import { finishEditing, mainTitle } from "./spaces";
-
-const searchBox = (page: Page) => page.getByRole("searchbox", { name: "물건 검색" });
-const noResult = (page: Page) => page.getByRole("region", { name: "아직 어딨는지 몰라요" });
-const card = (page: Page) => page.getByRole("region", { name: "요깃따!" });
+import { finishEditing } from "./spaces";
+import { card, noResult, openSample, searchBox } from "./search";
 
 test.describe("결과가 없으면 아직 어딨는지 몰라요와 바로 넣기", () => {
   // 샘플 공간(내 방)에서 찾는다
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("./");
-    await expect(mainTitle(page)).toBeVisible();
+    await openSample(page);
   });
 
   test("'선크림'을 찾으면 결과 없음 카드와 [+ 물건 넣기]가 보이고, 요깃따!는 쓰지 않는다", async ({
