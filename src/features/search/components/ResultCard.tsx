@@ -46,7 +46,10 @@ export function ResultCard(props: ResultCardProps) {
       {picked && matches.length > 1 && (
         <ResultList matches={matches} picked={picked} onPick={onPick} />
       )}
-      {picked && <SameSlotChips items={sameSlotItems(picked)} onSearch={onSearch} />}
+      {/* 고른 결과가 바뀌면 펼친 칩을 다시 접는다 */}
+      {picked && (
+        <SameSlotChips key={picked.item.id} items={sameSlotItems(picked)} onSearch={onSearch} />
+      )}
       {elsewhere.spaces.length > 0 && <ElsewhereLinks {...elsewhere} isOnlyThere={!picked} />}
       {picked && (
         <Button variant="primary" className={styles.showBox} onClick={onShowBox}>

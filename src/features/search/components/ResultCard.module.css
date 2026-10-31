@@ -107,8 +107,16 @@
   background: var(--yg-found-bg);
 }
 .moreChip {
+  min-height: 32px;
   border: 1px solid var(--yg-border);
+  background: none;
   color: var(--yg-accent);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.moreChip:hover {
+  background: var(--yg-add-hover);
 }
 
 /* 여러 곳: 번호 붙은 결과 행 (시안 07 "찾음 (여러 곳)"). 누르면 고르고, 고른 행은 찾은 칸 배경 */
