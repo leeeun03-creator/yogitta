@@ -7,12 +7,13 @@ import { tapTracker } from "../logic/tapTracker";
 
 /**
  * 메인 화면 3D 공간의 가구 고르기와 위치 표시: 고른 가구, 누르면 부를 함수(가구가 아닌 곳(바닥·빈 곳·벽)은 null),
- * 검색으로 찾은 물건들(T28 위치 표시).
+ * 검색으로 찾은 물건들(T28 위치 표시), 검색 결과 카드가 덮는 폭(T15-2).
  */
 export type BoxPicking = {
   selectedId: string | null;
   onPick: (id: string | null) => void;
   found: readonly FoundSpot[];
+  coverLeft: number; // 검색 결과 카드가 3D 왼쪽을 덮는 폭 (px). 찾은 가구를 그 오른쪽에 보이게 그림을 옮긴다
 };
 
 type BoxPickerProps = {

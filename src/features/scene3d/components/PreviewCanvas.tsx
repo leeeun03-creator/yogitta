@@ -59,6 +59,7 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
             ref={camera}
             onViewChange={handleViewChange}
             focusBox={boxes.find((box) => box.id === pickedBoxId)}
+            shiftPx={(picking?.coverLeft ?? 0) / 2}
           />
           <FloorMesh floor={floor} />
           <RoomFloorMeshes areas={areas} />

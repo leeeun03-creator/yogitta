@@ -9,6 +9,7 @@ import { Button, Logo, SearchBar } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
 import canvasStyles from "./CanvasArea.module.css";
 import styles from "./MainScreen.module.css";
+import { useCoverLeft } from "./useCoverLeft";
 import { useFocusOnShow } from "./useFocusOnShow";
 
 const ICON_SIZE = 18;
@@ -69,6 +70,7 @@ function MainBody({ space }: { space: Space }) {
   const [panelQuery, setPanelQuery] = useState<string | null>(null); // 휴대폰: 카드 대신 패널을 볼 검색어
   const isPanelShown = panelQuery === search.query;
   const { isSearching, matches } = search;
+  const { attachCard, coverLeft } = useCoverLeft(found.picked !== null && isSearching);
   const spots = useMemo(
     () => (isSearching ? foundSpots(matches, found.picked) : []),
     [isSearching, matches, found.picked],
@@ -83,10 +85,13 @@ function MainBody({ space }: { space: Space }) {
       >
         <section className={canvasStyles.canvas} aria-label="3D 공간 영역">
           {/* 공간을 바꾸면 3D 공간을 새로 만들어 카메라도 그 공간의 처음 자리에서 시작한다 */}
-          <SpaceScene key={space.id} space={space} found={spots} />
+          <SpaceScene key={space.id} space={space} found={spots} coverLeft={coverLeft} />
         </section>
         {search.isSearching && (
-          <div className={isPanelShown ? `${styles.result} ${styles.besidePanel}` : styles.result}>
+          <div
+            ref={attachCard}
+            className={isPanelShown ? `${styles.result} ${styles.besidePanel}` : styles.result}
+          >
             <SearchCard
               {...{ space, search, found }}
               onShowBox={() => setPanelQuery(search.query)}

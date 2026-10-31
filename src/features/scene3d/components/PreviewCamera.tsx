@@ -12,6 +12,7 @@ import {
 } from "react";
 import { PREVIEW_FOV_DEG } from "@/shared/constants/scene";
 import type { Box, Floor } from "@/shared/types";
+import { PerspectiveCamera } from "three";
 import { useFocusMove } from "../hooks/useFocusMove";
 import {
   cameraLimits,
@@ -23,6 +24,7 @@ import {
   type ViewStatus,
   type ZoomDirection,
 } from "../logic/cameraView";
+import { filmOffsetFor } from "../logic/filmOffsetFor";
 import { startCamera, type CameraStart } from "../logic/startCamera";
 
 /** 3D 밖(버튼)에서 카메라를 움직이는 명령. */
@@ -33,7 +35,27 @@ type PreviewCameraProps = {
   ref: Ref<CameraCommands>;
   onViewChange: (status: ViewStatus) => void;
   focusBox?: Box; // 위치 표시할 찾은 가구: 바뀌면 카메라를 그 가구 정면으로 옮긴다 (T15)
+  shiftPx?: number; // 3D 그림 전체를 오른쪽으로 옮길 양 (검색 결과 카드에 가리지 않게, T15-2)
 };
+
+/** 3D 그림 전체를 오른쪽으로 shiftPx 옮긴다 (카메라 filmOffset). 보는 곳·카메라 자리는 그대로다. */
+function useViewShift(shiftPx: number, screen: { width: number; height: number }) {
+  const get = useThree((state) => state.get);
+  const { width, height } = screen;
+  // three.js 카메라는 바꿔 쓰는 객체라 effect 안에서 꺼내 고친다
+  useLayoutEffect(() => {
+    const { camera, invalidate } = get();
+    if (!(camera instanceof PerspectiveCamera)) return;
+    camera.filmOffset = filmOffsetFor(
+      shiftPx,
+      { width, height },
+      PREVIEW_FOV_DEG,
+      camera.filmGauge,
+    );
+    camera.updateProjectionMatrix();
+    invalidate();
+  }, [get, shiftPx, width, height]);
+}
 type Controls = ComponentRef<typeof OrbitControls>;
 type ControlsRef = RefObject<Controls | null>;
 
@@ -142,7 +164,8 @@ function useUserMove(controls: ControlsRef, floor: Floor, report: () => void) {
  * 끌기 회전 · 휠·두 손가락 줌 · 오른쪽 끌기·두 손가락 이동을 정해진 범위 안에서 받는다.
  * 찾은 가구가 생기면 그 가구 정면으로 옮겨 간다.
  */
-export function PreviewCamera({ floor, ref, onViewChange, focusBox }: PreviewCameraProps) {
+export function PreviewCamera(props: PreviewCameraProps) {
+  const { floor, ref, onViewChange, focusBox, shiftPx = 0 } = props;
   const controls = useRef<Controls>(null);
   const width = useThree((state) => state.size.width);
   const height = useThree((state) => state.size.height);
@@ -161,6 +184,7 @@ export function PreviewCamera({ floor, ref, onViewChange, focusBox }: PreviewCam
     lens: { fovDeg: PREVIEW_FOV_DEG, aspect: width / height },
     limits,
   });
+  useViewShift(shiftPx, { width, height });
 
   return (
     <OrbitControls

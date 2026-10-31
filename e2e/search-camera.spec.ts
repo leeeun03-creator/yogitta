@@ -68,6 +68,33 @@ test.describe("검색 결과를 고르면 카메라가 찾은 칸 정면으로 �
     await expect(resetView(page)).toBeEnabled();
   });
 
+  test("데스크톱은 찾은 가구가 결과 카드에 가리지 않게 카드 오른쪽에 온다", async ({
+    page,
+    isMobile,
+  }) => {
+    await searchBox(page).fill("여권");
+    await settledPinSpot(page);
+    const cardBox = await card(page).boundingBox();
+    const pin = await pickedPin(page).boundingBox();
+    if (isMobile) {
+      // 휴대폰은 카드가 3D 아래라 옮기지 않는다 (핀이 가운데)
+      const { x } = await pinSpot(page);
+      expect(Math.abs(x - 0.5)).toBeLessThan(0.15);
+      return;
+    }
+    expect(pin?.x ?? 0).toBeGreaterThan((cardBox?.x ?? 0) + (cardBox?.width ?? 0));
+  });
+
+  test("엣지: 검색어를 지우면 그림 옮김이 풀린다 (데스크톱)", async ({ page, isMobile }) => {
+    test.skip(isMobile, "휴대폰은 옮기지 않는다");
+    const bed = space3d(page).getByTestId("box-label").filter({ hasText: "침대" });
+    await searchBox(page).fill("여권");
+    await settledPinSpot(page);
+    const shifted = (await bed.boundingBox())?.x ?? 0;
+    await page.getByRole("button", { name: "검색어 지우기" }).click();
+    await expect.poll(async () => (await bed.boundingBox())?.x ?? 0).toBeLessThan(shifted - 150);
+  });
+
   test("엣지: 다른 공간에만 있으면 카메라를 옮기지 않는다", async ({ page }) => {
     await searchBox(page).fill("충전기");
     await expect(card(page)).toBeVisible();
