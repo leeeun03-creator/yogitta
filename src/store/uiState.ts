@@ -32,4 +32,5 @@ export type UiState = {
   roomFocus: RoomFocus | null;
   selectedBoxId: string | null; // 고른 가구 (현재 공간)
   removeAsk: string | null; // 삭제 확인을 연 가구 (물건이 든 가구를 지우려 할 때)
+  searchQuery: string; // 메인 화면 검색어 (공간을 바꾸거나 편집 모드를 다녀와도 그대로)
 };

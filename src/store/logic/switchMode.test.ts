@@ -10,6 +10,7 @@ const EDITING: UiState = {
   roomFocus: { type: "new", at: { x: 10, y: 20 } },
   selectedBoxId: "box_1",
   removeAsk: "box_1",
+  searchQuery: "여권",
 };
 
 describe("switchMode", () => {
@@ -22,6 +23,7 @@ describe("switchMode", () => {
       roomFocus: null,
       selectedBoxId: null,
       removeAsk: null,
+      searchQuery: "여권",
     });
   });
 

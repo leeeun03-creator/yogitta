@@ -11,6 +11,7 @@ const UI: UiState = {
   roomFocus: null,
   selectedBoxId: "box_1",
   removeAsk: null,
+  searchQuery: "",
 };
 
 describe("keepSelection", () => {

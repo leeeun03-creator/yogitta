@@ -34,16 +34,39 @@
 
 /* 3D 공간 + 가구 상세 패널: 넓으면 나란히, 휴대폰은 위아래 (yogitta-design 7장) */
 .stage {
+  position: relative;
   flex: 1;
   min-height: 0;
   display: flex;
   gap: 24px;
 }
 
+/* 검색 결과 카드 자리: 넓은 화면은 3D 공간 위 왼쪽에 띄운다 (시안 01). 아래 보기 버튼은 가리지 않는다 */
+.result {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2; /* 3D 이름 라벨 위 */
+  width: min(460px, calc(100% - 340px - 24px - 32px));
+  max-height: calc(100% - 96px);
+  display: flex; /* 카드가 높이를 넘으면 카드 안에서 넘긴다 (여기서 자르면 그림자가 잘린다) */
+  flex-direction: column;
+}
+
 @media (max-width: 640px) {
   .stage {
     flex-direction: column;
     gap: 12px;
+  }
+  /* 휴대폰: 검색하는 동안은 가구 상세 패널 자리(3D 아래)에 검색 결과 카드를 둔다 (시안 02 하단 시트) */
+  .result {
+    position: static;
+    width: auto;
+    flex: 0 0 auto;
+    max-height: 40vh;
+  }
+  .searching > aside {
+    display: none;
   }
   .header {
     padding: 16px 16px 8px;

@@ -47,6 +47,7 @@ type AppState = BoxActions &
     setTool: (tool: DrawingTool) => void;
     setSnap: (snap: boolean) => void;
     setRoomFocus: (focus: RoomFocus | null) => void;
+    setSearchQuery: (query: string) => void;
     addRoom: (name: string, at?: Point) => RoomResult; // 현재 공간에 구역을 더한다 (at = 구역 기준점)
     renameRoom: (from: string, to: string) => RoomResult;
     removeRoom: (name: string) => void;
@@ -104,7 +105,10 @@ const spaceActions = (set: SetState, get: GetState): SpaceActions => ({
   loadData: (data) => set((state) => changeSpace(state, data, "main")),
 });
 
-type UiActions = Pick<AppState, "setMode" | "setView" | "setTool" | "setSnap" | "setRoomFocus">;
+type UiActions = Pick<
+  AppState,
+  "setMode" | "setView" | "setTool" | "setSnap" | "setRoomFocus" | "setSearchQuery"
+>;
 
 /** 화면 상태(ui)만 바꾸는 액션. 데이터·되돌리기 기록은 건드리지 않는다. */
 const uiActions = (set: SetState): UiActions => ({
@@ -123,6 +127,7 @@ const uiActions = (set: SetState): UiActions => ({
     })),
   setSnap: (snap) => set((state) => ({ ui: { ...state.ui, snap } })),
   setRoomFocus: (roomFocus) => set((state) => ({ ui: { ...state.ui, roomFocus } })),
+  setSearchQuery: (searchQuery) => set((state) => ({ ui: { ...state.ui, searchQuery } })),
 });
 
 /** 앱 전체 데이터와 화면 상태. 데이터 변경은 여기 액션으로만 한다. */
@@ -136,6 +141,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
     roomFocus: null,
     selectedBoxId: null,
     removeAsk: null,
+    searchQuery: "",
   },
   history: EMPTY_HISTORY,
   ...spaceActions(set, get),

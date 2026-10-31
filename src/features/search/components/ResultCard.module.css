@@ -1,0 +1,82 @@
+/* 검색 결과 카드 (yogitta-design 4장 검색 결과 카드, 시안 07) */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  background: var(--yg-surface);
+  border-radius: var(--yg-radius-card);
+  box-shadow: var(--yg-shadow-card);
+  min-height: 0;
+  overflow-y: auto; /* 자리보다 길면 카드 안에서 넘긴다 */
+}
+
+/* "요깃따!" + 찾은 개수: 글자 밑선을 맞춘다 */
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.found {
+  margin: 0;
+  font-size: 30px;
+  color: var(--yg-accent);
+}
+.count {
+  margin: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+  overflow-wrap: anywhere; /* 아주 긴 검색어도 카드 안에서 줄바꿈 */
+}
+
+.sentence {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.boxName {
+  color: var(--yg-accent);
+}
+
+.memo {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--yg-text-sub);
+}
+.memo svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* 여러 곳: 번호 붙은 칸 행 모양 (시안 07 "찾음 (여러 곳)") */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: result;
+}
+.row {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--yg-surface-2);
+  border-radius: var(--yg-radius-row);
+  counter-increment: result;
+}
+.row::before {
+  content: counter(result);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--yg-text-sub);
+}
+.row .sentence {
+  font-size: 15px;
+}
