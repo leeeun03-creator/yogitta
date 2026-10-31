@@ -30,6 +30,19 @@
   overflow-wrap: anywhere; /* 아주 긴 검색어도 카드 안에서 줄바꿈 */
 }
 
+/* 결과 없음: 보조 글자색 제목 + 묻는 말 (시안 07 "결과 없음") */
+.unknown {
+  margin: 0;
+  font-size: 26px;
+  color: var(--yg-text-sub);
+}
+.ask {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
 /* 1곳일 때 위치 문장 (17px, 줄간격 1.65) */
 .single {
   margin: 0;
