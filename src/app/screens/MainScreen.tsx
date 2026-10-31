@@ -42,7 +42,7 @@ function MainBody({ space }: { space: Space }) {
   const search = useSearch();
   const found = useFoundItem(search.matches);
   const [panelQuery, setPanelQuery] = useState<string | null>(null); // 휴대폰: 카드 대신 패널을 볼 검색어
-  const hasCard = search.isSearching && search.matches.length > 0;
+  const hasCard = search.isSearching && (search.matches.length > 0 || search.elsewhere.length > 0);
   const isPanelShown = panelQuery === search.query;
   return (
     <main className={styles.body}>
@@ -62,6 +62,7 @@ function MainBody({ space }: { space: Space }) {
               picked={found.picked}
               onPick={found.pick}
               onShowBox={() => setPanelQuery(search.query)}
+              elsewhere={{ spaces: search.elsewhere, onGo: search.goToSpace }}
             />
           </div>
         )}
