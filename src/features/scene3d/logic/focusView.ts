@@ -1,4 +1,4 @@
-import { FOCUS } from "@/shared/constants/scene";
+import { FOCUS, PIN_RISE_CM } from "@/shared/constants/scene";
 import { DEG_TO_RAD } from "@/shared/constants/units";
 import type { Box } from "@/shared/types";
 import type { CameraLimits, CameraView } from "./cameraView";
@@ -22,9 +22,9 @@ function halfAngle({ fovDeg, aspect }: Lens): number {
 }
 
 /**
- * 찾은 가구를 보는 카메라 (T15). 가구 정면 쪽 비스듬히 위에서 가구를 감싸는 구가 화면에 차게 보고, 가구 가운데가
- * 화면 가운데에 오게 한다. 보는 곳은 시선이 바닥과 만나는 점이라 바닥 위에 있다 (사용자 이동과 같은 규칙).
- * 보는 곳까지의 거리는 카메라 움직임 범위 안으로 맞춘다. keepDistance를 주면(가구를 눌렀을 때) 가구에 맞춰 당기지 않고
+ * 찾은 가구를 보는 카메라 (T15). 가구 정면 쪽 비스듬히 위에서 가구와 그 위 핀(PIN_RISE_CM)을 감싸는 구가 화면에
+ * 차게 보고, 그 가운데가 화면 가운데에 오게 한다. 작은 가구도 핀 라벨이 화면 위로 잘리지 않는다.
+ * 보는 곳은 시선이 바닥과 만나는 점이라 바닥 위에 있다 (사용자 이동과 같은 규칙). 보는 곳까지의 거리는 카메라 움직임 범위 안으로 맞춘다. keepDistance를 주면(가구를 눌렀을 때) 가구에 맞춰 당기지 않고
  * 그 거리 그대로 돌기만 한다.
  */
 export function focusView(
@@ -34,9 +34,10 @@ export function focusView(
   keepDistance?: number,
 ): CameraView {
   const direction = viewDirection(box.rotation);
-  const center: Vector = [box.x, box.elevation + box.h / 2, box.z];
-  const radius = Math.hypot(box.w, box.h, box.d) / 2;
-  const toFloor = center[1] / direction[1]; // 가구 가운데에서 시선을 따라 바닥까지
+  const height = box.h + PIN_RISE_CM; // 가구 위 핀 끝까지
+  const center: Vector = [box.x, box.elevation + height / 2, box.z];
+  const radius = Math.hypot(box.w, height, box.d) / 2;
+  const toFloor = center[1] / direction[1]; // 감싸는 구 가운데에서 시선을 따라 바닥까지
   const target: Vector = [
     center[0] - direction[0] * toFloor,
     0,

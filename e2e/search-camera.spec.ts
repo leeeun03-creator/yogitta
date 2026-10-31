@@ -94,6 +94,20 @@ test.describe("검색 결과를 고르면 카메라가 찾은 칸 정면으로 �
     await expect.poll(async () => (await bed.boundingBox())?.x ?? 0).toBeLessThan(shifted - 150);
   });
 
+  test("엣지: 작은 가구(칸 없는 보관함)를 찾아도 가구 위 핀 라벨이 3D 공간 안에 다 보인다", async ({
+    page,
+  }) => {
+    await searchBox(page).fill("크리스마스");
+    await settledPinSpot(page);
+    const scene = await space3d(page).boundingBox();
+    const pin = await pickedPin(page).boundingBox();
+    const [left, top] = [scene?.x ?? 0, scene?.y ?? 0];
+    expect(pin?.x ?? -1).toBeGreaterThanOrEqual(left);
+    expect(pin?.y ?? -1).toBeGreaterThanOrEqual(top);
+    expect((pin?.x ?? 0) + (pin?.width ?? 0)).toBeLessThanOrEqual(left + (scene?.width ?? 0));
+    expect((pin?.y ?? 0) + (pin?.height ?? 0)).toBeLessThanOrEqual(top + (scene?.height ?? 0));
+  });
+
   test("엣지: 다른 공간에만 있으면 카메라를 옮기지 않는다", async ({ page }) => {
     await searchBox(page).fill("충전기");
     await expect(card(page)).toBeVisible();
