@@ -27,4 +27,9 @@ describe("applyTypeHeight", () => {
     const original = deepFreeze(createBoxTestData([{ type: "desk" }]));
     expect(applyTypeHeight(original, "box_1").spaces[0]?.boxes[0]?.h).toBe(73);
   });
+
+  it("그 위에 올린 가구의 설치 높이도 기본 높이를 따라 바뀐다", () => {
+    const data = createBoxTestData([{}, { w: 20, d: 20, elevation: 90, parentId: "box_1" }]);
+    expect(applyTypeHeight(data, "box_1").spaces[0]?.boxes[1]?.elevation).toBe(40); // 보관함 기본 높이
+  });
 });

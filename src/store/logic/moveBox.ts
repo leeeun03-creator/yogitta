@@ -3,7 +3,7 @@ import { canStackOn } from "@/shared/lib/canStackOn";
 import { clampBoxCenter } from "@/shared/lib/clampBoxCenter";
 import { stackedElevation } from "@/shared/lib/stackedElevation";
 import type { AppData, Box, Point, Space } from "@/shared/types";
-import { updateBox } from "./updateBox";
+import { updateStackedBox } from "./updateStackedBox";
 
 /** 옮길 받침 가구. undefined면 지금 받침 가구 그대로(없어진 받침 가구면 바닥), 올릴 수 없는 가구면 false. */
 function baseFor(box: Box, space: Space, parentId: string | null | undefined): Box | null | false {
@@ -17,6 +17,7 @@ function baseFor(box: Box, space: Space, parentId: string | null | undefined): B
  * 현재 공간의 가구 하나를 가운데가 center(cm, 2D)인 자리로 옮긴다. 바닥 밖으로는 나가지 않는다.
  * parentId를 주면 그 가구 위에 올리고(설치 높이 = 받침 가구 위, T29), null이면 바닥으로 내린다.
  * 주지 않으면 받침 가구는 그대로다. 올릴 수 없는 가구(벽걸이, 자기 위 가구 등)면 옮기지 않는다.
+ * 그 위에 올린 가구도 같이 옮긴다 (T29-2).
  */
 export function moveBox(
   data: AppData,
@@ -24,7 +25,7 @@ export function moveBox(
   center: Point,
   parentId?: string | null,
 ): AppData {
-  return updateBox(data, id, (box, space) => {
+  return updateStackedBox(data, id, (box, space) => {
     const base = baseFor(box, space, parentId);
     if (base === false) return box;
     const next = clampBoxCenter(center, boxFootprint(box), space.floor);

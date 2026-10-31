@@ -29,4 +29,10 @@ describe("resizeBox", () => {
     const result = resizeBox(original, "box_1", { w: 100, d: 50, h: 90 });
     expect(result.ok && result.data.spaces[0]?.boxes[0]?.w).toBe(100);
   });
+
+  it("높이를 바꾸면 그 위에 올린 가구의 설치 높이가 따라 바뀐다", () => {
+    const data = createBoxTestData([{}, { w: 20, d: 20, elevation: 90, parentId: "box_1" }]);
+    const result = resizeBox(data, "box_1", { w: 60, d: 50, h: 120 });
+    expect(result.ok && result.data.spaces[0]?.boxes[1]?.elevation).toBe(120);
+  });
 });

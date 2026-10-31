@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { formatSize } from "@/shared/lib/formatSize";
+import { carryStacked } from "@/shared/lib/carryStacked";
 import { overlappingBoxes } from "@/shared/lib/overlappingBoxes";
 import { stackedElevation } from "@/shared/lib/stackedElevation";
-import type { Box, Space } from "@/shared/types";
+import type { Space } from "@/shared/types";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
 import type { Measure } from "../logic/draftMeasure";
 import type { BoxMove } from "../logic/nextBoxMove";
@@ -20,16 +21,17 @@ const draftMeasure = (draft: BoxDraft | null): Measure | null =>
 
 /**
  * 끄는 중인 가구는 옮길 자리·높이에 그린다 (떼기 전에는 데이터를 바꾸지 않는다). 다른 가구 위로 끌면
- * 그 높이에 그려 받침 가구 위에 보인다. 2D는 낮은 가구부터 그린다.
+ * 그 높이에 그려 받침 가구 위에 보이고, 그 위에 올린 가구도 같이 그린다(T29-2). 2D는 낮은 가구부터 그린다.
  */
-function withMoving(boxes: readonly Box[], moving: (BoxMove & { id: string }) | null) {
-  const base = boxes.find((box) => box.id === moving?.parentId) ?? null;
-  const drawn = boxes.map((box) => {
-    if (box.id !== moving?.id) return box;
-    const { x, y } = moving.center;
-    return { ...box, x, z: y, elevation: stackedElevation(box, base) }; // 2D y = 3D z
-  });
-  return stackOrder(drawn);
+function withMoving(space: Space, moving: (BoxMove & { id: string }) | null) {
+  const { boxes, floor } = space;
+  const before = boxes.find((box) => box.id === moving?.id);
+  if (!moving || !before) return stackOrder(boxes);
+  const base = boxes.find((box) => box.id === moving.parentId) ?? null;
+  const { x, y } = moving.center;
+  const after = { ...before, x, z: y, elevation: stackedElevation(before, base) }; // 2D y = 3D z
+  const replaced = boxes.map((box) => (box === before ? after : box));
+  return stackOrder(carryStacked(replaced, before, after, floor));
 }
 
 /**
@@ -53,7 +55,7 @@ export function useBoxInput(
   return {
     tap: choose.tap,
     scene: {
-      boxes: withMoving(space.boxes, drag.moving),
+      boxes: withMoving(space, drag.moving),
       boxDraft: place.draft,
       selectedBox: drag.moving?.id ?? selected,
       overlapping,

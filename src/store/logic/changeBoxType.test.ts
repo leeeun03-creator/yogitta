@@ -117,4 +117,11 @@ describe("changeBoxType", () => {
     expect(shelf?.elevation).toBe(FURNITURE_DEFAULTS.wall.elevation);
     expect(shelf?.parentId).toBeUndefined();
   });
+
+  it("엣지: 받침 가구를 벽걸이로 바꾸면 그 위 가구는 받침 가구가 놓였던 바닥으로 내려온다", () => {
+    const data = createBoxTestData([{}, { elevation: 90, parentId: "box_1" }]);
+    const top = boxOf(changeBoxType(data, "box_1", "wall"), 1);
+    expect(top?.elevation).toBe(0);
+    expect(top?.parentId).toBeUndefined();
+  });
 });

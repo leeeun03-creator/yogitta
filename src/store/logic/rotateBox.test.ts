@@ -38,4 +38,16 @@ describe("rotateBox", () => {
     const original = deepFreeze(createBoxTestData([{}]));
     expect(rotateBox(original, "box_1").spaces[0]?.boxes[0]?.rotation).toBe(90);
   });
+
+  it("그 위에 올린 가구도 받침 가구 가운데를 축으로 같이 돈다", () => {
+    const data = createBoxTestData([
+      {},
+      { x: 320, z: 200, w: 20, d: 20, elevation: 90, parentId: "box_1" },
+    ]);
+    expect(rotateBox(data, "box_1").spaces[0]?.boxes[1]).toMatchObject({
+      x: 300,
+      z: 220,
+      rotation: 90,
+    });
+  });
 });

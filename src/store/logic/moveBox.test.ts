@@ -83,4 +83,13 @@ describe("moveBox", () => {
     expect(moved).toMatchObject({ x: 310, elevation: 0 });
     expect(moved?.parentId).toBeUndefined();
   });
+
+  it("받침 가구를 옮기면 그 위에 올린 가구도 같이 옮긴다", () => {
+    const data = createBoxTestData([
+      {},
+      { x: 310, z: 200, w: 20, d: 20, elevation: 90, parentId: "box_1" },
+    ]);
+    const moved = moveBox(data, "box_1", { x: 200, y: 300 });
+    expect(moved.spaces[0]?.boxes[1]).toMatchObject({ x: 210, z: 300, elevation: 90 });
+  });
 });
