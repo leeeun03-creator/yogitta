@@ -12,6 +12,7 @@ type ConfirmDialogProps = {
   confirmLabel: string; // 되돌릴 수 없는 쪽 버튼 ("지우기")
   onConfirm: () => void;
   onCancel: () => void;
+  choice?: ReactNode; // 설명 아래에서 함께 고를 것 (예: 가구 위 가구를 내릴지 지울지)
   alternative?: ConfirmAlternative;
 };
 
@@ -44,17 +45,11 @@ const stopEscape = (event: KeyboardEvent) => {
 
 /**
  * 되돌릴 수 없는 일을 하기 전에 묻는 대화상자 (삭제 버튼 시안 06). 나타나면 바로 열리고, 처음 초점은 [취소]다
- * (Enter를 잘못 눌러도 지워지지 않게). Esc·취소·바깥 누르기는 취소다. alternative가 있으면 그 입력과 버튼을
- * 설명 아래에 둔다. 어느 쪽이든 먼저 닫아 연 버튼으로 초점을 돌린 뒤 한다.
+ * (Enter를 잘못 눌러도 지워지지 않게). Esc·취소·바깥 누르기는 취소다. choice(함께 고를 것)와 alternative
+ * (그 입력과 버튼)가 있으면 설명 아래에 둔다. 어느 쪽이든 먼저 닫아 연 버튼으로 초점을 돌린 뒤 한다.
  */
-export function ConfirmDialog({
-  title,
-  message,
-  confirmLabel,
-  onConfirm,
-  onCancel,
-  alternative,
-}: ConfirmDialogProps) {
+export function ConfirmDialog(props: ConfirmDialogProps) {
+  const { title, message, confirmLabel, onConfirm, onCancel, choice, alternative } = props;
   const { dialogRef, firstRef, close } = useModalDialog<HTMLButtonElement>();
   const titleId = useId();
   const messageId = useId();
@@ -75,6 +70,7 @@ export function ConfirmDialog({
       onClick={(event) => event.target === event.currentTarget && cancel()}
     >
       <ConfirmText ids={{ title: titleId, message: messageId }} title={title} message={message} />
+      {choice}
       {alternative && (
         <AlternativeRow {...alternative} onConfirm={closeThen(alternative.onConfirm)} />
       )}

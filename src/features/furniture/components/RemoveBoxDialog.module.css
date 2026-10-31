@@ -1,0 +1,12 @@
+/* 가구 위 가구를 어떻게 할지: 보이는 이름 + 세그먼트 (T29-4) */
+.stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 16px;
+}
+
+.stackedLabel {
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
