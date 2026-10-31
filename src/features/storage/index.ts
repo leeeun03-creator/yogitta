@@ -1,3 +1,4 @@
+export { BackupButtons } from "./components/BackupButtons";
 export { StorageNotice } from "./components/StorageNotice";
 export { useStorageStatus } from "./hooks/useStorageStatus";
 export { SAMPLE_DATA } from "./logic/sampleData";

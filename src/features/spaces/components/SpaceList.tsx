@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { useEffect, useId, useRef, type KeyboardEvent } from "react";
+import { BackupButtons } from "@/features/storage";
 import { josa } from "@/shared/lib/josa";
 import type { Space } from "@/shared/types";
 import { Button, ConfirmDialog } from "@/shared/ui";
@@ -41,7 +42,7 @@ function useFocusCurrentSpace() {
 
 /**
  * 공간 전환 목록 (시안 01): 공간마다 공간 썸네일·이름·"바닥 크기 · 가구 · 물건", 지금 공간은 강조 바탕 + 체크.
- * 줄마다 "⋯"로 이름 바꾸기·삭제(확인 후). 맨 아래 점선 "+ 새 공간 만들기".
+ * 줄마다 "⋯"로 이름 바꾸기·삭제(확인 후). 맨 아래 점선 "+ 새 공간 만들기"와 백업 파일 버튼(T17).
  * 열리면 지금 공간에 초점을 두고, ↑↓·Home·End로 공간 사이를 옮긴다.
  */
 export function SpaceList({
@@ -77,6 +78,7 @@ export function SpaceList({
       >
         새 공간 만들기
       </Button>
+      <BackupButtons />
       {editing.removing && (
         <RemoveSpaceDialog space={editing.removing} {...editing.removeActions} />
       )}

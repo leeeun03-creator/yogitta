@@ -1,0 +1,13 @@
+/* 백업 파일 버튼 줄 (공간 바꾸기 목록 맨 아래, T17) */
+.backup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--yg-border-soft);
+}
+.backup > * {
+  flex: 1 1 140px;
+  font-size: 14px;
+}
