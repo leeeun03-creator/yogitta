@@ -1,0 +1,27 @@
+/* 칸 비율 미리보기 막대 (시안 04 왼쪽 세로 막대) */
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 36px;
+  padding: 3px;
+  border: 2px solid var(--yg-accent);
+  border-radius: 10px;
+  background: var(--yg-surface);
+}
+
+.row,
+.empty {
+  flex-basis: 0;
+  min-height: 4px;
+  border-radius: 5px;
+}
+.row {
+  background: var(--yg-found-bg);
+}
+.active {
+  background: var(--yg-accent);
+}
+.empty {
+  border: 1.5px dashed var(--yg-dashed);
+}

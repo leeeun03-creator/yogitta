@@ -83,3 +83,50 @@ test.describe("칸마다 높이를 넣어 3D 칸 모양 바꾸기", () => {
     await expect(rowField(page, "1번째 서랍")).toHaveValue("25");
   });
 });
+
+test.describe("칸 높이 합계와 칸 비율 미리보기 보여주기", () => {
+  const sumLine = (page: Page) => panel(page).getByText(/^합계 /);
+  const barRows = (page: Page) => panel(page).getByTestId("row-bar").locator("span");
+
+  test.beforeEach(async ({ page, isMobile }) => {
+    await createSpace(page, { width: "6.0", depth: "4.5" });
+    await placeBox(page, { x: 100, y: 50 }, { x: 300, y: 200 }, isMobile);
+    await openDetails(page);
+    await typeButton(page, "서랍장").click();
+  });
+
+  test("합계 줄이 입력하는 대로 바뀌고(빈 자리 안내), 넘으면 경고색이 된다", async ({ page }) => {
+    await expect(sumLine(page)).toHaveText("합계 90 / 전체 높이 90");
+    await setRow(page, "1번째 서랍", "20");
+    await expect(sumLine(page)).toHaveText("합계 80 / 전체 높이 90 · 아래 10cm는 빈 자리예요");
+    await rowField(page, "2번째 서랍").fill("50"); // Enter 전에도 바로 보인다
+    await expect(sumLine(page)).toHaveText("합계 100 / 전체 높이 90");
+    await expect(sumLine(page)).toHaveAttribute("data-over", "true");
+  });
+
+  test("입력칸을 고르면 미리보기 막대의 그 칸이 강조되고, 빈 자리도 막대에 보인다", async ({
+    page,
+  }, testInfo) => {
+    await setRow(page, "1번째 서랍", "20");
+    await rowField(page, "2번째 서랍").focus();
+    await expect(barRows(page)).toHaveCount(4); // 서랍 3 + 맨 아래 빈 자리
+    await expect(barRows(page).nth(1)).toHaveAttribute("data-active", "true");
+    await expect(barRows(page).locator("xpath=self::*[@data-active]")).toHaveCount(1);
+    await page.screenshot({ path: testInfo.outputPath("bar.png") });
+  });
+
+  test("엣지: 칸 8개여도 막대·입력칸이 화면 밖으로 넘치지 않는다 (휴대폰 360px)", async ({
+    page,
+  }, testInfo) => {
+    const more = panel(page).getByRole("button", { name: "칸 늘리기" });
+    for (let count = 3; count < 8; count++) await more.click();
+    await expect(rowField(page, "8번째 서랍")).toBeVisible();
+    await expect(barRows(page)).toHaveCount(8);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+    await rowField(page, "8번째 서랍").scrollIntoViewIfNeeded(); // 휴대폰 속성 패널은 안에서 스크롤된다
+    await page.screenshot({ path: testInfo.outputPath("eight.png") });
+  });
+});

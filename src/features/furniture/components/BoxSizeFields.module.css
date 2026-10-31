@@ -17,11 +17,28 @@
   gap: 8px;
 }
 
-/* 칸 높이: 줄마다 "1번째 서랍 [30]" (T30) */
+/* 칸 높이: 왼쪽 칸 비율 막대 + 줄마다 "1번째 서랍 [30]" (T30) */
+.rowArea {
+  display: flex;
+  gap: 10px;
+}
 .rowHeights {
   display: flex;
+  flex: 1;
+  min-width: 0;
   flex-direction: column;
   gap: 6px;
+}
+
+/* 합계 줄: 넘으면 삭제색 */
+.sum,
+.sumOver {
+  margin: 0;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+.sumOver {
+  color: var(--yg-danger);
 }
 
 .error {
