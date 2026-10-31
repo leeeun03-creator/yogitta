@@ -95,7 +95,16 @@
   font-size: 15px;
 }
 .chip {
+  min-height: 32px;
+  border: none;
   background: var(--yg-chip);
+  color: var(--yg-text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.chip:hover {
+  background: var(--yg-found-bg);
 }
 .moreChip {
   border: 1px solid var(--yg-border);

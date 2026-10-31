@@ -54,6 +54,7 @@ function SearchCard({ space, search, found, onShowBox }: SearchCardProps) {
       picked={found.picked}
       onPick={found.pick}
       onShowBox={onShowBox}
+      onSearch={search.setQuery}
       elsewhere={{ spaces: search.elsewhere, onGo: search.goToSpace }}
     />
   );

@@ -16,6 +16,7 @@ type ResultCardProps = {
   picked: ItemMatch | null; // 고른 결과 (가구 상세 패널에 열린 가구)
   onPick: (match: ItemMatch) => void;
   onShowBox: () => void; // 휴대폰: 카드 대신 고른 가구의 가구 상세 패널을 본다
+  onSearch: (query: string) => void; // 같은 칸 물건 칩을 누르면 그 물건을 찾는다 (T14-2)
   elsewhere: { spaces: readonly SpaceCount[]; onGo: (spaceId: string) => void }; // 다른 공간 결과와 그 공간으로 가기
 };
 
@@ -26,7 +27,7 @@ type ResultCardProps = {
  * 휴대폰은 가구 상세 패널 자리를 쓰므로 [가구 전체 보기]로 그 가구의 칸을 본다 (시안 02).
  */
 export function ResultCard(props: ResultCardProps) {
-  const { query, matches, picked, onPick, onShowBox, elsewhere } = props;
+  const { query, matches, picked, onPick, onShowBox, onSearch, elsewhere } = props;
   const titleId = useId();
   const elsewhereCount = elsewhere.spaces.reduce((sum, { count }) => sum + count, 0);
   if (!picked && elsewhereCount === 0) return null;
@@ -45,7 +46,7 @@ export function ResultCard(props: ResultCardProps) {
       {picked && matches.length > 1 && (
         <ResultList matches={matches} picked={picked} onPick={onPick} />
       )}
-      {picked && <SameSlotChips items={sameSlotItems(picked)} />}
+      {picked && <SameSlotChips items={sameSlotItems(picked)} onSearch={onSearch} />}
       {elsewhere.spaces.length > 0 && <ElsewhereLinks {...elsewhere} isOnlyThere={!picked} />}
       {picked && (
         <Button variant="primary" className={styles.showBox} onClick={onShowBox}>
