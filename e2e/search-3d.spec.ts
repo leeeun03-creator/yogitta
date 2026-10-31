@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { collectErrors } from "./helpers";
-import { space3d } from "./scene";
+import { resetView, space3d } from "./scene";
 import { card, openSample, searchBox } from "./search";
 
 const pins = (page: Page) => space3d(page).getByTestId("pin");
@@ -74,7 +74,7 @@ test.describe("검색 결과를 3D에서 위치 표시하기", () => {
     await searchBox(page).fill("크리스마스");
     await expect(pickedPin(page)).toContainText("보관함 · 칸 없음");
     await page.getByRole("button", { name: "확대" }).click(); // 핀에 가리면 누르지 못한다
-    await page.getByRole("button", { name: "처음 보기" }).click();
+    await resetView(page).click();
     await expect(pickedPin(page)).toBeVisible();
   });
 

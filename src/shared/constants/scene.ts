@@ -14,6 +14,8 @@ export const FLOOR_GRID_LIFT_CM = 0.5;
 export const ROOM_FLOOR_LIFT_CM = 0.25;
 /** 3D 카메라가 바닥 가운데(보는 곳)에 다가갈 수 있는 가장 가까운 거리 (cm). 가구 하나가 화면에 찰 정도. */
 export const CAMERA_MIN_DISTANCE_CM = 200;
+/** 카메라 자리·거리가 이만큼(cm) 안에서 다르면 같은 자리로 본다 (소수 오차). */
+export const CAMERA_SAME_CM = 1;
 /** 3D 카메라가 물러날 수 있는 가장 먼 거리 = 처음 거리의 몇 배. */
 export const CAMERA_MAX_DISTANCE_RATIO = 2.5;
 /** 3D 카메라가 위에서 내려다보는 각도의 끝 (도, 0 = 바로 위, 90 = 바닥 높이). 바닥 아래로 돌아가지 않게 한다. */

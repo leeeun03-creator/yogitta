@@ -2,6 +2,7 @@ import {
   CAMERA_MAX_DISTANCE_RATIO,
   CAMERA_MAX_POLAR_DEG,
   CAMERA_MIN_DISTANCE_CM,
+  CAMERA_SAME_CM,
   CAMERA_ZOOM_STEP,
 } from "@/shared/constants/scene";
 import { DEG_TO_RAD } from "@/shared/constants/units";
@@ -20,9 +21,9 @@ export type CameraView = { position: Vector; target: Vector };
 export type ViewStatus = { isStart: boolean; canZoomIn: boolean; canZoomOut: boolean };
 export type ZoomDirection = "in" | "out";
 
-const SAME_CM = 1; // 1cm 안이면 같은 자리로 본다 (소수 오차)
-
-const distanceBetween = (a: Vector, b: Vector) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+/** 두 점 사이 거리 (cm). */
+export const distanceBetween = (a: Vector, b: Vector) =>
+  Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
 /** 처음 카메라에 맞춘 움직임 범위. 아주 작은 바닥에서도 처음 거리보다 가까운 끝이 멀지 않게 한다. */
 export function cameraLimits(start: CameraStart): CameraLimits {
@@ -45,10 +46,10 @@ export function viewStatus(view: CameraView, start: CameraStart, limits: CameraL
   const distance = distanceBetween(view.position, view.target);
   return {
     isStart:
-      distanceBetween(view.position, start.position) < SAME_CM &&
-      distanceBetween(view.target, start.target) < SAME_CM,
-    canZoomIn: distance > limits.minDistance + SAME_CM,
-    canZoomOut: distance < limits.maxDistance - SAME_CM,
+      distanceBetween(view.position, start.position) < CAMERA_SAME_CM &&
+      distanceBetween(view.target, start.target) < CAMERA_SAME_CM,
+    canZoomIn: distance > limits.minDistance + CAMERA_SAME_CM,
+    canZoomOut: distance < limits.maxDistance - CAMERA_SAME_CM,
   };
 }
 

@@ -5,6 +5,10 @@ import { finishEditing } from "./spaces";
 /** 메인 화면 3D 공간에서 가구를 누르는 실제 테스트 도우미. */
 export const detail = (page: Page) => page.getByRole("complementary", { name: "가구 상세 패널" });
 export const space3d = (page: Page) => page.getByRole("img", { name: /^3D 공간,/ });
+/** 3D 공간의 가구 이름 라벨. */
+export const boxLabel = (page: Page, name: string) =>
+  space3d(page).getByTestId("box-label").filter({ hasText: name });
+export const resetView = (page: Page) => page.getByRole("button", { name: "처음 보기" });
 
 const EMPTY_INSET_PX = 12; // 3D 공간 왼쪽 위 구석: 바닥 밖 빈 곳
 

@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { createSpace } from "./helpers";
 import { placeBox } from "./boxes";
 import {
+  boxLabel,
   boxPoint,
   cornerPoint,
   detail,
@@ -11,8 +12,6 @@ import {
   space3d,
 } from "./scene";
 
-const label = (page: Page, name: string) =>
-  space3d(page).getByTestId("box-label").filter({ hasText: name });
 const selectedLabels = (page: Page) => space3d(page).locator("[data-selected]");
 
 test.describe("3D에서 마우스를 올린 가구와 고른 가구 표시", () => {
@@ -34,12 +33,12 @@ test.describe("3D에서 마우스를 올린 가구와 고른 가구 표시", () 
   }, testInfo) => {
     await expect(selectedLabels(page)).toHaveCount(0);
     await pickBox(page, space3d(page), "보관함 1", isMobile);
-    await expect(label(page, "보관함 1")).toHaveAttribute("data-selected", "true");
+    await expect(boxLabel(page, "보관함 1")).toHaveAttribute("data-selected", "true");
     await expect(selectedLabels(page)).toHaveCount(1);
     await pickBox(page, space3d(page), "보관함 2", isMobile);
-    await expect(label(page, "보관함 2")).toHaveAttribute("data-selected", "true");
+    await expect(boxLabel(page, "보관함 2")).toHaveAttribute("data-selected", "true");
     await expect(selectedLabels(page)).toHaveCount(1);
-    await settledBox(label(page, "보관함 2"));
+    await settledBox(boxLabel(page, "보관함 2"));
     await page.screenshot({ path: testInfo.outputPath("selected.png") });
   });
 
@@ -54,7 +53,7 @@ test.describe("3D에서 마우스를 올린 가구와 고른 가구 표시", () 
     await detail(page)
       .getByRole("button", { name: /^보관함 2 물건 \d+개$/ })
       .click();
-    await expect(label(page, "보관함 2")).toHaveAttribute("data-selected", "true");
+    await expect(boxLabel(page, "보관함 2")).toHaveAttribute("data-selected", "true");
   });
 
   test("마우스를 가구에 올리면 밝아지고 손가락 모양이 되며, 벗어나면 원래대로", async ({
@@ -64,7 +63,7 @@ test.describe("3D에서 마우스를 올린 가구와 고른 가구 표시", () 
     test.skip(isMobile, "올리기는 마우스만");
     const at = await boxPoint(space3d(page), "보관함 1");
     await page.mouse.move(at.x, at.y);
-    await expect(label(page, "보관함 1")).toHaveAttribute("data-hovered", "true");
+    await expect(boxLabel(page, "보관함 1")).toHaveAttribute("data-hovered", "true");
     await expect(space3d(page)).toHaveCSS("cursor", "pointer");
     const corner = await cornerPoint(page);
     await page.mouse.move(corner.x, corner.y);
@@ -89,7 +88,7 @@ test.describe("3D에서 마우스를 올린 가구와 고른 가구 표시", () 
   test("엣지: 휴대폰 터치는 올린 가구를 남기지 않는다", async ({ page, isMobile }) => {
     test.skip(!isMobile, "터치는 휴대폰에서만");
     await pickBox(page, space3d(page), "보관함 1", isMobile);
-    await expect(label(page, "보관함 1")).toHaveAttribute("data-selected", "true");
+    await expect(boxLabel(page, "보관함 1")).toHaveAttribute("data-selected", "true");
     await expect(space3d(page).locator("[data-hovered]")).toHaveCount(0);
   });
 });

@@ -1,8 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
-import { space3d } from "./scene";
+import { resetView, space3d } from "./scene";
 import { card, openSample, searchBox } from "./search";
 
-const resetView = (page: Page) => page.getByRole("button", { name: "처음 보기" });
 const pickedPin = (page: Page) => space3d(page).locator("[data-testid=pin][data-picked]");
 
 /** 고른 결과 핀 가운데가 3D 공간 안 어디쯤인지 (0~1, 왼쪽·위가 0). */

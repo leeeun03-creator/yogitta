@@ -1,8 +1,8 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useEffectEvent, useRef } from "react";
-import { FOCUS } from "@/shared/constants/scene";
+import { CAMERA_SAME_CM, FOCUS } from "@/shared/constants/scene";
 import type { Box } from "@/shared/types";
-import { lerpView, type CameraLimits, type CameraView } from "../logic/cameraView";
+import { distanceBetween, lerpView, type CameraLimits, type CameraView } from "../logic/cameraView";
 import { easeOut } from "../logic/easeOut";
 import { focusView } from "../logic/focusView";
 import { prefersReducedMotion } from "./prefersReducedMotion";
@@ -20,14 +20,12 @@ type FocusCamera = {
 };
 type Move = { from: CameraView; to: CameraView; startedAt: number; last: CameraView };
 
-const MOVED_CM = 1; // 옮기는 중 카메라가 이만큼 넘게 달라졌으면 누군가 움직인 것이다
-
 /** 카메라에서 보는 곳까지 거리 (지금 확대 정도). */
-const distanceOf = ({ position, target }: CameraView) =>
-  Math.hypot(...position.map((value, index) => value - (target[index] ?? value)));
+const distanceOf = ({ position, target }: CameraView) => distanceBetween(position, target);
 
+/** 옮기는 중 카메라가 마지막으로 옮긴 자리와 달라졌으면 누군가 움직인 것이다. */
 const isElsewhere = (a: CameraView, b: CameraView) =>
-  Math.hypot(...a.position.map((value, index) => value - (b.position[index] ?? value))) > MOVED_CM;
+  distanceBetween(a.position, b.position) > CAMERA_SAME_CM;
 
 /**
  * 볼 가구(focus)가 생기거나 다른 가구로 바뀌면 카메라를 그 가구 정면으로 FOCUS.moveMs 동안 옮긴다(T15).

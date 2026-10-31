@@ -2,19 +2,25 @@ import { expect, test, type Page } from "@playwright/test";
 import { createSpace, dragScreen, openPreview, pressScreen } from "./helpers";
 import { placeBox } from "./boxes";
 import { listButton } from "./items";
-import { cornerPoint, detail, openMainScene, pickBox, settledBox, space3d } from "./scene";
+import {
+  boxLabel,
+  cornerPoint,
+  detail,
+  openMainScene,
+  pickBox,
+  resetView,
+  settledBox,
+  space3d,
+} from "./scene";
 
 const DRAG_PX = 80; // 3D를 돌리는 끌기
-const resetView = (page: Page) => page.getByRole("button", { name: "처음 보기" });
-const label = (page: Page, name: string) =>
-  space3d(page).getByTestId("box-label").filter({ hasText: name });
 
 /**
  * 가구 이름 라벨 가운데가 3D 공간 가운데에서 떨어진 정도 (3D 공간 높이 = 1, 라벨이 멈춘 뒤). 휴대폰은 패널이 바뀌면
  * 3D 공간 높이가 바뀌는데, 화각이 세로 기준이라 카메라가 그대로면 이 값은 같다.
  */
 async function labelOffset(page: Page, name: string) {
-  const at = await settledBox(label(page, name));
+  const at = await settledBox(boxLabel(page, name));
   const scene = await space3d(page).boundingBox();
   const height = scene?.height ?? 1;
   const centerX = (scene?.x ?? 0) + (scene?.width ?? 0) / 2;
@@ -32,8 +38,8 @@ function expectSameOffset(actual: number[], expected: number[]) {
 
 /** 두 가구 이름 라벨 사이 화면 거리 (px, 라벨이 멈춘 뒤). 확대할수록 멀어진다. */
 async function labelGap(page: Page) {
-  const a = await settledBox(label(page, "보관함 1"));
-  const b = await settledBox(label(page, "보관함 2"));
+  const a = await settledBox(boxLabel(page, "보관함 1"));
+  const b = await settledBox(boxLabel(page, "보관함 2"));
   return Math.hypot((a?.x ?? 0) - (b?.x ?? 0), (a?.y ?? 0) - (b?.y ?? 0));
 }
 
@@ -75,7 +81,7 @@ test.describe("3D에서 가구를 누를 때도 그 가구 정면으로 옮겨 �
     isMobile,
   }) => {
     await pickBox(page, space3d(page), "보관함 1", isMobile);
-    await settledBox(label(page, "보관함 2")); // 옮겨 가기가 끝날 때까지
+    await settledBox(boxLabel(page, "보관함 2")); // 옮겨 가기가 끝날 때까지
     const corner = await cornerPoint(page);
     await dragScreen(page, corner, { x: corner.x + DRAG_PX, y: corner.y }, isMobile); // 사용자가 돌려 둔다
     const turned = await labelOffset(page, "보관함 2");
