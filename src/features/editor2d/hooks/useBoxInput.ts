@@ -1,9 +1,12 @@
 import { useMemo } from "react";
 import { formatSize } from "@/shared/lib/formatSize";
 import { overlappingBoxes } from "@/shared/lib/overlappingBoxes";
-import type { Box, Point, Space } from "@/shared/types";
+import { stackedElevation } from "@/shared/lib/stackedElevation";
+import type { Box, Space } from "@/shared/types";
 import { useAppStore, type DrawingTool } from "@/store/useAppStore";
 import type { Measure } from "../logic/draftMeasure";
+import type { BoxMove } from "../logic/nextBoxMove";
+import { stackOrder } from "../logic/stackOrder";
 import type { ViewBox } from "../logic/fitViewBox";
 import { mergeHandlers } from "./mergeHandlers";
 import { useBoxDrag } from "./useBoxDrag";
@@ -15,13 +18,19 @@ import type { SnapAt } from "./useSnapper";
 const draftMeasure = (draft: BoxDraft | null): Measure | null =>
   draft && { text: formatSize(draft.w, draft.d), at: draft.center };
 
-/** 끄는 중인 가구는 옮길 자리에 그린다 (떼기 전에는 데이터를 바꾸지 않는다). */
-const withMoving = (boxes: Box[], moving: { id: string; center: Point } | null) =>
-  moving
-    ? boxes.map((box) =>
-        box.id === moving.id ? { ...box, x: moving.center.x, z: moving.center.y } : box,
-      )
-    : boxes;
+/**
+ * 끄는 중인 가구는 옮길 자리·높이에 그린다 (떼기 전에는 데이터를 바꾸지 않는다). 다른 가구 위로 끌면
+ * 그 높이에 그려 받침 가구 위에 보인다. 2D는 낮은 가구부터 그린다.
+ */
+function withMoving(boxes: readonly Box[], moving: (BoxMove & { id: string }) | null) {
+  const base = boxes.find((box) => box.id === moving?.parentId) ?? null;
+  const drawn = boxes.map((box) => {
+    if (box.id !== moving?.id) return box;
+    const { x, y } = moving.center;
+    return { ...box, x, z: y, elevation: stackedElevation(box, base) }; // 2D y = 3D z
+  });
+  return stackOrder(drawn);
+}
 
 /**
  * 가구 입력: 가구 도구로 놓기(겹치는 자리면 안내), 선택 도구로 누르기(고르기·풀기·회전 핸들)·끌어 옮기기,

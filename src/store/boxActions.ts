@@ -14,7 +14,7 @@ import { rotateBox } from "./logic/rotateBox";
 
 export type BoxActions = {
   addBox: (input: Omit<NewBoxInput, "id">) => string | null; // 새 가구 id, 현재 공간이 없으면 null
-  moveBox: (id: string, center: Point) => void; // center = 가구 가운데 (cm, 2D)
+  moveBox: (id: string, center: Point, parentId?: string | null) => void; // center = 가구 가운데 (cm, 2D). parentId: 받침 가구 (null 바닥, 없으면 그대로)
   rotateBox: (id: string) => void; // 시계 방향 90도
   changeBoxType: (id: string, type: FurnitureType) => number; // 크기는 그대로, 칸 수·설치 높이는 종류 기본값. 칸 없음으로 옮긴 물건 수
   applyTypeHeight: (id: string) => void; // 그 종류의 기본 높이로
@@ -41,7 +41,8 @@ export const boxActions = (set: SetCore, get: GetCore): BoxActions => ({
     set((state) => change(state, data));
     return id;
   },
-  moveBox: (id, center) => set((state) => change(state, moveBox(state.data, id, center))),
+  moveBox: (id, center, parentId) =>
+    set((state) => change(state, moveBox(state.data, id, center, parentId))),
   rotateBox: (id) => set((state) => change(state, rotateBox(state.data, id))),
   changeBoxType: (id, type) => changeSlots(set, get, id, (data) => changeBoxType(data, id, type)),
   applyTypeHeight: (id) => set((state) => change(state, applyTypeHeight(state.data, id))),

@@ -54,7 +54,8 @@ test.describe("가구가 벽·다른 가구를 뚫지 않기", () => {
 
   test("엣지: 다른 가구에도 맞닿는 데까지만 간다 (맞닿기는 된다)", async ({ page, isMobile }) => {
     await placeBox(page, { x: 230, y: 100 }, { x: 280, y: 200 }, isMobile); // 왼쪽 면 230
-    await dragFloorCm(page, FLOOR, { x: 150, y: 150 }, { x: 260, y: 150 }, isMobile);
+    // 가운데가 다른 가구 윗면(x 230~280)에 들어가면 그 위로 올라가므로(T29) 가운데 220까지만 끈다
+    await dragFloorCm(page, FLOOR, { x: 150, y: 150 }, { x: 220, y: 150 }, isMobile);
     await expectBox(page, [180, 150], 0);
   });
 

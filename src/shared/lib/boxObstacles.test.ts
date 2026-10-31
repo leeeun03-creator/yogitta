@@ -59,4 +59,19 @@ describe("boxObstacles · isBoxBlocked", () => {
     );
     expect(boxObstacles({ walls: [], boxes: [] }, null)).toEqual([]);
   });
+
+  it("높이 범위를 주면 높이가 겹치는 가구만 막는다 (맞닿는 높이: 받침 가구 위·벽걸이 아래는 막지 않는다)", () => {
+    const shelf: Box = { ...box("shelf", 450, 300), type: "wall", elevation: 150, h: 60 };
+    const boxes = [box("desk", 100, 100), shelf];
+    expect(boxObstacles({ walls: [], boxes }, null, { bottom: 0, top: 40 })).toHaveLength(1); // 책상만
+    expect(boxObstacles({ walls: [], boxes }, null, { bottom: 90, top: 130 })).toHaveLength(0); // 책상 위
+    expect(boxObstacles({ walls: [], boxes }, null, { bottom: 120, top: 160 })).toHaveLength(1); // 벽걸이
+  });
+
+  it("그 가구 위에 올린 가구(두 층 포함)는 같이 움직이니 막지 않는다", () => {
+    const top: Box = { ...box("top", 100, 100), elevation: 90, parentId: "desk" };
+    const topmost: Box = { ...box("topmost", 100, 100), elevation: 180, parentId: "top" };
+    const boxes = [box("desk", 100, 100), top, topmost, box("other", 450, 300)];
+    expect(boxObstacles({ walls: [], boxes }, "desk")).toHaveLength(1); // other만
+  });
 });

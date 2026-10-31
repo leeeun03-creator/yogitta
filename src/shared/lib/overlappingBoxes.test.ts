@@ -46,6 +46,13 @@ describe("overlappingBoxes", () => {
   it("엣지: 가구·벽이 없으면 비어 있다", () => {
     expect(overlappingBoxes({ walls: [WALL], boxes: [] }).size).toBe(0);
   });
+
+  it("엣지: 높이가 겹치지 않으면 겹친 것이 아니다 (책상 위 보관함, 벽걸이 아래 가구)", () => {
+    const top: Box = { ...box("top", 100, 100), elevation: 90, parentId: "a" };
+    const shelf: Box = { ...box("shelf", 400, 300), type: "wall", elevation: 150, h: 60 };
+    const space = { walls: [], boxes: [box("a", 100, 100), top, shelf, box("b", 400, 300)] };
+    expect(overlappingBoxes(space)).toEqual(new Set());
+  });
 });
 
 describe("isPlacementBlocked", () => {
@@ -60,5 +67,11 @@ describe("isPlacementBlocked", () => {
   it("엣지: 바닥 안으로 맞춘 자리로 본다 (바닥 밖에 놓아도 당겨진 자리에서 겹치면 막힌다)", () => {
     const space = { floor: FLOOR, walls: [], boxes: [box("a", 50, 50)] };
     expect(isPlacementBlocked({ center: { x: -100, y: -100 }, w: 60, d: 60 }, space)).toBe(true);
+  });
+
+  it("엣지: 벽걸이 아래(높이가 겹치지 않는 자리)에는 새 가구를 놓을 수 있다", () => {
+    const shelf: Box = { ...box("shelf", 300, 200), type: "wall", elevation: 150, h: 60 };
+    const space = { floor: FLOOR, walls: [], boxes: [shelf] };
+    expect(isPlacementBlocked({ center: { x: 300, y: 200 }, w: 60, d: 60 }, space)).toBe(false);
   });
 });

@@ -44,4 +44,9 @@ describe("findBoxAt", () => {
   it("엣지: 가구가 없으면 null", () => {
     expect(findBoxAt([], { x: 0, y: 0 })).toBeNull();
   });
+
+  it("엣지: 겹쳐 있으면 높이 놓인 가구(가구 위 가구·벽걸이)가 먼저다 (놓은 순서와 상관없다)", () => {
+    const top: Box = { ...box("top", 200, 100), elevation: 90, parentId: "desk" };
+    expect(findBoxAt([top, box("desk", 200, 100)], { x: 200, y: 100 })?.id).toBe("top");
+  });
 });

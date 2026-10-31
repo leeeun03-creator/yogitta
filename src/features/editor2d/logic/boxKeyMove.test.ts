@@ -63,4 +63,11 @@ describe("boxKeyMove", () => {
     const corner = box("a", 55, 50);
     expect(boxKeyMove(corner, { x: -1, y: -1 }, 10, space([corner]))).toEqual({ x: 50, y: 50 });
   });
+
+  it("가구 위 가구는 받침 가구 윗면을 벗어나지 않고, 받침 가구에 막히지 않는다", () => {
+    const desk = box("desk", 300, 200);
+    const top: Box = { ...box("top", 340, 200), w: 20, d: 20, elevation: 90, parentId: "desk" };
+    expect(boxKeyMove(top, { x: 1, y: 0 }, 10, space([desk, top]))).toEqual({ x: 350, y: 200 });
+    expect(boxKeyMove(top, { x: -1, y: 0 }, 10, space([desk, top]))).toEqual({ x: 330, y: 200 });
+  });
 });

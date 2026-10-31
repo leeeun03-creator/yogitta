@@ -3,6 +3,7 @@ import type { Box, Space } from "@/shared/types";
 import { boxFootprint } from "./boxFootprint";
 import { boxObstacles } from "./boxObstacles";
 import { clampBoxCenter } from "./clampBoxCenter";
+import { heightSpan } from "./heightSpan";
 import { isBoxBlocked } from "./isBoxBlocked";
 
 /** 돌리지 못하는 까닭: 돌린 모양이 바닥보다 김(tooLong), 벽·다른 가구에 걸림(blocked). */
@@ -21,7 +22,7 @@ export function rotatedBox(
   const size = boxFootprint({ ...box, rotation });
   if (size.w > space.floor.w || size.d > space.floor.h) return { ok: false, reason: "tooLong" };
   const center = clampBoxCenter({ x: box.x, y: box.z }, size, space.floor);
-  if (isBoxBlocked(center, size, boxObstacles(space, box.id)))
+  if (isBoxBlocked(center, size, boxObstacles(space, box.id, heightSpan(box))))
     return { ok: false, reason: "blocked" };
   return { ok: true, box: { ...box, rotation, x: center.x, z: center.y } }; // 2D y = 3D z
 }

@@ -3,6 +3,7 @@ import type { Box, Space } from "@/shared/types";
 import { boxFootprint } from "./boxFootprint";
 import { boxObstacles } from "./boxObstacles";
 import { clampBoxCenter } from "./clampBoxCenter";
+import { heightSpan } from "./heightSpan";
 import { isBoxBlocked } from "./isBoxBlocked";
 
 /** 가구 크기 (cm, 돌리기 전 가로·깊이와 높이). */
@@ -27,7 +28,8 @@ export function resizedBox(
     return { ok: false, reason: "tooLong" };
   }
   const center = clampBoxCenter({ x: box.x, y: box.z }, footprint, space.floor); // 2D y = 3D z
-  if (isBoxBlocked(center, footprint, boxObstacles(space, box.id))) {
+  const span = heightSpan({ elevation: box.elevation, h: size.h });
+  if (isBoxBlocked(center, footprint, boxObstacles(space, box.id, span))) {
     return { ok: false, reason: "blocked" };
   }
   const next: Box = { ...box, ...size, x: center.x, z: center.y };

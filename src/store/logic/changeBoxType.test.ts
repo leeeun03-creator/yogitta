@@ -102,4 +102,19 @@ describe("changeBoxType", () => {
       { id: "item_1", name: "충전기" },
     ]);
   });
+
+  it("가구 위 가구는 종류를 바꿔도 받침 가구 위 높이를 지킨다", () => {
+    const data = createBoxTestData([{}, { elevation: 90, parentId: "box_1" }]);
+    expect(boxOf(changeBoxType(data, "box_2", "drawer"), 1)).toMatchObject({
+      elevation: 90,
+      parentId: "box_1",
+    });
+  });
+
+  it("엣지: 가구 위 가구를 벽걸이로 바꾸면 받침 가구에서 내려 벽걸이 기본 설치 높이로 띄운다", () => {
+    const data = createBoxTestData([{}, { elevation: 90, parentId: "box_1" }]);
+    const shelf = boxOf(changeBoxType(data, "box_2", "wall"), 1);
+    expect(shelf?.elevation).toBe(FURNITURE_DEFAULTS.wall.elevation);
+    expect(shelf?.parentId).toBeUndefined();
+  });
 });
