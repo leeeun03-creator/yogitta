@@ -198,7 +198,7 @@ todo: T18-1 벽 모서리 이음새를 P2로 하향
 
 1. 지금 끝낸 세부 Todo 번호 확인 (`docs/todo/Tn.md`에 없으면 먼저 `todo:` 커밋으로 추가)
 2. `git status`로 바뀐 파일 확인
-3. `npm run check`와 바뀐 기능의 실제 테스트 통과 확인. 큰 Todo의 마지막 세부 Todo·정리 점검 커밋이면 실제 테스트 전체(`npm run test:e2e`) (실패하면 커밋하지 않고 먼저 고친다, `yogitta-test` 1장)
+3. `npm run check`와 바뀐 기능의 실제 테스트(데스크톱) 통과 확인. 실제 테스트 전체는 push 뒤 CI가 돌린다 (실패하면 커밋하지 않고 먼저 고친다, `yogitta-test` 1장)
 4. 관련 파일만 `git add <파일>`
 5. `Tn-n: 작업 내용` 형식으로 `git commit`
 6. `docs/todo/Tn.md`에서 해당 세부 Todo 체크 + 결과 한 줄, `docs/TODO.md` 진행 수 올리기 (`yogitta-todo` 5장) (`- [x] T3-3 사각형 도구`) — 같은 커밋에 포함

@@ -250,7 +250,7 @@ export function segmentToWall(a: Point, b: Point): WallTransform { … }
 | ESLint | typescript-eslint 권장, react-hooks, `no-explicit-any: error`, `import/no-cycle`, feature 내부 직접 import 금지(`no-restricted-imports`로 `@/features/*/*` 막기) |
 | Prettier | 세미콜론, 큰따옴표, 폭 100, trailing comma |
 | Vitest | 순수 함수만 (코드 테스트) |
-| Playwright | 브라우저 실제 테스트 `npm run test:e2e`, 규칙은 `yogitta-test` |
+| Playwright | 브라우저 실제 테스트 (로컬은 바뀐 기능 spec만, 전체는 CI), 규칙은 `yogitta-test` |
 
 ### 반드시 테스트할 순수 함수
 
@@ -268,7 +268,7 @@ export function segmentToWall(a: Point, b: Point): WallTransform { … }
 ## 11. 작업 흐름 (매번 이 순서)
 
 ```
-① 계획(+테스트 항목) → ② 작성 → ③ 자가 점검 → ④ npm run check + 실제 테스트(바뀐 기능, 큰 Todo 끝은 전체) → ⑤ 커밋
+① 계획(+테스트 항목) → ② 작성 → ③ 자가 점검 → ④ npm run check + 바뀐 기능의 실제 테스트(데스크톱) → ⑤ 커밋 (실제 테스트 전체는 push 뒤 CI)
 ```
 
 ### ① 계획 — 코드 쓰기 전에 사용자에게 짧게 보여준다
@@ -294,13 +294,13 @@ T10-2 계획
 - [ ] 파일 200줄, 함수 40줄 이하다
 - [ ] `any`, 매직넘버, 주석 처리된 옛 코드가 없다
 - [ ] 빈 상태·오류 상태를 처리했다
-- [ ] 새 순수 함수에 코드 테스트를, 화면 변화에 실제 테스트를 붙였다 (엣지 케이스 포함, `yogitta-test` 4장)
+- [ ] 새 순수 함수에 코드 테스트를(엣지 케이스는 여기서), 새 화면 기능에 실제 테스트 1~2개를 붙였다 (`yogitta-test` 3장)
 - [ ] 화면 요소는 `yogitta-design` 규칙대로다
 - [ ] 주석·문구의 용어가 `glossary.md`와 같다 ("쓰지 않는 말"이 없다)
 
 ### ④ 자동 검사
 
-`npm run check`와 바뀐 기능의 실제 테스트 통과 (큰 Todo의 마지막 세부 Todo·정리 점검은 `npm run test:e2e` 전체). 실패하면 고치고 다시. 통과 전에는 커밋하지 않고, 다음 세부 Todo로 넘어가지 않는다 (`yogitta-test` 1·2장).
+`npm run check`와 바뀐 기능의 실제 테스트(데스크톱) 통과. 실제 테스트 전체는 로컬에서 돌리지 않고 push 뒤 CI에 맡긴다. 실패하면 고치고 다시. 통과 전에는 커밋하지 않고, 다음 세부 Todo로 넘어가지 않는다 (`yogitta-test` 1·2장).
 
 ### ⑤ 커밋
 

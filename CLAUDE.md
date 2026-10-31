@@ -8,7 +8,7 @@
 - 세션을 시작할 때와 큰 Todo를 시작·세부 Todo를 끝낼 때 `yogitta-todo` 스킬을 읽고, 그 순서대로 `docs/TODO.md` → `docs/todo/Tn.md`를 읽는다
 - 코드를 쓰거나 고치기 전에 `yogitta-code` 스킬을 읽는다
 - 화면·스타일·3D 색을 다룰 때는 `yogitta-design` 스킬을 읽는다
-- 세부 Todo 계획을 세울 때와 커밋 전에 `yogitta-test` 스킬을 읽는다. 테스트(엣지 케이스 포함)를 모두 통과해야 완료이고, 통과해야 다음 작업으로 넘어간다
-- 커밋 전에 `npm run check`와 바뀐 기능의 실제 테스트를 통과시킨다. 큰 Todo의 마지막 세부 Todo 커밋과 정리 점검 커밋 전에는 실제 테스트 전체(`npm run test:e2e`)를 통과시킨다. `commit-convention` 스킬대로 커밋한다
+- 세부 Todo 계획을 세울 때와 커밋 전에 `yogitta-test` 스킬을 읽는다. 기준은 "기능이 제대로 동작하는가"이고, 테스트는 꼭 필요한 만큼만 쓴다 (많은 테스트는 토큰 낭비)
+- 커밋 전에 `npm run check`와 바뀐 기능의 실제 테스트(데스크톱만, 휴대폰 화면이 바뀌면 휴대폰도)를 통과시킨다. 실제 테스트 전체는 로컬에서 돌리지 않고 push 뒤 CI(배포 확인)에 맡기며, CI가 실패하면 바로 고친다. `commit-convention` 스킬대로 커밋한다
 - 작업 단위는 세부 Todo(Tn-n) 하나. 큰 Todo 하나를 세부 Todo 3~4개로 나눈다
 - 주석, README, 커밋 메시지, 문서는 `.claude/skills/yogitta-code/glossary.md`의 용어만 쓴다. 같은 것을 다른 단어로 부르지 않는다
