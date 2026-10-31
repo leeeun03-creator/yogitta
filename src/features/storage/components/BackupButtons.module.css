@@ -7,7 +7,21 @@
   padding-top: 12px;
   border-top: 1px solid var(--yg-border-soft);
 }
+/* 한 줄에 하나씩 (좁은 휴대폰에서도 "백업 파일 내보내기"가 낱말 가운데서 꺾이지 않게) */
 .backup > * {
-  flex: 1 1 140px;
+  flex: 1 1 100%;
   font-size: 14px;
+  white-space: nowrap;
+}
+
+/* 파일 고르기 창은 [백업 파일 가져오기]로 연다 */
+.file {
+  display: none;
+}
+
+.error {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+  color: var(--yg-danger);
 }
