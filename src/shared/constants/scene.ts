@@ -40,3 +40,7 @@ export const BOX_LABEL_GAP_CM = 12;
 export const BOX_LABEL_Z_RANGE: [number, number] = [1, 0];
 /** 3D 점 목록(Float32Array)에서 점 하나가 차지하는 칸 수: x, y, z. */
 export const XYZ_PER_POINT = 3;
+
+/** 위치 표시 때 찾은 칸이 정면으로 빠져나오는 거리 (cm, yogitta-design 5장)와 걸리는 시간 (ms). */
+export const SLOT_OPEN_CM = 26;
+export const SLOT_OPEN_MS = 300;

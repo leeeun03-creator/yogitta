@@ -7,6 +7,7 @@ export type FurniturePart = {
   size: Xyz; // 가로(x)·높이(y)·깊이(z)
   color: string;
   hasEdges: boolean; // 모서리 선 (손잡이처럼 작은 것은 빼서 지저분하지 않게)
+  topColor?: string; // 윗면만 다른 색 (열린 칸의 안쪽)
 };
 
 /** 두 모서리(from = 작은 쪽, to = 큰 쪽) 사이를 채우는 부품. */
@@ -14,7 +15,7 @@ export function partBetween(
   key: string,
   from: Xyz,
   to: Xyz,
-  look: Pick<FurniturePart, "color" | "hasEdges">,
+  look: Pick<FurniturePart, "color" | "hasEdges" | "topColor">,
 ): FurniturePart {
   const [x0, y0, z0] = from;
   const [x1, y1, z1] = to;
