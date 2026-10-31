@@ -11,6 +11,7 @@ const EDITING: UiState = {
   selectedBoxId: "box_1",
   removeAsk: "box_1",
   searchQuery: "여권",
+  foundItemId: "item_1",
 };
 
 describe("switchMode", () => {
@@ -24,6 +25,7 @@ describe("switchMode", () => {
       selectedBoxId: null,
       removeAsk: null,
       searchQuery: "여권",
+      foundItemId: "item_1",
     });
   });
 

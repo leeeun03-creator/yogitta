@@ -1,0 +1,88 @@
+/* 칸 행: 칸 이름 + 물건 칩 (시안 08 칸 행) */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--yg-radius-row);
+  background: var(--yg-surface-2);
+}
+.slotName {
+  min-width: 72px;
+  font-size: 13px;
+  color: var(--yg-text-sub);
+}
+.empty {
+  font-size: 14px;
+  color: var(--yg-text-sub);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* 물건 칩: 누르면 자세히 (누른 칩은 강조색, yogitta-design 4장 칩) */
+.chip {
+  padding: 5px 12px;
+  border: none;
+  border-radius: var(--yg-radius-pill);
+  background: var(--yg-surface);
+  color: var(--yg-text);
+  font: inherit;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] {
+  background: var(--yg-accent);
+  color: var(--yg-on-accent);
+}
+.chip:focus-visible,
+.addChip:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 2px;
+}
+/* 빈 칸의 [+ 추가]: 점선 추가 버튼 (시안 08) */
+.addChip {
+  margin-left: auto;
+  padding: 4px 12px;
+  border: 2px dashed var(--yg-dashed);
+  border-radius: var(--yg-radius-pill);
+  background: transparent;
+  color: var(--yg-accent);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+/* 손가락으로 누르는 화면은 터치 영역 44px (yogitta-design 9장) */
+@media (pointer: coarse) {
+  .chip,
+  .addChip {
+    min-height: 44px;
+  }
+}
+
+/* 검색으로 찾은 칸 행과 물건 칩 (yogitta-design 4장: 찾은 칸 배경 + 굵은 강조색 칩, 색만으로 구분하지 않게 굵게) */
+.row[data-found] {
+  background: var(--yg-found-bg);
+}
+.row[data-found] .slotName {
+  color: var(--yg-found-text);
+}
+.chip[data-found] {
+  background: var(--yg-accent);
+  color: var(--yg-on-accent);
+  font-weight: 700;
+}

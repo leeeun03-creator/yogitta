@@ -30,10 +30,13 @@
   overflow-wrap: anywhere; /* 아주 긴 검색어도 카드 안에서 줄바꿈 */
 }
 
-.sentence {
+/* 1곳일 때 위치 문장 (17px, 줄간격 1.65) */
+.single {
   margin: 0;
   font-size: 17px;
   line-height: 1.65;
+}
+.sentence {
   overflow-wrap: anywhere;
 }
 .boxName {
@@ -53,7 +56,7 @@
   margin-top: 3px;
 }
 
-/* 여러 곳: 번호 붙은 칸 행 모양 (시안 07 "찾음 (여러 곳)") */
+/* 여러 곳: 번호 붙은 결과 행 (시안 07 "찾음 (여러 곳)"). 누르면 고르고, 고른 행은 찾은 칸 배경 */
 .list {
   display: flex;
   flex-direction: column;
@@ -63,20 +66,45 @@
   list-style: none;
   counter-reset: result;
 }
+.list > li {
+  counter-increment: result;
+}
 .row {
+  width: 100%;
   display: flex;
   gap: 10px;
   padding: 12px 14px;
-  background: var(--yg-surface-2);
+  border: none;
   border-radius: var(--yg-radius-row);
-  counter-increment: result;
+  background: var(--yg-surface-2);
+  color: var(--yg-text);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.65;
+  text-align: left;
+  cursor: pointer;
 }
 .row::before {
   content: counter(result);
-  font-size: 15px;
-  line-height: 1.65;
   color: var(--yg-text-sub);
 }
-.row .sentence {
-  font-size: 15px;
+.row[aria-pressed="true"] {
+  background: var(--yg-found-bg);
+}
+.row[aria-pressed="true"]::before {
+  color: var(--yg-found-text);
+}
+.row:focus-visible {
+  outline: 2px solid var(--yg-accent);
+  outline-offset: 2px;
+}
+
+/* [가구 전체 보기]: 휴대폰만 (넓은 화면은 가구 상세 패널이 옆에 늘 열려 있다) */
+.card .showBox {
+  display: none;
+}
+@media (max-width: 640px) {
+  .card .showBox {
+    display: flex;
+  }
 }

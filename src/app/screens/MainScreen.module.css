@@ -68,6 +68,10 @@
   .searching > aside {
     display: none;
   }
+  /* [가구 전체 보기]를 누른 뒤: 카드를 접고 가구 상세 패널을 본다 */
+  .besidePanel {
+    display: none;
+  }
   .header {
     padding: 16px 16px 8px;
   }

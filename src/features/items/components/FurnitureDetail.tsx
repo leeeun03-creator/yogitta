@@ -16,6 +16,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import type { SelectedBox } from "@/features/furniture";
 import type { Box, FurnitureType } from "@/shared/types";
 import { Button, IconButton } from "@/shared/ui";
+import { useAppStore } from "@/store/useAppStore";
 import { usePickedItem } from "../hooks/usePickedItem";
 import { ItemAddForm } from "./ItemAddForm";
 import styles from "./FurniturePanel.module.css";
@@ -49,6 +50,7 @@ export function FurnitureDetail({ selection, onClose }: FurnitureDetailProps) {
   const { box } = selection;
   const [adding, setAdding] = useState<Adding | null>(null);
   const picking = usePickedItem(box.items);
+  const foundId = useAppStore((state) => state.ui.foundItemId);
   const titleRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => titleRef.current?.focus(), [box.id]);
   return (
@@ -59,6 +61,7 @@ export function FurnitureDetail({ selection, onClose }: FurnitureDetailProps) {
         pickedId={picking.pickedId}
         onPick={picking.pick}
         onAdd={(slot) => setAdding({ slot })}
+        foundId={foundId}
       />
       {picking.picked && (
         <PickedItem

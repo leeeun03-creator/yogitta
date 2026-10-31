@@ -3,7 +3,10 @@ import { buildLocationSentence } from "../logic/buildLocationSentence";
 import type { ItemMatch } from "../logic/matchItems";
 import styles from "./ResultCard.module.css";
 
-/** 위치 문장 한 줄. 물건·공간 이름은 굵게, 가구 이름은 굵게 + 강조색 (시안 07). */
+/**
+ * 위치 문장 한 줄. 물건·공간 이름은 굵게, 가구 이름은 굵게 + 강조색 (시안 07).
+ * 버튼(여러 곳 목록의 결과 행) 안에도 넣을 수 있게 글줄(span)로 그린다.
+ */
 export function LocationSentence({ match }: { match: ItemMatch }) {
   const parts = buildLocationSentence({
     item: match.item,
@@ -11,7 +14,7 @@ export function LocationSentence({ match }: { match: ItemMatch }) {
     spaceName: match.space.name,
   });
   return (
-    <p className={styles.sentence}>
+    <span className={styles.sentence}>
       {parts.map((part, index) =>
         part.mark ? (
           <strong key={index} className={part.mark === "box" ? styles.boxName : undefined}>
@@ -21,6 +24,6 @@ export function LocationSentence({ match }: { match: ItemMatch }) {
           <Fragment key={index}>{part.text}</Fragment>
         ),
       )}
-    </p>
+    </span>
   );
 }

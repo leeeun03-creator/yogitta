@@ -12,6 +12,7 @@ const UI: UiState = {
   selectedBoxId: "box_1",
   removeAsk: null,
   searchQuery: "",
+  foundItemId: null,
 };
 
 describe("keepSelection", () => {

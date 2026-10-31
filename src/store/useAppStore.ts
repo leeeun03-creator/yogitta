@@ -48,6 +48,7 @@ type AppState = BoxActions &
     setSnap: (snap: boolean) => void;
     setRoomFocus: (focus: RoomFocus | null) => void;
     setSearchQuery: (query: string) => void;
+    pickFound: (itemId: string | null, boxId?: string) => void; // 검색 결과를 고른다 (boxId면 그 가구를 연다)
     addRoom: (name: string, at?: Point) => RoomResult; // 현재 공간에 구역을 더한다 (at = 구역 기준점)
     renameRoom: (from: string, to: string) => RoomResult;
     removeRoom: (name: string) => void;
@@ -107,7 +108,7 @@ const spaceActions = (set: SetState, get: GetState): SpaceActions => ({
 
 type UiActions = Pick<
   AppState,
-  "setMode" | "setView" | "setTool" | "setSnap" | "setRoomFocus" | "setSearchQuery"
+  "setMode" | "setView" | "setTool" | "setSnap" | "setRoomFocus" | "setSearchQuery" | "pickFound"
 >;
 
 /** 화면 상태(ui)만 바꾸는 액션. 데이터·되돌리기 기록은 건드리지 않는다. */
@@ -128,6 +129,10 @@ const uiActions = (set: SetState): UiActions => ({
   setSnap: (snap) => set((state) => ({ ui: { ...state.ui, snap } })),
   setRoomFocus: (roomFocus) => set((state) => ({ ui: { ...state.ui, roomFocus } })),
   setSearchQuery: (searchQuery) => set((state) => ({ ui: { ...state.ui, searchQuery } })),
+  pickFound: (foundItemId, boxId) =>
+    set((state) => ({
+      ui: { ...state.ui, foundItemId, selectedBoxId: boxId ?? state.ui.selectedBoxId },
+    })),
 });
 
 /** 앱 전체 데이터와 화면 상태. 데이터 변경은 여기 액션으로만 한다. */
@@ -142,6 +147,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
     selectedBoxId: null,
     removeAsk: null,
     searchQuery: "",
+    foundItemId: null,
   },
   history: EMPTY_HISTORY,
   ...spaceActions(set, get),
