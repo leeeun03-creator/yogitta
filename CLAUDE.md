@@ -5,6 +5,7 @@
 
 ## 항상 지킬 것
 
+- 스킬(`yogitta-code`·`yogitta-design`·`yogitta-todo`·`yogitta-test`·`commit-convention`)은 목차다. 읽고 나서 지금 하는 일에 맞는 작은 스킬(예: `yogitta-code-workflow`)을 이어서 부른다
 - 세션을 시작할 때와 큰 Todo를 시작·세부 Todo를 끝낼 때 `yogitta-todo` 스킬을 읽고, 그 순서대로 `docs/TODO.md` → `docs/todo/Tn.md`를 읽는다
 - 코드를 쓰거나 고치기 전에 `yogitta-code` 스킬을 읽는다
 - 화면·스타일·3D 색을 다룰 때는 `yogitta-design` 스킬을 읽는다
