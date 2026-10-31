@@ -54,4 +54,13 @@ describe("focusView", () => {
     expect(distance(drawer(0, { w: 10, h: 10, d: 10 }))).toBeCloseTo(200);
     expect(distance(drawer(0, { w: 3000, h: 240, d: 3000 }))).toBeCloseTo(2000);
   });
+
+  it("keepDistance를 주면 가구에 맞춰 당기지 않고 그 거리로 돈다 (범위 안으로)", () => {
+    const at = (keep: number) => {
+      const { position, target } = focusView(drawer(0), LENS, LIMITS, keep);
+      return length(position.map((value, index) => value - (target[index] ?? 0)));
+    };
+    expect(at(1200)).toBeCloseTo(1200);
+    expect(at(50)).toBeCloseTo(200);
+  });
 });

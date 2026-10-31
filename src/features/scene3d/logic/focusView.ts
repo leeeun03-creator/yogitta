@@ -24,9 +24,15 @@ function halfAngle({ fovDeg, aspect }: Lens): number {
 /**
  * 찾은 가구를 보는 카메라 (T15). 가구 정면 쪽 비스듬히 위에서 가구를 감싸는 구가 화면에 차게 보고, 가구 가운데가
  * 화면 가운데에 오게 한다. 보는 곳은 시선이 바닥과 만나는 점이라 바닥 위에 있다 (사용자 이동과 같은 규칙).
- * 보는 곳까지의 거리는 카메라 움직임 범위 안으로 맞춘다.
+ * 보는 곳까지의 거리는 카메라 움직임 범위 안으로 맞춘다. keepDistance를 주면(가구를 눌렀을 때) 가구에 맞춰 당기지 않고
+ * 그 거리 그대로 돌기만 한다.
  */
-export function focusView(box: Box, lens: Lens, limits: CameraLimits): CameraView {
+export function focusView(
+  box: Box,
+  lens: Lens,
+  limits: CameraLimits,
+  keepDistance?: number,
+): CameraView {
   const direction = viewDirection(box.rotation);
   const center: Vector = [box.x, box.elevation + box.h / 2, box.z];
   const radius = Math.hypot(box.w, box.h, box.d) / 2;
@@ -36,7 +42,7 @@ export function focusView(box: Box, lens: Lens, limits: CameraLimits): CameraVie
     0,
     center[2] - direction[2] * toFloor,
   ];
-  const fit = (radius * FOCUS.margin) / Math.sin(halfAngle(lens)) + toFloor;
+  const fit = keepDistance ?? (radius * FOCUS.margin) / Math.sin(halfAngle(lens)) + toFloor;
   const distance = Math.min(limits.maxDistance, Math.max(limits.minDistance, fit));
   const position: Vector = [
     target[0] + direction[0] * distance,

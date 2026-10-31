@@ -1,15 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createSpace, dragPath, pressScreen, touchSender } from "./helpers";
 import { placeBox } from "./boxes";
-import {
-  boxPoint,
-  cornerPoint,
-  detail,
-  openMainScene,
-  pickBox,
-  settledBox,
-  space3d,
-} from "./scene";
+import { boxPoint, cornerPoint, detail, openMainScene, pickBox, space3d } from "./scene";
 
 const listHeading = (page: Page) => detail(page).getByRole("heading", { name: "가구" });
 const boxHeading = (page: Page) => detail(page).getByRole("heading", { name: "보관함 1" });
@@ -71,15 +63,14 @@ test.describe("3D에서 돌리기와 누르기를 가르고, 빈 곳을 누르�
     }
   });
 
-  test("엣지: 가구를 누르기만 해서는 카메라가 움직인 것이 아니다 (처음 보기가 꺼져 있다)", async ({
+  test("엣지: 가구를 누르면 카메라가 그 가구 쪽으로 돈다 (처음 보기가 켜진다)", async ({
     page,
     isMobile,
   }) => {
-    // 휴대폰은 패널이 열리면 3D 영역이 줄어드는데, 움직이지 않았으니 처음 자리로 다시 맞춘다
+    // T9-2에서는 누르기만으로 카메라가 움직이지 않았지만, T15-3부터 누른 가구 정면으로 카메라를 돌린다
     await pickBox(page, space3d(page), "보관함 1", isMobile);
     await expect(boxHeading(page)).toBeVisible();
-    await settledBox(space3d(page).getByTestId("box-label")); // 3D 영역 크기 바뀜이 끝날 때까지
-    await expect(viewButton(page, "처음 보기")).toBeDisabled();
+    await expect(viewButton(page, "처음 보기")).toBeEnabled();
   });
 
   test("엣지: 보기 버튼을 눌러도 가구 상세 패널은 닫히지 않는다", async ({ page, isMobile }) => {

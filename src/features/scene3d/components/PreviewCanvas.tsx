@@ -5,6 +5,7 @@ import type { RoomArea } from "@/features/spaces";
 import type { Box, Floor, Wall } from "@/shared/types";
 import type { ViewStatus } from "../logic/cameraView";
 import { BoxMeshes } from "./BoxMeshes";
+import type { CameraFocus } from "../hooks/useFocusMove";
 import { BoxPicker, type BoxPicking } from "./BoxPicker";
 import { FloorMesh } from "./FloorMesh";
 import styles from "./PreviewCanvas.module.css";
@@ -37,13 +38,24 @@ function useViewStatus() {
   return { status, handleViewChange };
 }
 
+/**
+ * 카메라가 볼 가구: 고른 가구(누름·목록·검색 결과가 연 가구), 없으면 검색으로 찾은 가구. 검색으로 찾은 가구면 가구에 맞춰
+ * 당기고, 사용자가 다른 가구를 골랐으면 확대 정도는 그대로 둔다 (T15-3).
+ */
+function focusOf(boxes: readonly Box[], picking?: BoxPicking): CameraFocus | undefined {
+  const pickedBoxId = picking?.found.find((spot) => spot.isPicked)?.boxId;
+  const focusId = picking?.selectedId ?? pickedBoxId;
+  const box = boxes.find((candidate) => candidate.id === focusId);
+  return box && { box, keepZoom: focusId !== pickedBoxId };
+}
+
 /** three.js를 쓰는 3D 그림 본체와 보기 버튼. 무거워서 SceneView가 처음 열 때 따로 불러온다. */
 export function PreviewCanvas(props: PreviewCanvasProps) {
   const { floor, walls, boxes, areas, label, picking } = props;
   const camera = useRef<CameraCommands>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null); // 마우스를 올린 가구
   const { status, handleViewChange } = useViewStatus();
-  const pickedBoxId = picking?.found.find((spot) => spot.isPicked)?.boxId;
+  const focus = focusOf(boxes, picking);
   return (
     <div className={styles.wrap}>
       <div
@@ -58,7 +70,7 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
             floor={floor}
             ref={camera}
             onViewChange={handleViewChange}
-            focusBox={boxes.find((box) => box.id === pickedBoxId)}
+            focus={focus}
             shiftPx={(picking?.coverLeft ?? 0) / 2}
           />
           <FloorMesh floor={floor} />

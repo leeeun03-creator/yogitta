@@ -11,9 +11,9 @@ import {
   type RefObject,
 } from "react";
 import { PREVIEW_FOV_DEG } from "@/shared/constants/scene";
-import type { Box, Floor } from "@/shared/types";
+import type { Floor } from "@/shared/types";
 import { PerspectiveCamera } from "three";
-import { useFocusMove } from "../hooks/useFocusMove";
+import { useFocusMove, type CameraFocus } from "../hooks/useFocusMove";
 import {
   cameraLimits,
   keepViewOnFloor,
@@ -34,7 +34,7 @@ type PreviewCameraProps = {
   floor: Floor;
   ref: Ref<CameraCommands>;
   onViewChange: (status: ViewStatus) => void;
-  focusBox?: Box; // 위치 표시할 찾은 가구: 바뀌면 카메라를 그 가구 정면으로 옮긴다 (T15)
+  focus?: CameraFocus; // 볼 가구 (찾은 가구·고른 가구): 바뀌면 카메라를 그 가구 정면으로 옮긴다 (T15)
   shiftPx?: number; // 3D 그림 전체를 오른쪽으로 옮길 양 (검색 결과 카드에 가리지 않게, T15-2)
 };
 
@@ -162,10 +162,10 @@ function useUserMove(controls: ControlsRef, floor: Floor, report: () => void) {
 /**
  * 3D 미리보기 카메라. 처음에는 바닥 전체가 보이게 두고,
  * 끌기 회전 · 휠·두 손가락 줌 · 오른쪽 끌기·두 손가락 이동을 정해진 범위 안에서 받는다.
- * 찾은 가구가 생기면 그 가구 정면으로 옮겨 간다.
+ * 찾은 가구·고른 가구가 생기면 그 가구 정면으로 옮겨 간다.
  */
 export function PreviewCamera(props: PreviewCameraProps) {
-  const { floor, ref, onViewChange, focusBox, shiftPx = 0 } = props;
+  const { floor, ref, onViewChange, focus, shiftPx = 0 } = props;
   const controls = useRef<Controls>(null);
   const width = useThree((state) => state.size.width);
   const height = useThree((state) => state.size.height);
@@ -177,7 +177,7 @@ export function PreviewCamera(props: PreviewCameraProps) {
   const move = useCameraMove(controls, start, limits, onViewChange);
   const { isMoved, markMoved, handlers } = useUserMove(controls, floor, move.report);
   useCameraStart(ref, controls, isMoved, { start, limits }, move);
-  useFocusMove(focusBox, {
+  useFocusMove(focus, {
     read: () => (controls.current ? readView(controls.current) : null),
     moveTo: move.moveTo,
     markMoved,
