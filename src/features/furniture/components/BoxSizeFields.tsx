@@ -1,10 +1,11 @@
-import { useId, type KeyboardEvent } from "react";
+import { useId } from "react";
 import { FURNITURE_DEFAULTS } from "@/shared/constants/furniture";
 import type { Box } from "@/shared/types";
 import { Button, TextField } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
 import { useSizeDraft } from "../hooks/useSizeDraft";
 import type { SizeDraft } from "../logic/parseSize";
+import { draftKeys } from "../logic/draftKeys";
 import { sizeMessage } from "../logic/sizeMessage";
 import styles from "./BoxSizeFields.module.css";
 
@@ -23,10 +24,7 @@ export function BoxSizeFields({ box }: { box: Box }) {
   const { draft, error, save, cancel, change } = useSizeDraft(box);
   const labelId = useId();
   const errorId = useId();
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") save();
-    if (event.key === "Escape") cancel();
-  };
+  const handleKeyDown = draftKeys(save, cancel);
   return (
     <div className={styles.field}>
       <p id={labelId} className={styles.label}>

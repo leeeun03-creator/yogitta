@@ -1,10 +1,11 @@
-import { useState, type KeyboardEvent } from "react";
+import { useState } from "react";
 import { BOX_NAME_MAX_LENGTH } from "@/shared/constants/furniture";
 import type { NameError } from "@/shared/lib/checkName";
 import type { Box } from "@/shared/types";
 import { TextField } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
 import { boxNameMessage } from "../logic/boxNameMessage";
+import { draftKeys } from "../logic/draftKeys";
 
 /**
  * 가구 이름 입력칸 (시안 04). Enter나 입력칸을 벗어나면 저장하고, Esc면 원래 이름으로 돌린다.
@@ -22,13 +23,10 @@ export function BoxNameField({ box }: { box: Box }) {
     if (result.ok) setDraft(draft.trim());
     else setError(result.reason);
   };
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") save();
-    if (event.key === "Escape") {
-      setDraft(box.name);
-      setError(null);
-    }
-  };
+  const handleKeyDown = draftKeys(save, () => {
+    setDraft(box.name);
+    setError(null);
+  });
   return (
     <TextField
       label="가구 이름"

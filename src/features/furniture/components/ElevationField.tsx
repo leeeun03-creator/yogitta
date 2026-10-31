@@ -1,7 +1,8 @@
-import { useId, type KeyboardEvent } from "react";
+import { useId } from "react";
 import type { Box } from "@/shared/types";
 import { TextField } from "@/shared/ui";
 import { useElevationDraft } from "../hooks/useElevationDraft";
+import { draftKeys } from "../logic/draftKeys";
 import { elevationMessage } from "../logic/elevationMessage";
 import styles from "./BoxSizeFields.module.css";
 
@@ -13,10 +14,7 @@ import styles from "./BoxSizeFields.module.css";
 export function ElevationField({ box }: { box: Pick<Box, "id" | "elevation"> }) {
   const { draft, error, save, cancel, change } = useElevationDraft(box);
   const errorId = useId();
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") save();
-    if (event.key === "Escape") cancel();
-  };
+  const handleKeyDown = draftKeys(save, cancel);
   return (
     <div className={styles.field}>
       <TextField

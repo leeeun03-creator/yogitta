@@ -1,8 +1,9 @@
-import { useId, useState, type KeyboardEvent } from "react";
+import { useId, useState } from "react";
 import { slotLabels } from "@/shared/lib/slotLabels";
 import type { Box } from "@/shared/types";
 import { TextField } from "@/shared/ui";
 import { useRowHeightDraft } from "../hooks/useRowHeightDraft";
+import { draftKeys } from "../logic/draftKeys";
 import { rowHeightMessage } from "../logic/rowHeightMessage";
 import { rowSum } from "../logic/rowSum";
 import styles from "./BoxSizeFields.module.css";
@@ -53,10 +54,7 @@ type RowHeightInputsProps = {
 /** 칸마다 높이 입력칸. 막힌 칸은 오류 상태로 까닭 문구를 가리킨다. */
 function RowHeightInputs({ box, draft, errorId, onActive }: RowHeightInputsProps) {
   const labels = slotLabels({ ...box, cols: 1 });
-  const handleKeyDown = (row: number) => (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") draft.save(row);
-    if (event.key === "Escape") draft.cancel();
-  };
+  const handleKeyDown = (row: number) => draftKeys(() => draft.save(row), draft.cancel);
   return draft.drafts.map((value, row) => (
     <TextField
       key={row}
