@@ -85,7 +85,8 @@ export function useBoxDrag(tool: DrawingTool, view: ViewBox, space: Space) {
     },
     onPointerUp: (event: PointerEvent<HTMLElement>) => {
       if (drag?.move && isMine(event)) {
-        moveBox(drag.box.id, drag.move.center, drag.move.parentId);
+        const { center, parentId, rotation } = drag.move;
+        moveBox(drag.box.id, center, { parentId, rotation });
         selectBox(drag.box.id);
       }
       end(event);

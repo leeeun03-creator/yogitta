@@ -44,7 +44,7 @@ describe("moveBox", () => {
       createBoxTestData([desk, { x: 100, z: 100 }]),
       "box_2",
       { x: 300, y: 200 },
-      "box_1",
+      { parentId: "box_1" },
     );
     expect(stacked.spaces[0]?.boxes[1]).toMatchObject({
       x: 300,
@@ -52,7 +52,7 @@ describe("moveBox", () => {
       elevation: 73,
       parentId: "box_1",
     });
-    const down = moveBox(stacked, "box_2", { x: 450, y: 200 }, null);
+    const down = moveBox(stacked, "box_2", { x: 450, y: 200 }, { parentId: null });
     expect(down.spaces[0]?.boxes[1]).toMatchObject({ x: 450, elevation: 0 });
     expect(down.spaces[0]?.boxes[1]?.parentId).toBeUndefined();
   });
@@ -72,9 +72,9 @@ describe("moveBox", () => {
       { elevation: 90, parentId: "box_1" },
       { type: "wall", x: 100, z: 100 },
     ]);
-    expect(moveBox(data, "box_1", { x: 300, y: 200 }, "box_2")).toBe(data);
-    expect(moveBox(data, "box_3", { x: 300, y: 200 }, "box_1")).toBe(data);
-    expect(moveBox(data, "box_1", { x: 300, y: 200 }, "box_9")).toBe(data);
+    expect(moveBox(data, "box_1", { x: 300, y: 200 }, { parentId: "box_2" })).toBe(data);
+    expect(moveBox(data, "box_3", { x: 300, y: 200 }, { parentId: "box_1" })).toBe(data);
+    expect(moveBox(data, "box_1", { x: 300, y: 200 }, { parentId: "box_9" })).toBe(data);
   });
 
   it("엣지: 받침 가구가 없어진 가구 위 가구(깨진 데이터)를 방향키로 옮기면 바닥으로 내려온다", () => {
@@ -91,5 +91,11 @@ describe("moveBox", () => {
     ]);
     const moved = moveBox(data, "box_1", { x: 200, y: 300 });
     expect(moved.spaces[0]?.boxes[1]).toMatchObject({ x: 210, z: 300, elevation: 90 });
+  });
+
+  it("rotation을 주면 그 방향으로 돌려 놓고, 돌린 모양으로 바닥 안에 맞춘다 (벽에 붙인 벽걸이)", () => {
+    const data = createBoxTestData([{ type: "wall", elevation: 150 }]);
+    const moved = moveBox(data, "box_1", { x: 590, y: 200 }, { rotation: 90 }).spaces[0]?.boxes[0];
+    expect(moved).toMatchObject({ rotation: 90, x: 575, z: 200, elevation: 150 }); // 돌리면 가로 50
   });
 });

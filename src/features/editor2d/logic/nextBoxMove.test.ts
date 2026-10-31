@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { STACK_DESK, stackBox } from "@/shared/lib/stackFixtures";
-import type { Box, Point } from "@/shared/types";
+import type { Box, Point, Wall } from "@/shared/types";
 import { nextBoxMove, type BoxMove } from "./nextBoxMove";
 
 // 책상: x 240~360, y 170~230 · 보관함(small): 40 × 30, 바닥 (100, 100)
@@ -67,5 +67,35 @@ describe("nextBoxMove", () => {
       center: { x: 300, y: 200 }, // 벽걸이(150~)는 책상(~73)과 높이가 겹치지 않아 그 위를 지나간다
       parentId: null,
     });
+  });
+
+  it("벽걸이를 벽 가까이 끌면 뒷면이 벽 면에 붙고 정면이 벽 반대쪽을 보게 돈다 (T30-4)", () => {
+    const wall: Wall = {
+      id: "wall_1",
+      tool: "line",
+      points: [
+        { x: 500, y: 0 },
+        { x: 500, y: 450 },
+      ],
+      closed: false,
+    };
+    const shelf = stackBox("shelf", { type: "wall", elevation: 150 }); // 40 × 30
+    const fromFloor: BoxMove = { center: { x: 100, y: 100 }, parentId: null };
+    const near = nextBoxMove({
+      box: shelf,
+      space: { walls: [wall], boxes: [shelf] },
+      previous: fromFloor,
+      target: { x: 460, y: 100 },
+    });
+    expect(near).toEqual({ center: { x: 479, y: 100 }, parentId: null, rotation: 90 }); // 500 - 6 - 15
+    // 붙일 자리에 다른 벽걸이가 있으면 붙이지 않는다
+    const other = stackBox("other", { type: "wall", x: 479, z: 100, elevation: 150 });
+    const blocked = nextBoxMove({
+      box: shelf,
+      space: { walls: [wall], boxes: [shelf, other] },
+      previous: fromFloor,
+      target: { x: 460, y: 100 },
+    });
+    expect(blocked).toEqual({ center: { x: 439, y: 100 }, parentId: null }); // other(왼쪽 면 459)에 맞닿음
   });
 });

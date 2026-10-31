@@ -13,26 +13,30 @@ function baseFor(box: Box, space: Space, parentId: string | null | undefined): B
   return canStackOn(space.boxes, box, base) && base;
 }
 
+/** 옮길 때 함께 바꿀 것: 받침 가구(null이면 바닥, 없으면 그대로)와 회전(벽에 붙인 벽걸이, 없으면 그대로). */
+export type MoveOptions = { parentId?: string | null; rotation?: number };
+
 /**
  * 현재 공간의 가구 하나를 가운데가 center(cm, 2D)인 자리로 옮긴다. 바닥 밖으로는 나가지 않는다.
  * parentId를 주면 그 가구 위에 올리고(설치 높이 = 받침 가구 위, T29), null이면 바닥으로 내린다.
  * 주지 않으면 받침 가구는 그대로다. 올릴 수 없는 가구(벽걸이, 자기 위 가구 등)면 옮기지 않는다.
- * 그 위에 올린 가구도 같이 옮긴다 (T29-2).
+ * rotation을 주면 그 방향으로 돌려 놓는다(벽에 붙인 벽걸이, T30-4). 그 위에 올린 가구도 같이 옮긴다 (T29-2).
  */
 export function moveBox(
   data: AppData,
   id: string,
   center: Point,
-  parentId?: string | null,
+  options: MoveOptions = {},
 ): AppData {
   return updateStackedBox(data, id, (box, space) => {
-    const base = baseFor(box, space, parentId);
+    const turned = options.rotation === undefined ? box : { ...box, rotation: options.rotation };
+    const base = baseFor(turned, space, options.parentId);
     if (base === false) return box;
-    const next = clampBoxCenter(center, boxFootprint(box), space.floor);
+    const next = clampBoxCenter(center, boxFootprint(turned), space.floor);
     const elevation = stackedElevation(box, base);
     const isSame = next.x === box.x && next.y === box.z && elevation === box.elevation;
-    if (isSame && base?.id === box.parentId) return box;
-    const moved: Box = { ...box, x: next.x, z: next.y, elevation }; // 2D y = 3D z
+    if (isSame && turned.rotation === box.rotation && base?.id === box.parentId) return box;
+    const moved: Box = { ...turned, x: next.x, z: next.y, elevation }; // 2D y = 3D z
     if (base) moved.parentId = base.id;
     else delete moved.parentId;
     return moved;

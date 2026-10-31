@@ -19,6 +19,9 @@ export const BOX_ROTATION_STEP = 90;
 /** 한 바퀴 (도). 회전은 0 이상 이 값 미만으로 둔다. */
 export const FULL_TURN = 360;
 
+/** 벽걸이를 끌 때 벽 면에서 이만큼(cm) 안에 오면 벽에 붙인다 (T30-4). */
+export const WALL_MOUNT_SNAP_CM = 30;
+
 /** 가구가 벽·다른 가구에 이만큼(cm)까지 파고든 것은 맞닿은 것으로 본다 (소수 오차). 면끼리 붙이는 것은 된다. */
 export const TOUCH_TOLERANCE_CM = 0.01;
 

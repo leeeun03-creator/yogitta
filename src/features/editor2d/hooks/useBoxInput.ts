@@ -30,7 +30,8 @@ function withMoving(space: Space, moving: (BoxMove & { id: string }) | null) {
   if (!moving || !before) return stackOrder(boxes);
   const base = baseOf(moving, boxes) ?? null;
   const { x, y } = moving.center;
-  const after = { ...before, x, z: y, elevation: stackedElevation(before, base) }; // 2D y = 3D z
+  const rotation = moving.rotation ?? before.rotation; // 벽에 붙인 벽걸이는 돌려서 그린다
+  const after = { ...before, x, z: y, rotation, elevation: stackedElevation(before, base) }; // 2D y = 3D z
   const replaced = boxes.map((box) => (box === before ? after : box));
   return stackOrder(carryStacked(replaced, before, after, floor));
 }
