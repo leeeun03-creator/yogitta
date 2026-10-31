@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { expect, test, type Page } from "@playwright/test";
+import { openEmptyScreen } from "./helpers";
 import { mainTitle, openMain, pill, spaceList } from "./spaces";
 
 /** 공간 바꾸기 목록을 열어 [백업 파일 내보내기]로 내려받고, 파일 이름과 내용을 돌려준다. */
@@ -66,5 +67,22 @@ test.describe("백업 파일 내보내기 / 가져오기", () => {
     await expect(
       spaceList(page).getByRole("button", { name: "내 방 이름 바꾸기·삭제" }),
     ).toBeVisible();
+  });
+
+  test("첫 실행 화면(공간 없음)에서도 백업 파일을 가져오면 메인 화면에 그 공간이 보인다", async ({
+    page,
+  }) => {
+    await openMain(page);
+    const backup = await exportBackup(page);
+    await openEmptyScreen(page); // 공간을 모두 비운다
+    await page.screenshot({ path: test.info().outputPath("empty.png") });
+    await page.getByLabel("백업 파일 고르기").setInputFiles(backup.path);
+    const ask = page.getByRole("alertdialog", { name: "백업 파일로 바꿀까요?" });
+    await expect(ask).toHaveAccessibleDescription(
+      "지금 공간 0개가 백업 파일의 공간 1개로 바뀌어요",
+    );
+    await ask.getByRole("button", { name: "바꾸기" }).click();
+    await expect(mainTitle(page)).toBeVisible();
+    await expect(pill(page)).toBeVisible();
   });
 });

@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { SAMPLE_DATA } from "@/features/storage";
+import { BackupButtons, SAMPLE_DATA } from "@/features/storage";
 import { Button } from "@/shared/ui";
 import { useAppStore } from "@/store/useAppStore";
 import styles from "./EmptyCard.module.css";
@@ -8,7 +8,7 @@ const ADD_ICON_SIZE = 44;
 
 type EmptyCardProps = { onCreate: () => void };
 
-/** 공간이 없다는 안내와 새 공간 만들기·샘플 공간 둘러보기 (시안 03 왼쪽). */
+/** 공간이 없다는 안내와 새 공간 만들기·샘플 공간 둘러보기·백업 파일 가져오기(T17) (시안 03 왼쪽). */
 export function EmptyCard({ onCreate }: EmptyCardProps) {
   const loadData = useAppStore((state) => state.loadData);
   return (
@@ -35,6 +35,7 @@ export function EmptyCard({ onCreate }: EmptyCardProps) {
         </Button>
         <Button onClick={() => loadData(SAMPLE_DATA)}>샘플 공간 둘러보기</Button>
       </div>
+      <BackupButtons canExport={false} />
     </section>
   );
 }
